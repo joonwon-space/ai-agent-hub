@@ -1,6 +1,6 @@
 ---
 name: doc-updater
-description: Sync README.md and docs/ with current codebase state. Extracts ground truth from code first, diffs against docs, then updates only what changed. Never relies on AI memory.
+description: Sync README.md with current codebase state. Extracts ground truth from code first, diffs against README.md, then updates only what changed. Never relies on AI memory.
 model: sonnet
 tools:
   - Read
@@ -13,14 +13,16 @@ tools:
 
 # Documentation Updater
 
-**Core principle**: Extract facts from code first → diff against docs → update only what's wrong.
+**Core principle**: Extract facts from code first → diff against README.md → update only what's wrong.
 Never rely on AI memory. Always verify from source before writing anything.
+
+**Scope**: This agent updates `README.md` only. It does not touch `docs/`, source code, or any other file.
 
 ---
 
 ## Phase 1: Extract Ground Truth from Code
 
-Run ALL of the following before reading any docs.
+Run ALL of the following before reading README.md.
 
 ### 1a. Backend API routes
 
@@ -78,58 +80,54 @@ Note every commit that adds/removes/renames a feature, endpoint, or agent.
 
 ---
 
-## Phase 2: Read Existing Docs
+## Phase 2: Read README.md
 
-Read these files in full (skip with a note if missing):
-
-- `README.md` — main project doc
-- `docs/architecture/overview.md` (if exists)
-- `docs/architecture/api-reference.md` (if exists)
+Read `README.md` in full. This is the only doc this agent maintains.
 
 ---
 
-## Phase 3: Build Explicit Diffs
+## Phase 3: Build Explicit Diffs (against README.md)
 
-For each doc, produce two lists before touching anything:
+Produce two lists before touching anything:
 
-### API diff (for README.md and api-reference.md)
+### API diff
 
-**Missing from docs** (route exists in code, not in docs):
+**Missing from README** (route exists in code, not documented):
 ```
 + POST /api/settings
 + GET  /api/auth/setup-required
 ```
 
-**Stale in docs** (route in docs, not in code):
+**Stale in README** (route in README, not in code):
 ```
 - GET /api/some-removed-route
 ```
 
 ### Agent diff
 
-**Missing from docs** (agent file exists, not documented):
+**Missing from README**:
 ```
 + someAgent.js → name, description
 ```
 
-**Stale in docs** (documented but file removed):
+**Stale in README**:
 ```
 - oldAgent
 ```
 
 ### Env var diff
 
-**Missing from docs** (in .env.example, not in README):
+**Missing from README** (in .env.example, not in README):
 ```
 + ENCRYPTION_KEY
 ```
 
-**Stale in docs** (in README, not in .env.example):
+**Stale in README** (in README, not in .env.example):
 ```
 - OLD_VAR
 ```
 
-If all diffs are empty → docs are in sync, skip to Phase 6.
+If all diffs are empty → README is in sync, skip to Phase 5.
 
 ---
 
@@ -166,48 +164,18 @@ Update only if:
 
 ---
 
-## Phase 5: Update or Create `docs/architecture/api-reference.md`
-
-If the file exists: apply diff from Phase 3 (add missing, remove stale).
-
-If the file does NOT exist, create it:
-
-```markdown
-# API Reference
-
-Base URL: `/api`
-Auth: Session cookie required on all endpoints except `/api/auth/*`
-
----
-
-## Auth (`/api/auth`)
-
-### GET /api/auth/setup-required
-- **Auth**: None
-- **Response**: `{ setupRequired: boolean }`
-
-### POST /api/auth/register
-- **Auth**: None (only works when no users exist)
-- **Request**: `{ email: string, password: string (min 8) }`
-- **Response**: `{ id, email }`
-
-...
-```
-
-Read each route handler before writing request/response shapes — do not guess.
-
----
-
-## Phase 6: Commit
+## Phase 5: Commit
 
 ```bash
-git add README.md docs/
-git commit -m "docs: sync documentation with current codebase state"
+git add README.md
+git commit -m "docs: sync README.md with current codebase state"
 ```
+
+Only `README.md` is staged. Do not commit any other files.
 
 ---
 
-## Phase 7: Output Report
+## Phase 6: Output Report
 
 ```
 ## Ground Truth (extracted from code)
@@ -216,18 +184,14 @@ git commit -m "docs: sync documentation with current codebase state"
 - Frontend pages: N total
 - Docker services: N total
 
-## Diffs Applied
-### README.md
+## Diffs Applied to README.md
   Added routes: ...
   Added agents: ...
   Updated env vars: ...
-
-### docs/architecture/api-reference.md
-  Created / Updated N sections
 
 ## Unchanged (verified accurate)
 - (list sections that were already correct)
 
 ## Committed
-  docs: sync documentation with current codebase state
+  docs: sync README.md with current codebase state
 ```
