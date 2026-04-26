@@ -4,6 +4,14 @@ let previewData = null;
 let uploadedFileData = null;
 
 async function init() {
+  const me = await getMe();
+  if (!me) {
+    window.location.href = '/login';
+    return;
+  }
+  const emailEl = document.getElementById('topbar-email');
+  if (emailEl) emailEl.textContent = me.email;
+
   agents = await fetchAgents();
   renderSidebar();
 }
