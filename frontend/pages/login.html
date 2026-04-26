@@ -1,17 +1,58 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" data-theme="dark">
+<script>(function(){var t=localStorage.getItem('aah-theme')||'dark';document.documentElement.setAttribute('data-theme',t);})();</script>
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AI Agent Hub — 로그인</title>
   <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+  <script src="/src/js/theme.js"></script>
   <style>
     @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css');
+    html { transition: background-color 0.25s, color 0.2s; }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root, [data-theme="dark"] {
+      --bg: #080b13;
+      --border: rgba(255,255,255,0.07);
+      --accent: #1e90ff;
+      --accent-hover: #1a7de0;
+      --text: #dde3f0;
+      --text-muted: #4a5266;
+      --text-faint: #2e3347;
+      --input-bg: rgba(255,255,255,0.025);
+      --input-bg-focus: rgba(30,144,255,0.06);
+      --accent-dim: rgba(30,144,255,0.12);
+      --accent-border: rgba(30,144,255,0.25);
+      --error: #f87171;
+      --success: #00ff00;
+      --card-bg: rgba(14,17,28,0.9);
+      --glow-color: rgba(30,144,255,0.10);
+      --link-color: #60b4ff;
+    }
+    [data-theme="light"] {
+      --bg: #f0f3fa;
+      --border: rgba(0,0,0,0.08);
+      --accent: #1e90ff;
+      --accent-hover: #1a7de0;
+      --text: #0d1120;
+      --text-muted: #6b7587;
+      --text-faint: #9ca3af;
+      --input-bg: rgba(0,0,0,0.02);
+      --input-bg-focus: rgba(30,144,255,0.04);
+      --accent-dim: rgba(30,144,255,0.08);
+      --accent-border: rgba(30,144,255,0.30);
+      --error: #dc2626;
+      --success: #00aa00;
+      --card-bg: rgba(255,255,255,0.95);
+      --glow-color: rgba(30,144,255,0.06);
+      --link-color: #1670cc;
+    }
+
     body {
       font-family: 'Pretendard Variable', 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: #080b13;
-      color: #e2e8f0;
+      background: var(--bg);
+      color: var(--text);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -24,14 +65,14 @@
       position: absolute;
       width: 480px; height: 480px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(99,102,241,0.12) 0%, transparent 70%);
+      background: radial-gradient(circle, var(--glow-color) 0%, transparent 70%);
       top: 50%; left: 50%;
       transform: translate(-50%, -60%);
       pointer-events: none;
     }
     .card {
-      background: rgba(14,17,28,0.9);
-      border: 1px solid rgba(255,255,255,0.07);
+      background: var(--card-bg);
+      border: 1px solid var(--border);
       border-radius: 16px;
       padding: 40px 36px;
       width: 100%;
@@ -39,8 +80,22 @@
       position: relative;
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
-      box-shadow: 0 32px 64px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.03);
+      box-shadow: 0 32px 64px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.03);
     }
+    .theme-btn {
+      position: absolute;
+      top: 16px; right: 16px;
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 12px;
+      cursor: pointer;
+      padding: 5px 10px;
+      border-radius: 7px;
+      font-family: inherit;
+      transition: all 0.15s;
+    }
+    .theme-btn:hover { background: var(--accent-dim); color: var(--text); }
     .logo-row {
       display: flex;
       align-items: center;
@@ -50,11 +105,11 @@
     .logo-dot {
       width: 28px; height: 28px;
       border-radius: 9px;
-      background: linear-gradient(135deg, #6366f1, #818cf8);
+      background: linear-gradient(135deg, #1e90ff, #60b4ff);
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 0 16px rgba(99,102,241,0.5);
+      box-shadow: 0 0 16px rgba(30,144,255,0.5);
       flex-shrink: 0;
     }
     .logo-dot-inner {
@@ -66,19 +121,19 @@
     .logo-text {
       font-size: 15px;
       font-weight: 700;
-      color: #e2e8f0;
+      color: var(--text);
       letter-spacing: -0.3px;
     }
     .title {
       font-size: 22px;
       font-weight: 700;
-      color: #e8ecf4;
+      color: var(--text);
       margin-bottom: 6px;
       letter-spacing: -0.4px;
     }
     .subtitle {
       font-size: 13px;
-      color: #4a5266;
+      color: var(--text-muted);
       margin-bottom: 28px;
     }
     .form-group { margin-bottom: 16px; }
@@ -86,17 +141,17 @@
       display: block;
       font-size: 11px;
       font-weight: 600;
-      color: #4a5266;
+      color: var(--text-muted);
       margin-bottom: 7px;
       text-transform: uppercase;
       letter-spacing: 0.7px;
     }
     input[type="email"], input[type="password"] {
       width: 100%;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.07);
+      background: var(--input-bg);
+      border: 1px solid var(--border);
       border-radius: 9px;
-      color: #dde3f0;
+      color: var(--text);
       font-size: 14px;
       padding: 11px 14px;
       outline: none;
@@ -104,9 +159,9 @@
       transition: all 0.15s;
     }
     input:focus {
-      background: rgba(99,102,241,0.05);
-      border-color: rgba(99,102,241,0.5);
-      box-shadow: 0 0 0 3px rgba(99,102,241,0.12);
+      background: var(--input-bg-focus);
+      border-color: var(--accent-border);
+      box-shadow: 0 0 0 3px var(--accent-dim);
     }
     .btn {
       width: 100%;
@@ -118,14 +173,14 @@
       cursor: pointer;
       margin-top: 8px;
       font-family: inherit;
-      background: linear-gradient(135deg, #6366f1 0%, #7c7ff5 100%);
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
       color: #fff;
-      box-shadow: 0 4px 14px rgba(99,102,241,0.35);
+      box-shadow: 0 4px 14px rgba(30,144,255,0.35);
       transition: opacity 0.15s, box-shadow 0.15s;
     }
     .btn:hover:not(:disabled) {
       opacity: 0.92;
-      box-shadow: 0 6px 20px rgba(99,102,241,0.45);
+      box-shadow: 0 6px 20px rgba(30,144,255,0.50);
     }
     .btn:disabled { opacity: 0.5; cursor: not-allowed; }
     .msg {
@@ -138,28 +193,29 @@
     .msg.error {
       background: rgba(248,113,113,0.08);
       border: 1px solid rgba(248,113,113,0.2);
-      color: #f87171;
+      color: var(--error);
       display: block;
     }
     .msg.success {
-      background: rgba(34,197,94,0.08);
-      border: 1px solid rgba(34,197,94,0.2);
-      color: #22c55e;
+      background: rgba(0,255,0,0.06);
+      border: 1px solid rgba(0,255,0,0.2);
+      color: var(--success);
       display: block;
     }
     .footer {
       margin-top: 22px;
       text-align: center;
       font-size: 12px;
-      color: #3d4558;
+      color: var(--text-faint);
     }
-    .footer a { color: #818cf8; text-decoration: none; font-weight: 500; }
+    .footer a { color: var(--link-color); text-decoration: none; font-weight: 500; }
     .footer a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
   <div class="glow"></div>
   <div class="card">
+    <button id="theme-toggle" class="theme-btn" onclick="toggleTheme()">☀️ Light</button>
     <div class="logo-row">
       <div class="logo-dot"><div class="logo-dot-inner"></div></div>
       <span class="logo-text">AI Agent Hub</span>
