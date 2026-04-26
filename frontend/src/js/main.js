@@ -30,8 +30,11 @@ function renderSidebar() {
   }
   el.innerHTML = agents.map(a => `
     <div class="agent-item" data-name="${a.name}" onclick="selectAgent('${a.name}')">
-      <div class="agent-item-name">${a.name}</div>
-      <div class="agent-item-desc">${a.description}</div>
+      <div class="agent-indicator"></div>
+      <div class="agent-item-body">
+        <div class="agent-item-name">${a.name}</div>
+        <div class="agent-item-desc">${a.description}</div>
+      </div>
     </div>
   `).join('');
 }
