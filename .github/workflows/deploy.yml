@@ -1,0 +1,50 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: [self-hosted, deploy]
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Write backend .env
+        run: echo "${{ secrets.BACKEND_ENV_FILE }}" > backend/.env
+
+      - name: Unlock macOS Keychain
+        run: security unlock-keychain -p "${{ secrets.KEYCHAIN_PASSWORD }}" ~/Library/Keychains/login.keychain-db
+
+      - name: Build and restart services
+        run: |
+          cd ${{ github.workspace }}
+          docker compose build --parallel
+          docker compose up -d --remove-orphans
+          docker compose ps
+
+      - name: Wait for health checks
+        run: |
+          echo "Waiting for frontend (nginx)..."
+          for i in $(seq 1 30); do
+            if curl -sf -o /dev/null http://localhost; then
+              echo "Frontend healthy"
+              break
+            fi
+            sleep 2
+          done
+          curl -s -o /dev/null -w "Frontend: HTTP %{http_code}\n" http://localhost
+
+          echo "Waiting for backend (via proxy)..."
+          for i in $(seq 1 30); do
+            if curl -sf http://localhost/api/auth/setup-required > /dev/null 2>&1; then
+              echo "Backend healthy"
+              break
+            fi
+            sleep 2
+          done
+          curl -sf http://localhost/api/auth/setup-required || exit 1
+
+      - name: Clean up old images
+        run: docker image prune -f

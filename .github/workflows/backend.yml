@@ -1,0 +1,44 @@
+name: Backend CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+defaults:
+  run:
+    working-directory: backend
+
+jobs:
+  lint-audit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            relevant:
+              - 'backend/**'
+              - '.github/workflows/backend.yml'
+
+      - name: Skip (no backend changes)
+        if: steps.filter.outputs.relevant != 'true'
+        run: echo "::notice::No backend changes in this PR — skipping, reporting success."
+
+      - uses: actions/setup-node@v4
+        if: steps.filter.outputs.relevant == 'true'
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install dependencies
+        if: steps.filter.outputs.relevant == 'true'
+        run: npm ci
+
+      - name: Security audit
+        if: steps.filter.outputs.relevant == 'true'
+        run: npm audit --audit-level=high
