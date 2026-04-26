@@ -1,0 +1,11 @@
+{
+  "name": "ai-agent-hub-qa",
+  "private": true,
+  "scripts": {
+    "test": "npx playwright test",
+    "visual-qa": "npx playwright test visual-qa.spec.js --reporter=line"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.40.0"
+  }
+}
