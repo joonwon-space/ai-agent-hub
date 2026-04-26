@@ -1,6 +1,8 @@
 const axios = require('axios');
 const BaseAgent = require('./base');
 const { extractWithOllama } = require('../services/ollama');
+const prisma = require('../services/db');
+const { decrypt } = require('../utils/crypto');
 
 class JiraAgent extends BaseAgent {
   constructor() {
@@ -24,7 +26,26 @@ class JiraAgent extends BaseAgent {
     ];
   }
 
-  async preview(input) {
+  async _getJiraConfig(userId) {
+    const rows = await prisma.userSetting.findMany({
+      where: { userId, key: { startsWith: 'jira_' } },
+    });
+
+    const config = {};
+    for (const row of rows) {
+      config[row.key] = row.encrypted ? decrypt(row.value) : row.value;
+    }
+
+    const required = ['jira_base_url', 'jira_email', 'jira_api_token', 'jira_project_key'];
+    const missing = required.filter((k) => !config[k]);
+    if (missing.length > 0) {
+      throw new Error('Jira 설정이 없습니다. 설정 화면에서 먼저 입력해주세요.');
+    }
+
+    return config;
+  }
+
+  async preview(input, context) {
     const { overview, fileData } = input;
     if (!overview?.trim() && !fileData) throw new Error('작업 개요를 입력하거나 파일을 첨부해주세요.');
 
@@ -32,19 +53,13 @@ class JiraAgent extends BaseAgent {
     return { fields };
   }
 
-  async run(input) {
+  async run(input, context) {
     const { overview, fileData, fields: previewedFields } = input;
 
+    const config = await this._getJiraConfig(context.userId);
+    const { jira_base_url: baseUrl, jira_email: email, jira_api_token: token, jira_project_key: projectKey } = config;
+
     const fields = previewedFields || (await extractWithOllama(overview, fileData));
-
-    const baseUrl = process.env.JIRA_BASE_URL;
-    const email = process.env.JIRA_EMAIL;
-    const token = process.env.JIRA_API_TOKEN;
-    const projectKey = process.env.JIRA_PROJECT_KEY;
-
-    if (!baseUrl || !email || !token || !projectKey) {
-      throw new Error('Jira 환경변수(JIRA_BASE_URL, JIRA_EMAIL, JIRA_API_TOKEN, JIRA_PROJECT_KEY)를 설정해주세요.');
-    }
 
     const auth = Buffer.from(`${email}:${token}`).toString('base64');
 

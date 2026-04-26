@@ -6,11 +6,11 @@ class BaseAgent {
     this.inputSchema = [];
   }
 
-  async run(input) {
+  async run(input, context) {
     throw new Error(`Agent "${this.name}" must implement run()`);
   }
 
-  async preview(input) {
+  async preview(input, context) {
     throw new Error(`Agent "${this.name}" does not support preview`);
   }
 

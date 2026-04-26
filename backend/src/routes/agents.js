@@ -12,7 +12,7 @@ router.post('/:name/preview', async (req, res) => {
   if (!agent) return res.status(404).json({ error: `Agent "${req.params.name}" not found` });
 
   try {
-    const result = await agent.preview(req.body);
+    const result = await agent.preview(req.body, { userId: req.user.id });
     res.json(result);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -24,7 +24,7 @@ router.post('/:name/run', async (req, res) => {
   if (!agent) return res.status(404).json({ error: `Agent "${req.params.name}" not found` });
 
   try {
-    const result = await agent.run(req.body);
+    const result = await agent.run(req.body, { userId: req.user.id });
     res.json(result);
   } catch (err) {
     res.status(500).json({ error: err.message });
