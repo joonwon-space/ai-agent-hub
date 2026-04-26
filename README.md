@@ -31,7 +31,8 @@ ai-agent-hub/
 │   ├── public/
 │   │   └── index.html     # 메인 대시보드
 │   ├── pages/
-│   │   ├── login.html     # 로그인 / 최초 계정 생성 페이지
+│   │   ├── login.html     # 로그인 페이지
+│   │   ├── signup.html    # 회원가입 페이지
 │   │   └── settings.html  # Jira 설정 페이지
 │   ├── src/
 │   │   ├── css/main.css
@@ -39,9 +40,11 @@ ai-agent-hub/
 │   │       ├── auth.js         # login, logout, getMe, authFetch
 │   │       ├── api.js          # authFetch 기반 API 래퍼
 │   │       ├── main.js         # 앱 진입점
+│   │       ├── theme.js        # localStorage 기반 다크/라이트 토글
 │   │       ├── agents/jira.js  # Jira 에이전트 UI
 │   │       └── pages/
 │   │           ├── login.js    # 로그인 페이지 로직
+│   │           ├── signup.js   # 회원가입 페이지 로직
 │   │           └── settings.js # 설정 페이지 로직
 │   ├── nginx.conf         # 정적 서빙 + /api/* → backend 프록시
 │   └── Dockerfile
@@ -91,8 +94,8 @@ docker compose up --build
 
 1. 브라우저에서 `http://localhost` 접속
 2. `/login` 페이지로 자동 리다이렉트됨
-3. 처음에는 **관리자 계정 생성** 모드 — 이메일과 비밀번호(8자 이상) 입력
-4. 계정 생성 후 자동 로그인되어 대시보드로 이동
+3. 로그인 페이지 하단의 **계정 만들기** 링크 → `/signup` 으로 이동
+4. 이메일과 비밀번호(8자 이상) 입력 후 계정 생성 시 자동 로그인되어 대시보드로 이동
 
 ### 4. Jira 설정
 
