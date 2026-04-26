@@ -1,13 +1,22 @@
 services:
-  app:
-    build: .
-    ports:
-      - "${PORT:-3100}:${PORT:-3100}"
+  backend:
+    build: ./backend
     env_file:
       - .env
+    environment:
+      - PORT=3000
+      - CORS_ORIGIN=http://localhost
     volumes:
-      - ./src:/app/src
-      - ./static:/app/static
+      - ./backend/src:/app/src
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+    # 외부 포트 미노출 — frontend nginx 프록시를 통해서만 접근
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
     restart: unless-stopped

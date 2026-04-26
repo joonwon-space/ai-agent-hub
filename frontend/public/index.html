@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Agent Hub</title>
+  <link rel="stylesheet" href="/src/css/main.css" />
+</head>
+<body>
+
+<aside id="sidebar">
+  <div class="sidebar-header">
+    <h1>AI Agent Hub</h1>
+    <p>Personal automation dashboard</p>
+  </div>
+  <div class="agent-list">
+    <div class="agent-list-label">Agents</div>
+    <div id="agent-list-items">
+      <div style="padding: 10px 12px; color: var(--text-muted); font-size: 12px;">Loading...</div>
+    </div>
+  </div>
+</aside>
+
+<main id="main">
+  <div class="main-inner">
+    <div class="placeholder" id="placeholder">
+      <div class="placeholder-icon">⚡</div>
+      <div>
+        <div style="font-size:16px; font-weight:600; color: var(--text); margin-bottom:6px;">에이전트를 선택하세요</div>
+        <div style="font-size:13px;">왼쪽 사이드바에서 실행할 에이전트를 클릭하세요.</div>
+      </div>
+    </div>
+
+    <div id="agent-panel" style="display:none;"></div>
+  </div>
+</main>
+
+<script src="/src/js/api.js"></script>
+<script src="/src/js/agents/jira.js"></script>
+<script src="/src/js/main.js"></script>
+</body>
+</html>

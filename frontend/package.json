@@ -1,0 +1,5 @@
+{
+  "name": "ai-agent-hub-frontend",
+  "version": "1.0.0",
+  "description": "AI Agent Hub frontend — vanilla JS, served by nginx"
+}
