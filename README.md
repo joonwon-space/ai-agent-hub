@@ -11,7 +11,7 @@ ai-agent-hub/
 │   │   ├── index.js       # 진입점 (포트 3000, 내부 전용)
 │   │   ├── routes/        # API 라우트
 │   │   │   ├── agents.js  # GET /api/agents, POST /api/agents/:name/preview|run
-│   │   │   ├── auth.js    # POST /api/auth/login|register|logout, GET /api/auth/me
+│   │   │   ├── auth.js    # GET /api/auth/setup-required|me, POST /api/auth/register|login|logout
 │   │   │   ├── settings.js # GET|PUT /api/settings
 │   │   │   └── upload.js  # POST /api/upload
 │   │   ├── agents/        # 에이전트 구현
