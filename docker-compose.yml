@@ -1,0 +1,13 @@
+services:
+  app:
+    build: .
+    ports:
+      - "${PORT:-3100}:${PORT:-3100}"
+    env_file:
+      - .env
+    volumes:
+      - ./src:/app/src
+      - ./static:/app/static
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
