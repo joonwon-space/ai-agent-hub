@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI Agent Hub — 로그인</title>
+  <title>AI Agent Hub — 계정 생성</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -28,7 +28,7 @@
       min-height: 100vh;
       font-size: 14px;
     }
-    .login-card {
+    .card {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
@@ -36,13 +36,13 @@
       width: 100%;
       max-width: 380px;
     }
-    .login-title {
+    .card-title {
       font-size: 20px;
       font-weight: 700;
       color: var(--text);
       margin-bottom: 4px;
     }
-    .login-subtitle {
+    .card-subtitle {
       font-size: 12px;
       color: var(--text-muted);
       margin-bottom: 28px;
@@ -59,7 +59,8 @@
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
-    input[type="email"], input[type="password"] {
+    input[type="email"],
+    input[type="password"] {
       width: 100%;
       background: var(--bg);
       border: 1px solid var(--border);
@@ -70,8 +71,12 @@
       outline: none;
       transition: border-color 0.15s;
     }
-    input:focus {
-      border-color: var(--accent);
+    input:focus { border-color: var(--accent); }
+    input.invalid { border-color: var(--error); }
+    .hint {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 4px;
     }
     .btn {
       width: 100%;
@@ -90,6 +95,17 @@
     }
     .btn-primary:hover { background: var(--accent-hover); }
     .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+    .login-link {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    .login-link a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .login-link a:hover { text-decoration: underline; }
     .msg {
       margin-top: 14px;
       font-size: 13px;
@@ -102,26 +118,35 @@
   </style>
 </head>
 <body>
-  <div class="login-card">
-    <div class="login-title">AI Agent Hub</div>
-    <div class="login-subtitle">로그인</div>
+  <div class="card">
+    <div class="card-title">AI Agent Hub</div>
+    <div class="card-subtitle">관리자 계정 생성</div>
 
-    <form id="login-form" onsubmit="handleSubmit(event)">
+    <form id="signup-form" onsubmit="handleSubmit(event)" novalidate>
       <div class="form-group">
         <label for="email">이메일</label>
         <input type="email" id="email" placeholder="admin@example.com" required autocomplete="email" />
       </div>
       <div class="form-group">
         <label for="password">비밀번호</label>
-        <input type="password" id="password" placeholder="••••••••" required autocomplete="current-password" minlength="8" />
+        <input type="password" id="password" placeholder="••••••••" required autocomplete="new-password" minlength="8" />
+        <div class="hint">8자 이상</div>
       </div>
-      <button type="submit" class="btn btn-primary" id="submit-btn">로그인</button>
+      <div class="form-group">
+        <label for="password-confirm">비밀번호 확인</label>
+        <input type="password" id="password-confirm" placeholder="••••••••" required autocomplete="new-password" />
+      </div>
+      <button type="submit" class="btn btn-primary" id="submit-btn">계정 생성</button>
     </form>
 
     <div class="msg" id="msg"></div>
+
+    <div class="login-link">
+      이미 계정이 있나요? <a href="/login">로그인</a>
+    </div>
   </div>
 
   <script src="/src/js/auth.js"></script>
-  <script src="/src/js/pages/login.js"></script>
+  <script src="/src/js/pages/signup.js"></script>
 </body>
 </html>
