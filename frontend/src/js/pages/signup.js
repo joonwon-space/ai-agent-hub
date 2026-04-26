@@ -1,10 +1,3 @@
-async function initSignupPage() {
-  const needsSetup = await setupRequired();
-  if (!needsSetup) {
-    window.location.href = '/login';
-  }
-}
-
 async function handleSubmit(event) {
   event.preventDefault();
 
@@ -38,5 +31,3 @@ async function handleSubmit(event) {
     btn.disabled = false;
   }
 }
-
-initSignupPage();

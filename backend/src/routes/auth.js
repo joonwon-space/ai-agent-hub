@@ -11,11 +11,6 @@ router.get('/setup-required', async (req, res) => {
 });
 
 router.post('/register', async (req, res) => {
-  const count = await prisma.user.count();
-  if (count > 0) {
-    return res.status(403).json({ error: '이미 계정이 존재합니다.' });
-  }
-
   const { email, password } = req.body;
   if (!email || !password) {
     return res.status(400).json({ error: '이메일과 비밀번호를 입력해주세요.' });
