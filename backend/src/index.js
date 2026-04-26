@@ -7,10 +7,19 @@ const { loadAgents } = require('./agentLoader');
 const agentsRouter = require('./routes/agents');
 const uploadRouter = require('./routes/upload');
 const authRouter = require('./routes/auth');
+const settingsRouter = require('./routes/settings');
 const { requireAuth } = require('./middleware/auth');
 
 if (!process.env.SESSION_SECRET) {
   console.error('SESSION_SECRET 환경변수가 필요합니다. openssl rand -hex 32 로 생성하세요.');
+  process.exit(1);
+}
+
+// Validate ENCRYPTION_KEY on startup (crypto module throws if missing/invalid)
+try {
+  require('./utils/crypto');
+} catch (err) {
+  console.error(err.message);
   process.exit(1);
 }
 
@@ -45,6 +54,7 @@ loadAgents();
 app.use('/api/auth', authRouter);
 app.use('/api/agents', requireAuth, agentsRouter);
 app.use('/api/upload', requireAuth, uploadRouter);
+app.use('/api/settings', requireAuth, settingsRouter);
 
 app.listen(PORT, () => {
   console.log(`AI Agent Hub backend running on http://localhost:${PORT}`);
