@@ -9,6 +9,7 @@ async function init() {
     window.location.href = '/login';
     return;
   }
+  document.body.style.visibility = 'visible';
   const emailEl = document.getElementById('topbar-email');
   if (emailEl) emailEl.textContent = me.email;
 

@@ -8,6 +8,7 @@ async function initSettingsPage() {
     return;
   }
 
+  document.body.style.visibility = 'visible';
   const emailEl = document.getElementById('user-email');
   if (emailEl) emailEl.textContent = me.email;
 
