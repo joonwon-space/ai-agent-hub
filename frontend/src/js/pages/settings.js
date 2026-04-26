@@ -2,7 +2,12 @@ const SETTINGS_KEYS = ['jira_base_url', 'jira_email', 'jira_api_token', 'jira_pr
 const MASKED_RE = /^●/;
 
 async function initSettingsPage() {
-  const me = await getMe();
+  let me;
+  try {
+    me = await getMe();
+  } catch (_) {
+    // network error — treat as unauthenticated
+  }
   if (!me) {
     window.location.href = '/login';
     return;

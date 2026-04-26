@@ -4,7 +4,12 @@ let previewData = null;
 let uploadedFileData = null;
 
 async function init() {
-  const me = await getMe();
+  let me;
+  try {
+    me = await getMe();
+  } catch (_) {
+    // network error or unexpected failure — treat as unauthenticated
+  }
   if (!me) {
     window.location.href = '/login';
     return;
