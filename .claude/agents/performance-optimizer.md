@@ -4,7 +4,6 @@ description: Performance analysis and optimization specialist. Use PROACTIVELY f
 tools: ["Read", "Write", "Edit", "Bash", "Grep", "Glob"]
 model: sonnet
 ---
-<!-- Source: everything-claude-code -->
 
 # Performance Optimizer
 

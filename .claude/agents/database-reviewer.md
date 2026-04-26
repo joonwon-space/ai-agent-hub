@@ -4,7 +4,6 @@ description: PostgreSQL database specialist for query optimization, schema desig
 tools: ["Read", "Write", "Edit", "Bash", "Grep", "Glob"]
 model: sonnet
 ---
-<!-- Source: everything-claude-code -->
 
 # Database Reviewer
 

@@ -1,0 +1,38 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/pre-bash-block-no-verify.sh"
+          }
+        ],
+        "description": "Block --no-verify flag to protect git hooks"
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/pre-bash-git-push-reminder.sh"
+          }
+        ],
+        "description": "Remind to review before git push"
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/post-edit-console-warn.sh"
+          }
+        ],
+        "description": "Warn about console.log in edited JS files"
+      }
+    ]
+  }
+}

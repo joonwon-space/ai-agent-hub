@@ -4,7 +4,6 @@ description: Security vulnerability detection and remediation specialist. Use PR
 tools: ["Read", "Write", "Edit", "Bash", "Grep", "Glob"]
 model: sonnet
 ---
-<!-- Source: everything-claude-code -->
 
 # Security Reviewer
 
