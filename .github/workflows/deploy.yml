@@ -11,8 +11,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Write backend .env
-        run: echo "${{ secrets.BACKEND_ENV_FILE }}" > backend/.env
+      - name: Write .env
+        run: echo "${{ secrets.BACKEND_ENV_FILE }}" > .env
 
       - name: Unlock macOS Keychain
         run: security unlock-keychain -p "${{ secrets.KEYCHAIN_PASSWORD }}" ~/Library/Keychains/login.keychain-db
