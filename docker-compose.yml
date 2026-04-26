@@ -1,4 +1,18 @@
+volumes:
+  postgres_data:
+
 services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_USER=aihub
+      - POSTGRES_PASSWORD=aihub
+      - POSTGRES_DB=aihub
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    # 외부 포트 미노출 — backend에서만 접근
+
   backend:
     build: ./backend
     env_file:
@@ -10,6 +24,8 @@ services:
       - ./backend/src:/app/src
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    depends_on:
+      - db
     restart: unless-stopped
     # 외부 포트 미노출 — frontend nginx 프록시를 통해서만 접근
 
