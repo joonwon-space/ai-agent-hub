@@ -15,7 +15,7 @@
 ### Testing
 - [x] Add Jest + Supertest dev dependency to `backend/` and configure test script in `package.json`
 - [x] Write integration test for `POST /api/auth/register` — happy path, duplicate email, short password
-- [ ] Write integration test for `POST /api/auth/login` — happy path, wrong password, missing fields
+- [x] Write integration test for `POST /api/auth/login` — happy path, wrong password, missing fields
 - [ ] Write integration test for `GET|PUT /api/settings` — upsert, encrypt, mask, delete
 - [ ] Extend Playwright E2E spec (`qa/visual-qa.spec.js`) with login flow test
 - [ ] Extend Playwright E2E spec with settings save + load test
