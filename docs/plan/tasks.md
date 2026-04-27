@@ -10,7 +10,7 @@
 ### Reliability
 - [x] Add `timeout` option (30s) to axios call in `backend/src/services/ollama.js` — prevent indefinite hang on slow Ollama
 - [x] Add JSON parse error recovery in `ollama.js` — strip markdown code fences before regex match
-- [ ] Add `healthcheck` to `docker-compose.yml` for backend service (curl `/api/auth/setup-required`) and db (pg_isready)
+- [x] Add `healthcheck` to `docker-compose.yml` for backend service (curl `/api/auth/setup-required`) and db (pg_isready)
 
 ### Testing
 - [ ] Add Jest + Supertest dev dependency to `backend/` and configure test script in `package.json`
