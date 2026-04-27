@@ -13,7 +13,7 @@
 - [x] Add `healthcheck` to `docker-compose.yml` for backend service (curl `/api/auth/setup-required`) and db (pg_isready)
 
 ### Testing
-- [ ] Add Jest + Supertest dev dependency to `backend/` and configure test script in `package.json`
+- [x] Add Jest + Supertest dev dependency to `backend/` and configure test script in `package.json`
 - [ ] Write integration test for `POST /api/auth/register` — happy path, duplicate email, short password
 - [ ] Write integration test for `POST /api/auth/login` — happy path, wrong password, missing fields
 - [ ] Write integration test for `GET|PUT /api/settings` — upsert, encrypt, mask, delete
