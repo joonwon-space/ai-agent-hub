@@ -45,7 +45,9 @@ ${jsonInstruction}`;
     requestBody = { model, prompt, stream: false };
   }
 
-  const response = await axios.post(`${ollamaHost}/api/generate`, requestBody);
+  const response = await axios.post(`${ollamaHost}/api/generate`, requestBody, {
+    timeout: 30000,
+  });
 
   const raw = response.data.response.trim();
   const jsonMatch = raw.match(/\{[\s\S]*\}/);

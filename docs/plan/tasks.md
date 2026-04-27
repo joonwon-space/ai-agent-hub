@@ -8,7 +8,7 @@
 - [x] Add Express global error handler in `backend/src/index.js` — catch unhandled async errors, log + return `{ error: 'Internal server error' }` 500
 
 ### Reliability
-- [ ] Add `timeout` option (30s) to axios call in `backend/src/services/ollama.js` — prevent indefinite hang on slow Ollama
+- [x] Add `timeout` option (30s) to axios call in `backend/src/services/ollama.js` — prevent indefinite hang on slow Ollama
 - [ ] Add JSON parse error recovery in `ollama.js` — strip markdown code fences before regex match
 - [ ] Add `healthcheck` to `docker-compose.yml` for backend service (curl `/api/auth/setup-required`) and db (pg_isready)
 
