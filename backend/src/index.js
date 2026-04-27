@@ -56,6 +56,14 @@ app.use('/api/agents', requireAuth, agentsRouter);
 app.use('/api/upload', requireAuth, uploadRouter);
 app.use('/api/settings', requireAuth, settingsRouter);
 
+// Global error handler — must be defined after all routes
+// eslint-disable-next-line no-unused-vars
+app.use((err, req, res, next) => {
+  console.error('[error]', err.message, err.stack);
+  const status = err.status || err.statusCode || 500;
+  res.status(status).json({ error: 'Internal server error' });
+});
+
 app.listen(PORT, () => {
   console.log(`AI Agent Hub backend running on http://localhost:${PORT}`);
 });
