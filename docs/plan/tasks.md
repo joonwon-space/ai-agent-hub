@@ -23,4 +23,4 @@
 ### Code Quality
 - [x] Extract shared auth page CSS into `frontend/src/css/auth.css` and link from login.html, signup.html, and settings.html
 - [x] Add `loadAgents()` registry-clear guard in `agentLoader.js` — call `registry.clear()` before re-scan to prevent double-registration on hot reload
-- [ ] Add try/catch wrappers around `POST /api/auth/login` and `GET /api/auth/me` Prisma calls in `backend/src/routes/auth.js`
+- [x] Add try/catch wrappers around `POST /api/auth/login` and `GET /api/auth/me` Prisma calls in `backend/src/routes/auth.js`
