@@ -9,6 +9,7 @@ ai-agent-hub/
 ├── backend/               # Node.js + Express API 서버
 │   ├── src/
 │   │   ├── index.js       # 진입점 (포트 3000, 내부 전용)
+│   │   ├── createApp.js   # Express 앱 팩토리 (테스트용 분리)
 │   │   ├── routes/        # API 라우트
 │   │   │   ├── agents.js  # GET /api/agents, POST /api/agents/:name/preview|run
 │   │   │   ├── auth.js    # GET /api/auth/setup-required|me, POST /api/auth/register|login|logout
@@ -24,6 +25,10 @@ ai-agent-hub/
 │   │   │   └── ollama.js  # Ollama LLM 호출
 │   │   └── utils/
 │   │       └── crypto.js  # AES-256-GCM 암호화
+│   ├── __tests__/         # Jest + Supertest 통합 테스트
+│   │   ├── auth.register.test.js
+│   │   ├── auth.login.test.js
+│   │   └── settings.test.js
 │   ├── prisma/
 │   │   └── schema.prisma  # User, UserSetting, Session 모델
 │   └── Dockerfile
@@ -36,6 +41,7 @@ ai-agent-hub/
 │   │   └── settings.html  # Jira 설정 페이지
 │   ├── src/
 │   │   ├── css/main.css
+│   │   ├── css/auth.css        # 인증 페이지 공유 CSS 변수
 │   │   └── js/
 │   │       ├── auth.js         # login, logout, getMe, authFetch
 │   │       ├── api.js          # authFetch 기반 API 래퍼
@@ -48,6 +54,9 @@ ai-agent-hub/
 │   │           └── settings.js # 설정 페이지 로직
 │   ├── nginx.conf         # 정적 서빙 + /api/* → backend 프록시
 │   └── Dockerfile
+├── qa/                    # Playwright E2E 테스트
+│   ├── visual-qa.spec.js  # 로그인·설정 페이지 E2E
+│   └── playwright.config.js
 ├── docker-compose.yml
 └── .env.example
 ```
@@ -103,6 +112,46 @@ docker compose up --build
 2. Jira Base URL, 이메일, API 토큰, 프로젝트 키 입력
 3. **저장** — API 토큰은 AES-256-GCM으로 암호화 저장됨
 4. 이후 Jira 에이전트 실행 시 DB에서 설정을 자동으로 읽어 사용
+
+## 테스트
+
+### 통합 테스트 (Jest + Supertest)
+
+```bash
+cd backend
+npm test
+```
+
+`backend/__tests__/` 아래 세 개의 테스트 파일이 있습니다:
+
+| 파일 | 커버 범위 |
+|------|-----------|
+| `auth.register.test.js` | 회원가입 성공·실패·중복 이메일 |
+| `auth.login.test.js` | 로그인 성공·잘못된 비밀번호·빠진 필드 |
+| `settings.test.js` | GET/PUT upsert·암호화·마스킹·삭제 |
+
+테스트는 `createApp` 팩토리를 사용해 PgSession 없이 MemoryStore로 앱을 생성합니다.
+
+### E2E 테스트 (Playwright)
+
+```bash
+cd qa
+npx playwright install
+npm test
+```
+
+`qa/visual-qa.spec.js`는 로그인 플로우와 설정 페이지 렌더링을 브라우저 수준에서 검증합니다.
+
+## 보안 기능
+
+| 기능 | 내용 |
+|------|------|
+| Rate limiting | `/api/auth/login`, `/api/auth/register` 에 분당 5회 제한 (`express-rate-limit`) |
+| Session fixation 방지 | 로그인·회원가입 성공 시 `session.regenerate()` 호출 |
+| 전역 에러 핸들러 | Express 4-arg 미들웨어로 500 응답 반환, 스택 트레이스 미노출 |
+| 설정 암호화 | `jira_api_token` 등 민감 키는 AES-256-GCM 암호화 후 DB 저장 |
+| Docker healthcheck | `db`(pg_isready)·`backend`(HTTP probe) 헬스체크 — backend는 db 헬시 후 기동 |
+| Ollama 타임아웃 | Axios 호출 30초 타임아웃, 응답의 마크다운 코드 펜스 자동 제거 |
 
 ## 에이전트 추가
 
