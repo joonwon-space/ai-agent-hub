@@ -31,6 +31,9 @@ router.post('/register', authLimiter, async (req, res) => {
   try {
     const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
     const user = await prisma.user.create({ data: { email, passwordHash } });
+    await new Promise((resolve, reject) => {
+      req.session.regenerate((err) => (err ? reject(err) : resolve()));
+    });
     req.session.userId = user.id;
     res.json({ id: user.id, email: user.email });
   } catch (err) {
@@ -57,6 +60,9 @@ router.post('/login', authLimiter, async (req, res) => {
     return res.status(401).json({ error: '이메일 또는 비밀번호가 올바르지 않습니다.' });
   }
 
+  await new Promise((resolve, reject) => {
+    req.session.regenerate((err) => (err ? reject(err) : resolve()));
+  });
   req.session.userId = user.id;
   res.json({ id: user.id, email: user.email });
 });

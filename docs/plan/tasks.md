@@ -4,7 +4,7 @@
 
 ### Security (High Priority)
 - [x] Add `express-rate-limit` on `POST /api/auth/login` and `POST /api/auth/register` — 5 req/min per IP
-- [ ] Add `req.session.regenerate()` call after successful login and register to prevent session fixation
+- [x] Add `req.session.regenerate()` call after successful login and register to prevent session fixation
 - [ ] Add Express global error handler in `backend/src/index.js` — catch unhandled async errors, log + return `{ error: 'Internal server error' }` 500
 
 ### Reliability
