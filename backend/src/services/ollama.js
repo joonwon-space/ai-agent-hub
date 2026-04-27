@@ -49,11 +49,18 @@ ${jsonInstruction}`;
     timeout: 30000,
   });
 
-  const raw = response.data.response.trim();
-  const jsonMatch = raw.match(/\{[\s\S]*\}/);
+  const rawResponse = response.data.response.trim();
+  // Strip markdown code fences (```json ... ``` or ``` ... ```) before parsing
+  const stripped = rawResponse.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '');
+  const jsonMatch = stripped.match(/\{[\s\S]*\}/);
   if (!jsonMatch) throw new Error('LLM 응답에서 JSON을 파싱할 수 없습니다.');
 
-  const parsed = JSON.parse(jsonMatch[0]);
+  let parsed;
+  try {
+    parsed = JSON.parse(jsonMatch[0]);
+  } catch (parseErr) {
+    throw new Error(`LLM JSON 파싱 실패: ${parseErr.message}`);
+  }
 
   const validTypes = ['Bug', 'Story', 'Task'];
   const validPriorities = ['Highest', 'High', 'Medium', 'Low'];
