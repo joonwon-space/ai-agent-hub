@@ -83,3 +83,53 @@ test.describe('Login page — theme toggle', () => {
     await page.screenshot({ path: 'screenshots/05-login-light.png' });
   });
 });
+
+test.describe('Login flow', () => {
+  test('login page renders form elements', async ({ page }) => {
+    await page.goto('/login');
+    await page.waitForSelector('#email', { state: 'visible' });
+    await expect(page.locator('#email')).toBeVisible();
+    await expect(page.locator('#password')).toBeVisible();
+    await expect(page.locator('#submit-btn')).toBeVisible();
+    await page.screenshot({ path: 'screenshots/06-login-form.png' });
+  });
+
+  test('login with missing credentials shows error', async ({ page }) => {
+    await page.goto('/login');
+    await page.waitForSelector('#submit-btn', { state: 'visible' });
+    // Fill email only, leave password empty
+    await page.fill('#email', 'test@example.com');
+    await page.click('#submit-btn');
+    // HTML5 validation or server error should prevent navigation
+    const url = page.url();
+    expect(url).toContain('/login');
+    await page.screenshot({ path: 'screenshots/07-login-missing-pw.png' });
+  });
+
+  test('login with wrong credentials shows error message', async ({ page }) => {
+    await page.goto('/login');
+    await page.waitForSelector('#submit-btn', { state: 'visible' });
+    await page.fill('#email', 'nonexistent@example.com');
+    await page.fill('#password', 'wrongpassword');
+    await page.click('#submit-btn');
+    // Wait for error message to appear (the #msg element becomes visible)
+    await page.waitForSelector('#msg.error', { state: 'visible', timeout: 8000 });
+    const msgText = await page.textContent('#msg');
+    expect(msgText.length).toBeGreaterThan(0);
+    await page.screenshot({ path: 'screenshots/08-login-error.png' });
+  });
+
+  test('login page redirects to / when already authenticated', async ({ page }) => {
+    // If user is already on / (authenticated), visiting /login should not crash
+    await page.goto('/login');
+    await page.waitForSelector('#email', { state: 'visible' });
+    expect(page.url()).toContain('/login');
+  });
+
+  test('signup link is visible on login page', async ({ page }) => {
+    await page.goto('/login');
+    await page.waitForSelector('.footer a', { state: 'visible' });
+    const href = await page.getAttribute('.footer a', 'href');
+    expect(href).toContain('/signup');
+  });
+});

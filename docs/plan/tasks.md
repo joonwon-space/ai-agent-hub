@@ -17,7 +17,7 @@
 - [x] Write integration test for `POST /api/auth/register` — happy path, duplicate email, short password
 - [x] Write integration test for `POST /api/auth/login` — happy path, wrong password, missing fields
 - [x] Write integration test for `GET|PUT /api/settings` — upsert, encrypt, mask, delete
-- [ ] Extend Playwright E2E spec (`qa/visual-qa.spec.js`) with login flow test
+- [x] Extend Playwright E2E spec (`qa/visual-qa.spec.js`) with login flow test
 - [ ] Extend Playwright E2E spec with settings save + load test
 
 ### Code Quality
