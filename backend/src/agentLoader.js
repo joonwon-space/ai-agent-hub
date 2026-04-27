@@ -5,6 +5,9 @@ const agentsDir = path.join(__dirname, 'agents');
 const registry = new Map();
 
 function loadAgents() {
+  // Clear registry before re-scanning to prevent double-registration on hot reload
+  registry.clear();
+
   const files = fs.readdirSync(agentsDir).filter(
     (f) => f.endsWith('.js') && f !== 'base.js'
   );
