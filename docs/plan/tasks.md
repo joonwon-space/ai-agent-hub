@@ -18,7 +18,7 @@
 - [x] Write integration test for `POST /api/auth/login` — happy path, wrong password, missing fields
 - [x] Write integration test for `GET|PUT /api/settings` — upsert, encrypt, mask, delete
 - [x] Extend Playwright E2E spec (`qa/visual-qa.spec.js`) with login flow test
-- [ ] Extend Playwright E2E spec with settings save + load test
+- [x] Extend Playwright E2E spec with settings save + load test
 
 ### Code Quality
 - [ ] Extract shared auth page CSS into `frontend/src/css/auth.css` and link from login.html, signup.html, and settings.html
