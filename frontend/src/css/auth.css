@@ -1,0 +1,156 @@
+/*
+ * auth.css — shared styles for auth pages (login, signup) and settings page.
+ * Import font and base variables; individual pages may add layout-specific rules.
+ */
+
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css');
+
+html { transition: background-color 0.25s, color 0.2s; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root, [data-theme="dark"] {
+  --bg: #080b13;
+  --border: rgba(255,255,255,0.07);
+  --accent: #1e90ff;
+  --accent-hover: #1a7de0;
+  --text: #dde3f0;
+  --text-muted: #4a5266;
+  --text-faint: #2e3347;
+  --text-subtle: #6b7585;
+  --input-bg: rgba(255,255,255,0.025);
+  --input-bg-focus: rgba(30,144,255,0.06);
+  --accent-dim: rgba(30,144,255,0.12);
+  --accent-border: rgba(30,144,255,0.25);
+  --error: #f87171;
+  --success: #00ff00;
+  --card-bg: rgba(14,17,28,0.9);
+  --glow-color: rgba(30,144,255,0.10);
+  --link-color: #60b4ff;
+  --topbar-bg: rgba(8,11,19,0.85);
+  --surface: rgba(255,255,255,0.025);
+}
+
+[data-theme="light"] {
+  --bg: #f0f3fa;
+  --border: rgba(0,0,0,0.08);
+  --accent: #1e90ff;
+  --accent-hover: #1a7de0;
+  --text: #0d1120;
+  --text-muted: #6b7587;
+  --text-faint: #9ca3af;
+  --text-subtle: #8892a4;
+  --input-bg: rgba(0,0,0,0.02);
+  --input-bg-focus: rgba(30,144,255,0.04);
+  --accent-dim: rgba(30,144,255,0.08);
+  --accent-border: rgba(30,144,255,0.30);
+  --error: #dc2626;
+  --success: #00aa00;
+  --card-bg: rgba(255,255,255,0.95);
+  --glow-color: rgba(30,144,255,0.06);
+  --link-color: #1670cc;
+  --topbar-bg: rgba(240,243,250,0.90);
+  --surface: #ffffff;
+}
+
+body {
+  font-family: 'Pretendard Variable', 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+}
+
+.form-group { margin-bottom: 16px; }
+
+label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 7px;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="url"] {
+  width: 100%;
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  color: var(--text);
+  font-size: 14px;
+  padding: 11px 14px;
+  outline: none;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+
+input:focus {
+  background: var(--input-bg-focus);
+  border-color: var(--accent-border);
+  box-shadow: 0 0 0 3px var(--accent-dim);
+}
+
+input.invalid { border-color: rgba(248,113,113,0.5); }
+
+.btn {
+  padding: 10px 22px;
+  border: none;
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(30,144,255,0.30);
+  transition: opacity 0.15s, box-shadow 0.15s;
+}
+
+.btn:hover:not(:disabled) {
+  opacity: 0.92;
+  box-shadow: 0 6px 20px rgba(30,144,255,0.45);
+}
+
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.msg {
+  margin-top: 14px;
+  font-size: 12px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  display: none;
+}
+
+.msg.error {
+  background: rgba(248,113,113,0.08);
+  border: 1px solid rgba(248,113,113,0.2);
+  color: var(--error);
+  display: block;
+}
+
+.msg.success {
+  background: rgba(0,255,0,0.06);
+  border: 1px solid rgba(0,255,0,0.2);
+  color: var(--success);
+  display: block;
+}
+
+.footer {
+  margin-top: 22px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-faint);
+}
+
+.footer a { color: var(--link-color); text-decoration: none; font-weight: 500; }
+.footer a:hover { text-decoration: underline; }
+
+.hint,
+.field-hint {
+  font-size: 11px;
+  color: var(--text-faint);
+  margin-top: 4px;
+}
