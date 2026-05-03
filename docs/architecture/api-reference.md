@@ -147,6 +147,111 @@ Upserts one or more settings for the authenticated user. Pass an empty string fo
 
 ---
 
+## My Space (`/api/my-space`)
+
+All My Space endpoints require authentication. Owner-check enforced on every sub-resource: if `spaceId` does not belong to `req.user.id`, the response is **404** (info-leak prevention; not 403).
+
+### GET /api/my-space
+
+List all spaces belonging to the authenticated user.
+
+- **Auth**: Required
+- **Response**: Array of Space objects (empty array if none)
+
+---
+
+### POST /api/my-space
+
+Create a new Space.
+
+- **Auth**: Required
+- **Request**: `{ name: string, template: 'diary' | 'recipe' | 'freeform' }`
+  - `name`: 1–80 characters
+  - `template`: must be one of the three enum values
+- **Response 201**: Space object
+- **Response 400**: `{ error: 'Validation failed', details: { field: reason } }`
+
+---
+
+### PATCH /api/my-space/:id
+
+Update a Space's name.
+
+- **Auth**: Required
+- **Path param**: `id` — Space ID (must be owned by the current user)
+- **Request**: `{ name?: string }`
+- **Response 200**: Updated Space object
+- **Response 404**: Space not found or not owned
+
+---
+
+### DELETE /api/my-space/:id
+
+Delete a Space and all its contents (cascade).
+
+- **Auth**: Required
+- **Response 200**: `{ ok: true }`
+- **Response 404**: Space not found or not owned
+
+---
+
+### GET /api/my-space/:spaceId/diary
+
+List diary entries for a Space. Sorted by `entryDate desc`. Supports cursor-based pagination.
+
+- **Auth**: Required
+- **Query params**: `limit` (default 20, max 100), `cursor` (last entry id for next page)
+- **Response**: Array of DiaryEntry objects
+
+---
+
+### POST /api/my-space/:spaceId/diary
+
+Create a new diary entry.
+
+- **Auth**: Required
+- **Request**: `{ entryDate: string (yyyy-MM-dd), mood?: 'happy'|'sad'|'angry'|'tired', title: string, body: string }`
+  - `entryDate`: ISO date, not more than 365 days in the future
+  - `title`: 1–120 characters
+  - `body`: 0–50,000 characters
+- **Response 201**: DiaryEntry object
+- **Response 404**: Space not found or not owned
+- **Response 400**: `{ error: 'Validation failed', details: { field: reason } }`
+
+---
+
+### GET /api/my-space/:spaceId/diary/:id
+
+Get a single diary entry.
+
+- **Auth**: Required
+- **Response 200**: DiaryEntry object
+- **Response 404**: Space or entry not found
+
+---
+
+### PATCH /api/my-space/:spaceId/diary/:id
+
+Partial update of a diary entry (called by the autosave mechanism).
+
+- **Auth**: Required
+- **Request**: Any subset of `{ entryDate, mood, title, body }` (same validation rules as POST)
+- **Response 200**: Updated DiaryEntry object
+- **Response 404**: Space or entry not found
+- **Response 400**: Validation failed
+
+---
+
+### DELETE /api/my-space/:spaceId/diary/:id
+
+Delete a diary entry.
+
+- **Auth**: Required
+- **Response 200**: `{ ok: true }`
+- **Response 404**: Space or entry not found
+
+---
+
 ## Per-Agent Input Schemas
 
 ### jira
