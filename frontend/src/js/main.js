@@ -20,6 +20,7 @@ async function init() {
 
   agents = await fetchAgents();
   renderSidebar();
+  renderPersonalSection();
 }
 
 function renderSidebar() {
@@ -37,6 +38,41 @@ function renderSidebar() {
       </div>
     </div>
   `).join('');
+}
+
+/**
+ * Render the Personal section in the sidebar.
+ * Uses createElement/textContent only (no innerHTML).
+ */
+function renderPersonalSection() {
+  const sidebar = document.getElementById('sidebar');
+  if (!sidebar) return;
+
+  // Remove existing personal section if present (idempotent)
+  const existing = document.getElementById('personal-section');
+  if (existing) existing.remove();
+
+  const section = document.createElement('div');
+  section.id = 'personal-section';
+  section.className = 'personal-section';
+
+  const label = document.createElement('div');
+  label.className = 'personal-section__label';
+  label.textContent = 'Personal';
+  section.appendChild(label);
+
+  const link = document.createElement('a');
+  link.className = 'sidebar-link';
+  link.href = '/my-space';
+  link.textContent = 'My Space';
+
+  const badge = document.createElement('span');
+  badge.className = 'badge-new';
+  badge.textContent = 'NEW';
+  link.appendChild(badge);
+
+  section.appendChild(link);
+  sidebar.appendChild(section);
 }
 
 function selectAgent(name) {
