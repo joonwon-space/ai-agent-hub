@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<script>(function(){var t=localStorage.getItem('aah-theme')||'dark';document.documentElement.setAttribute('data-theme',t);})();</script>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>일기 작성 — My Space</title>
+  <script src="/src/js/theme.js"></script>
+  <link rel="stylesheet" href="/src/css/main.css" />
+  <link rel="stylesheet" href="/src/css/my-space-tokens.css" />
+  <link rel="stylesheet" href="/src/css/my-space.css" />
+</head>
+<body style="visibility:hidden">
+
+<div class="diary-edit-topbar">
+  <div class="diary-edit-topbar__left">
+    <button id="btn-back" class="btn-text" type="button">← 목록으로</button>
+    <span class="topbar-logo-text" style="font-size:14px;font-weight:600;color:var(--color-diary-text);">
+      일기
+    </span>
+  </div>
+  <div class="diary-edit-topbar__right">
+    <div id="save-indicator" class="save-indicator" aria-live="polite"></div>
+    <button id="theme-toggle" onclick="toggleTheme()" class="btn-text" type="button">☀️ Light</button>
+  </div>
+</div>
+
+<main id="diary-edit-main">
+  <div class="diary-edit-field">
+    <label for="entry-date">날짜</label>
+    <input type="date" id="entry-date" />
+  </div>
+
+  <div class="diary-edit-moods">
+    <label>오늘의 기분</label>
+    <div id="mood-buttons">
+      <!-- Populated by my-space-diary-edit.js -->
+    </div>
+  </div>
+
+  <div class="diary-edit-field">
+    <label for="entry-title">제목</label>
+    <input type="text" id="entry-title" placeholder="오늘의 일기 제목" maxlength="120" />
+  </div>
+
+  <div class="diary-edit-field">
+    <label for="entry-body">본문</label>
+    <textarea id="entry-body" placeholder="오늘 하루를 기록해보세요…" maxlength="50000"></textarea>
+  </div>
+</main>
+
+<script src="/src/js/auth.js"></script>
+<script src="/src/js/my-space/api.js"></script>
+<script src="/src/js/my-space/autosave.js"></script>
+<script src="/src/js/my-space/components.js"></script>
+<script src="/src/js/pages/my-space-diary-edit.js"></script>
+</body>
+</html>

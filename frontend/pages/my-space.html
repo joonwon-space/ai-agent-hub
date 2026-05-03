@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI Agent Hub</title>
+  <title>My Space — AI Agent Hub</title>
   <script src="/src/js/theme.js"></script>
   <link rel="stylesheet" href="/src/css/main.css" />
   <link rel="stylesheet" href="/src/css/my-space-tokens.css" />
@@ -14,8 +14,10 @@
 
 <div id="topbar">
   <div class="topbar-logo">
-    <div class="topbar-logo-dot"><div class="topbar-logo-dot-inner"></div></div>
-    <span class="topbar-logo-text">AI Agent Hub</span>
+    <a href="/" style="display:flex;align-items:center;gap:9px;text-decoration:none;">
+      <div class="topbar-logo-dot"><div class="topbar-logo-dot-inner"></div></div>
+      <span class="topbar-logo-text">AI Agent Hub</span>
+    </a>
   </div>
   <div class="topbar-right">
     <span id="topbar-email" class="topbar-email"></span>
@@ -37,30 +39,22 @@
   </div>
   <div class="personal-section" id="personal-section">
     <div class="personal-section__label">Personal</div>
-    <a class="sidebar-link" href="/my-space">
+    <a class="sidebar-link" href="/my-space" aria-current="page">
       My Space
       <span class="badge-new">NEW</span>
     </a>
   </div>
 </aside>
 
-<main id="main" style="margin-top:48px;height:calc(100vh - 48px)">
-  <div class="main-inner">
-    <div class="placeholder" id="placeholder">
-      <div class="placeholder-icon">⚡</div>
-      <div>
-        <div style="font-size:16px;font-weight:600;color:var(--text);margin-bottom:6px;">에이전트를 선택하세요</div>
-        <div style="font-size:13px;">왼쪽 사이드바에서 실행할 에이전트를 클릭하세요.</div>
-      </div>
-    </div>
-
-    <div id="agent-panel" style="display:none;"></div>
+<main id="main" style="margin-top:48px;height:calc(100vh - 48px);overflow:hidden;display:flex;flex-direction:column;">
+  <div id="ms-main" style="flex:1;overflow:hidden;display:flex;flex-direction:column;">
+    <!-- Populated by my-space.js -->
   </div>
 </main>
 
 <script src="/src/js/auth.js"></script>
-<script src="/src/js/api.js"></script>
-<script src="/src/js/agents/jira.js"></script>
-<script src="/src/js/main.js"></script>
+<script src="/src/js/my-space/api.js"></script>
+<script src="/src/js/my-space/components.js"></script>
+<script src="/src/js/pages/my-space.js"></script>
 </body>
 </html>
