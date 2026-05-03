@@ -13,6 +13,7 @@ ai-agent-hub/
 │   │   ├── routes/        # API 라우트
 │   │   │   ├── agents.js  # GET /api/agents, POST /api/agents/:name/preview|run
 │   │   │   ├── auth.js    # GET /api/auth/setup-required|me, POST /api/auth/register|login|logout
+│   │   │   ├── mySpace.js # /api/my-space/* (Space + Diary + Recipe + Note CRUD)
 │   │   │   ├── settings.js # GET|PUT /api/settings
 │   │   │   └── upload.js  # POST /api/upload
 │   │   ├── agents/        # 에이전트 구현
@@ -22,41 +23,75 @@ ai-agent-hub/
 │   │   │   └── auth.js    # requireAuth 미들웨어
 │   │   ├── services/
 │   │   │   ├── db.js      # Prisma 싱글톤
+│   │   │   ├── mySpaceValidation.js # My Space 입력 검증 헬퍼
 │   │   │   └── ollama.js  # Ollama LLM 호출
 │   │   └── utils/
 │   │       └── crypto.js  # AES-256-GCM 암호화
-│   ├── __tests__/         # Jest + Supertest 통합 테스트
+│   ├── __tests__/         # Jest + Supertest 통합 테스트 (40 tests, 6 suites)
 │   │   ├── auth.register.test.js
 │   │   ├── auth.login.test.js
+│   │   ├── mySpace.test.js        # Space + Diary CRUD
+│   │   ├── mySpace.recipes.test.js # Recipe CRUD (9 tests)
+│   │   ├── mySpace.notes.test.js   # Note CRUD (7 tests)
 │   │   └── settings.test.js
 │   ├── prisma/
-│   │   └── schema.prisma  # User, UserSetting, Session 모델
+│   │   └── schema.prisma  # User, UserSetting, Session, Space, DiaryEntry, Recipe, FreeformNote
 │   └── Dockerfile
 ├── frontend/              # Nginx + Vanilla JS
 │   ├── public/
-│   │   └── index.html     # 메인 대시보드
+│   │   └── index.html     # 메인 대시보드 (Personal 섹션 포함)
 │   ├── pages/
-│   │   ├── login.html     # 로그인 페이지
-│   │   ├── signup.html    # 회원가입 페이지
-│   │   └── settings.html  # Jira 설정 페이지
+│   │   ├── login.html           # 로그인 페이지
+│   │   ├── signup.html          # 회원가입 페이지
+│   │   ├── settings.html        # Jira 설정 페이지
+│   │   ├── my-space.html        # My Space 랜딩 / 온보딩 / 대시보드
+│   │   ├── my-space-diary-edit.html  # 일기 작성·편집 (Screen 03)
+│   │   ├── my-space-recipes.html     # 레시피 목록 (Screen 04)
+│   │   ├── my-space-recipe-edit.html # 레시피 작성·편집 (Screen 05)
+│   │   ├── my-space-notes.html       # 노트 목록 (Screen 06)
+│   │   └── my-space-note-edit.html   # 노트 작성·편집 (Screen 07)
 │   ├── src/
-│   │   ├── css/main.css
-│   │   ├── css/auth.css        # 인증 페이지 공유 CSS 변수
+│   │   ├── css/
+│   │   │   ├── main.css              # 앱 전역 디자인 토큰
+│   │   │   ├── auth.css              # 인증 페이지 공유 CSS 변수
+│   │   │   ├── my-space.css          # My Space 공통 스타일
+│   │   │   ├── my-space-tokens.css   # diary/recipe/freeform accent 토큰
+│   │   │   ├── my-space-recipe.css   # 레시피 페이지 스타일
+│   │   │   └── my-space-note.css     # 노트 페이지 스타일
 │   │   └── js/
 │   │       ├── auth.js         # login, logout, getMe, authFetch
 │   │       ├── api.js          # authFetch 기반 API 래퍼
-│   │       ├── main.js         # 앱 진입점
+│   │       ├── main.js         # 앱 진입점 (Personal 섹션 포함)
 │   │       ├── theme.js        # localStorage 기반 다크/라이트 토글
 │   │       ├── agents/jira.js  # Jira 에이전트 UI
+│   │       ├── my-space/
+│   │       │   ├── api.js        # Space/Diary/Recipe/Note CRUD 래퍼
+│   │       │   ├── autosave.js   # 500ms debounce + 3x 지수 백오프
+│   │       │   ├── components.js # 공통 카드/배지 렌더 헬퍼 (innerHTML 금지)
+│   │       │   ├── markdown.js   # 직접 구현 마크다운 렌더러 (XSS sanitize)
+│   │       │   ├── notes.js      # Note API 래퍼
+│   │       │   └── recipes.js    # Recipe API 래퍼
 │   │       └── pages/
-│   │           ├── login.js    # 로그인 페이지 로직
-│   │           ├── signup.js   # 회원가입 페이지 로직
-│   │           └── settings.js # 설정 페이지 로직
-│   ├── nginx.conf         # 정적 서빙 + /api/* → backend 프록시
+│   │           ├── login.js              # 로그인 페이지 로직
+│   │           ├── signup.js             # 회원가입 페이지 로직
+│   │           ├── settings.js           # 설정 페이지 로직
+│   │           ├── my-space.js           # 온보딩 / 대시보드 컨트롤러
+│   │           ├── my-space-diary-edit.js # 일기 편집 (자동저장)
+│   │           ├── my-space-recipes.js   # 레시피 목록 컨트롤러
+│   │           ├── my-space-recipe-edit.js # 레시피 편집 (자동저장)
+│   │           ├── my-space-notes.js     # 노트 목록 컨트롤러
+│   │           └── my-space-note-edit.js # 노트 편집 (자동저장)
+│   ├── nginx.conf         # 정적 서빙 + /api/* → backend 프록시 + /my-space/* 라우팅
 │   └── Dockerfile
 ├── qa/                    # Playwright E2E 테스트
-│   ├── visual-qa.spec.js  # 로그인·설정 페이지 E2E
+│   ├── visual-qa.spec.js  # 로그인·설정·My Space 플로우 E2E
 │   └── playwright.config.js
+├── docs/
+│   ├── architecture/
+│   │   ├── overview.md        # 아키텍처 개요 (데이터 모델, 서비스 구조)
+│   │   └── api-reference.md   # 전체 API 레퍼런스 (라우트 + 에이전트 스키마)
+│   └── prd/
+│       └── my-space.md        # My Space PRD
 ├── docker-compose.yml
 └── .env.example
 ```
@@ -113,6 +148,64 @@ docker compose up --build
 3. **저장** — API 토큰은 AES-256-GCM으로 암호화 저장됨
 4. 이후 Jira 에이전트 실행 시 DB에서 설정을 자동으로 읽어 사용
 
+## My Space 기능
+
+사이드바 Personal 섹션에서 접근하는 개인 워크스페이스. 아래 세 가지 템플릿을 지원합니다.
+
+| 템플릿 | 설명 | 화면 |
+|--------|------|------|
+| **Diary** (일기장) | 날짜·감정 태그·본문 작성, 자동저장 | Screen 01–03 |
+| **Recipe** (레시피) | 카테고리/난이도 필터, 재료·단계 편집, 자동저장 | Screen 04–05 |
+| **Freeform Note** (자유 노트) | 마크다운 작성·렌더링(직접 구현), 핀 고정 | Screen 06–07 |
+
+### My Space 프론트엔드 경로 (nginx)
+
+| 경로 | 서빙 파일 | 설명 |
+|------|-----------|------|
+| `/my-space` | `my-space.html` | 랜딩 / 온보딩 / 대시보드 |
+| `/my-space/diary/new`, `/my-space/diary/:id` | `my-space-diary-edit.html` | 일기 작성·편집 |
+| `/my-space/recipes` | `my-space-recipes.html` | 레시피 목록 |
+| `/my-space/recipes/new`, `/my-space/recipes/:id` | `my-space-recipe-edit.html` | 레시피 작성·편집 |
+| `/my-space/notes` | `my-space-notes.html` | 노트 목록 |
+| `/my-space/notes/new`, `/my-space/notes/:id` | `my-space-note-edit.html` | 노트 작성·편집 |
+
+### My Space API 경로 (`/api/my-space`)
+
+모든 엔드포인트는 세션 인증 필수. `spaceId` 소유자 불일치 시 404 반환(정보 누출 방지).
+
+| Method | Path | 설명 |
+|--------|------|------|
+| GET | `/api/my-space` | Space 목록 |
+| POST | `/api/my-space` | Space 생성 |
+| PATCH | `/api/my-space/:id` | Space 이름 수정 |
+| DELETE | `/api/my-space/:id` | Space 삭제 (cascade) |
+| GET | `/api/my-space/:spaceId/diary` | 일기 목록 (cursor pagination) |
+| POST | `/api/my-space/:spaceId/diary` | 일기 생성 |
+| GET | `/api/my-space/:spaceId/diary/:id` | 일기 단건 |
+| PATCH | `/api/my-space/:spaceId/diary/:id` | 일기 수정 (자동저장) |
+| DELETE | `/api/my-space/:spaceId/diary/:id` | 일기 삭제 |
+| GET | `/api/my-space/:spaceId/recipes` | 레시피 목록 (`?category=` 필터) |
+| POST | `/api/my-space/:spaceId/recipes` | 레시피 생성 |
+| GET | `/api/my-space/:spaceId/recipes/:id` | 레시피 단건 |
+| PATCH | `/api/my-space/:spaceId/recipes/:id` | 레시피 수정 (자동저장) |
+| DELETE | `/api/my-space/:spaceId/recipes/:id` | 레시피 삭제 |
+| GET | `/api/my-space/:spaceId/notes` | 노트 목록 (pinned desc, updatedAt desc, cursor) |
+| POST | `/api/my-space/:spaceId/notes` | 노트 생성 |
+| GET | `/api/my-space/:spaceId/notes/:id` | 노트 단건 |
+| PATCH | `/api/my-space/:spaceId/notes/:id` | 노트 수정 (자동저장) |
+| DELETE | `/api/my-space/:spaceId/notes/:id` | 노트 삭제 |
+
+전체 요청/응답 스펙은 [`docs/architecture/api-reference.md`](docs/architecture/api-reference.md)를 참고하세요.
+
+---
+
+## 아키텍처 문서
+
+- [`docs/architecture/overview.md`](docs/architecture/overview.md) — 전체 아키텍처 개요, 데이터 모델, 서비스 구조
+- [`docs/architecture/api-reference.md`](docs/architecture/api-reference.md) — 전체 API 레퍼런스 (모든 라우트 + 에이전트 스키마)
+
+---
+
 ## 테스트
 
 ### 통합 테스트 (Jest + Supertest)
@@ -122,13 +215,16 @@ cd backend
 npm test
 ```
 
-`backend/__tests__/` 아래 세 개의 테스트 파일이 있습니다:
+`backend/__tests__/` 아래 6개의 테스트 파일, 총 **40개 테스트**가 있습니다:
 
 | 파일 | 커버 범위 |
 |------|-----------|
 | `auth.register.test.js` | 회원가입 성공·실패·중복 이메일 |
 | `auth.login.test.js` | 로그인 성공·잘못된 비밀번호·빠진 필드 |
 | `settings.test.js` | GET/PUT upsert·암호화·마스킹·삭제 |
+| `mySpace.test.js` | Space + Diary CRUD |
+| `mySpace.recipes.test.js` | Recipe CRUD (9 tests) |
+| `mySpace.notes.test.js` | Note CRUD (7 tests) |
 
 테스트는 `createApp` 팩토리를 사용해 PgSession 없이 MemoryStore로 앱을 생성합니다.
 
