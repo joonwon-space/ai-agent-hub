@@ -6,13 +6,13 @@
  *   - Empty → render onboarding (3 template cards)
  *   - Non-empty → render dashboard (inner sidebar + template-aware pane)
  *
- * Template branching (Phase 1.5):
+ * Template branching (Phase 2):
  *   diary    → diary list (existing Phase 1 behavior)
- *   recipe   → top-3 recent recipe cards + "새로 작성" link
- *   freeform → "Phase 2 에서 지원 예정" placeholder
+ *   recipe   → top-3 recent recipe cards + "새로 작성" link (Phase 1.5)
+ *   freeform → top-3 pinned/recent notes + "새로 작성" link (Phase 2)
  *
  * No innerHTML. All DOM built with createElement/textContent via components.js helpers.
- * recipes.js is loaded via <script> tag, providing the recipes global.
+ * recipes.js and notes.js are loaded via <script> tags, providing globals.
  */
 
 'use strict';
@@ -276,7 +276,7 @@ async function renderPaneForSpace(pane, space) {
       await renderRecipePreview(pane, space.id);
       break;
     case 'freeform':
-      renderFreeformPlaceholder(pane);
+      await renderFreeformNotePreview(pane, space.id);
       break;
     default:
       await renderDiaryList(pane, space.id);
@@ -347,16 +347,77 @@ async function renderRecipePreview(pane, spaceId) {
 }
 
 /**
- * Freeform placeholder — Phase 2 not yet supported.
+ * Freeform note preview pane: top-3 pinned/recent notes + navigation links.
+ * notes.js is loaded via <script> tag, providing the notes global and renderNoteCard.
  * @param {HTMLElement} pane
+ * @param {number} spaceId
  */
-function renderFreeformPlaceholder(pane) {
+async function renderFreeformNotePreview(pane, spaceId) {
   pane.textContent = '';
-  const msg = el('div', {
-    className: 'ms-placeholder',
-    textContent: 'Phase 2 에서 지원 예정',
+
+  // Header row
+  const header = el('div', { className: 'ms-pane__header' });
+  const title = el('h2', { className: 'ms-pane__title', textContent: '노트' });
+  const newBtn = el('a', {
+    className: 'btn btn-primary btn-sm',
+    textContent: '+ 새로 작성',
+    attrs: { href: `/my-space/notes/new?spaceId=${spaceId}` },
   });
-  pane.appendChild(msg);
+  const listBtn = el('a', {
+    className: 'btn btn-secondary btn-sm',
+    textContent: '모두 보기',
+    attrs: { href: `/my-space/notes?spaceId=${spaceId}`, style: 'margin-right:8px;' },
+  });
+  header.appendChild(title);
+  header.appendChild(listBtn);
+  header.appendChild(newBtn);
+  pane.appendChild(header);
+
+  // Load top-3 notes (pinned first via API ordering)
+  let noteList = [];
+  try {
+    // notes global comes from notes.js loaded via script tag
+    noteList = await notes.list(spaceId, { limit: 20 });
+  } catch (err) {
+    const errEl = el('div', {
+      className: 'ms-error',
+      textContent: '노트를 불러오지 못했습니다: ' + (err.error || err.message),
+    });
+    pane.appendChild(errEl);
+    return;
+  }
+
+  if (!noteList || noteList.length === 0) {
+    const empty = el('div', {
+      className: 'ms-empty',
+      textContent: '아직 노트가 없습니다. 첫 번째 노트를 작성해보세요!',
+    });
+    pane.appendChild(empty);
+    return;
+  }
+
+  // Show top-3 (pinned first, then recent — already ordered by API)
+  const preview = noteList.slice(0, 3);
+  const grid = el('div', { className: 'note-preview-grid' });
+
+  for (const note of preview) {
+    const card = renderNoteCard(note, {
+      onClick: () => {
+        window.location.href = `/my-space/notes/${note.id}?spaceId=${spaceId}`;
+      },
+      onTogglePin: async () => {
+        try {
+          await notes.update(spaceId, note.id, { pinned: !note.pinned });
+          await renderFreeformNotePreview(pane, spaceId);
+        } catch (_err) {
+          // ignore pin toggle errors on dashboard
+        }
+      },
+    });
+    grid.appendChild(card);
+  }
+
+  pane.appendChild(grid);
 }
 
 async function renderDiaryList(pane, spaceId) {
