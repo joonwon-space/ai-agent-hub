@@ -1,7 +1,13 @@
 /**
  * Integration tests: /api/my-space routes
  * Uses Prisma mocks (same pattern as auth.login.test.js).
+ *
+ * Rate limiter note: the auth limiter allows 5 requests/minute.
+ * To avoid hitting it across test suites, we mock express-rate-limit
+ * to be a no-op middleware in tests.
  */
+
+jest.mock('express-rate-limit', () => () => (req, res, next) => next());
 
 jest.mock('../src/services/db', () => ({
   user: {
@@ -37,64 +43,48 @@ jest.mock('../src/agentLoader', () => ({
 }));
 
 const request = require('supertest');
+const bcrypt = require('bcrypt');
 const { createApp } = require('../src/createApp');
 const prisma = require('../src/services/db');
 
 const app = createApp();
 
 // ---------------------------------------------------------------------------
-// Helper: simulate an authenticated session by mocking prisma.user.findUnique
-// to return a user, then logging in via the auth route.
+// Shared user fixtures
 // ---------------------------------------------------------------------------
-const USER_A = { id: 1, email: 'userA@test.com', passwordHash: null };
-const USER_B = { id: 2, email: 'userB@test.com', passwordHash: null };
+const USER_A = { id: 1, email: 'userA@test.com' };
+const USER_B = { id: 2, email: 'userB@test.com' };
+
+let HASH;
 
 /**
- * Obtain a supertest agent with an active session for the given user id/email.
- * We inject the session by using the POST /api/auth/login path — but since we
- * mock prisma.user.findUnique in auth.js and requireAuth also calls it, we have
- * to set up the mock before each request.
- *
- * Simpler approach: call the auth endpoint with a pre-hashed password and
- * capture the cookie for the agent.
+ * Create a logged-in supertest agent for the given user.
+ * Mocks prisma.user.findUnique to return the user with the shared hash.
  */
-const bcrypt = require('bcrypt');
-
-async function makeAgentFor(user) {
-  const hash = await bcrypt.hash('password123', 10);
+async function loginAs(user) {
   const agent = request.agent(app);
-
-  prisma.user.findUnique.mockResolvedValue({ ...user, passwordHash: hash });
-  await agent
-    .post('/api/auth/login')
-    .send({ email: user.email, password: 'password123' });
-
-  // After login, requireAuth calls prisma.user.findUnique again.
-  // Set up a persistent mock that returns the right user based on the session.
-  // Since sessions use user.id, we mock to return the correct user each call.
-  prisma.user.findUnique.mockImplementation(({ where }) => {
-    if (where.id === USER_A.id) return Promise.resolve({ ...USER_A, passwordHash: hash });
-    if (where.id === USER_B.id) return Promise.resolve({ ...USER_B, passwordHash: hash });
-    return Promise.resolve(null);
-  });
-
+  prisma.user.findUnique.mockResolvedValue({ ...user, passwordHash: HASH });
+  await agent.post('/api/auth/login').send({ email: user.email, password: 'password123' });
   return agent;
 }
+
+// ---------------------------------------------------------------------------
+// Setup
+// ---------------------------------------------------------------------------
+beforeAll(async () => {
+  HASH = await bcrypt.hash('password123', 10);
+});
 
 beforeEach(() => {
   jest.clearAllMocks();
 });
 
 // ---------------------------------------------------------------------------
-// Space routes
+// Test 1 & 2: Space creation happy path + invalid template
 // ---------------------------------------------------------------------------
 describe('POST /api/my-space', () => {
   test('happy path — creates and returns space', async () => {
-    const hash = await bcrypt.hash('password123', 10);
-    const agent = request.agent(app);
-
-    prisma.user.findUnique.mockResolvedValue({ ...USER_A, passwordHash: hash });
-    await agent.post('/api/auth/login').send({ email: USER_A.email, password: 'password123' });
+    const agent = await loginAs(USER_A);
 
     const createdSpace = {
       id: 10,
@@ -105,7 +95,7 @@ describe('POST /api/my-space', () => {
       updatedAt: new Date().toISOString(),
     };
 
-    prisma.user.findUnique.mockResolvedValue({ ...USER_A, passwordHash: hash });
+    prisma.user.findUnique.mockResolvedValue({ ...USER_A, passwordHash: HASH });
     prisma.space.create.mockResolvedValue(createdSpace);
 
     const res = await agent
@@ -121,13 +111,9 @@ describe('POST /api/my-space', () => {
   });
 
   test('invalid template — returns 400 with details.template', async () => {
-    const hash = await bcrypt.hash('password123', 10);
-    const agent = request.agent(app);
+    const agent = await loginAs(USER_A);
 
-    prisma.user.findUnique.mockResolvedValue({ ...USER_A, passwordHash: hash });
-    await agent.post('/api/auth/login').send({ email: USER_A.email, password: 'password123' });
-
-    prisma.user.findUnique.mockResolvedValue({ ...USER_A, passwordHash: hash });
+    prisma.user.findUnique.mockResolvedValue({ ...USER_A, passwordHash: HASH });
 
     const res = await agent
       .post('/api/my-space')
@@ -138,19 +124,18 @@ describe('POST /api/my-space', () => {
   });
 });
 
+// ---------------------------------------------------------------------------
+// Test 3: List own spaces
+// ---------------------------------------------------------------------------
 describe('GET /api/my-space', () => {
   test('lists only the authenticated user\'s spaces', async () => {
-    const hash = await bcrypt.hash('password123', 10);
-    const agent = request.agent(app);
-
-    prisma.user.findUnique.mockResolvedValue({ ...USER_A, passwordHash: hash });
-    await agent.post('/api/auth/login').send({ email: USER_A.email, password: 'password123' });
+    const agent = await loginAs(USER_A);
 
     const userASpaces = [
       { id: 1, userId: USER_A.id, name: '내 일기', template: 'diary' },
     ];
 
-    prisma.user.findUnique.mockResolvedValue({ ...USER_A, passwordHash: hash });
+    prisma.user.findUnique.mockResolvedValue({ ...USER_A, passwordHash: HASH });
     prisma.space.findMany.mockResolvedValue(userASpaces);
 
     const res = await agent.get('/api/my-space');
@@ -164,18 +149,16 @@ describe('GET /api/my-space', () => {
   });
 });
 
+// ---------------------------------------------------------------------------
+// Test 4: Cross-user access blocked
+// ---------------------------------------------------------------------------
 describe('Cross-user access', () => {
   test('user B cannot access user A\'s space diary — returns 404', async () => {
-    const hash = await bcrypt.hash('password123', 10);
-    const agentB = request.agent(app);
+    const agentB = await loginAs(USER_B);
 
-    // Log in as user B
-    prisma.user.findUnique.mockResolvedValue({ ...USER_B, passwordHash: hash });
-    await agentB.post('/api/auth/login').send({ email: USER_B.email, password: 'password123' });
-
-    // requireAuth will look up user by session.userId (which is USER_B.id = 2)
-    prisma.user.findUnique.mockResolvedValue({ ...USER_B, passwordHash: hash });
-    // loadOwnedSpace will look for spaceId=1 with userId=USER_B.id → not found
+    // requireAuth looks up by id (USER_B.id = 2)
+    prisma.user.findUnique.mockResolvedValue({ ...USER_B, passwordHash: HASH });
+    // loadOwnedSpace: space id=1 belongs to USER_A, not USER_B → returns null
     prisma.space.findFirst.mockResolvedValue(null);
 
     const res = await agentB.get('/api/my-space/1/diary');
@@ -185,13 +168,12 @@ describe('Cross-user access', () => {
   });
 });
 
+// ---------------------------------------------------------------------------
+// Test 5: Diary creation happy path
+// ---------------------------------------------------------------------------
 describe('POST /api/my-space/:spaceId/diary', () => {
   test('happy path — creates diary entry', async () => {
-    const hash = await bcrypt.hash('password123', 10);
-    const agent = request.agent(app);
-
-    prisma.user.findUnique.mockResolvedValue({ ...USER_A, passwordHash: hash });
-    await agent.post('/api/auth/login').send({ email: USER_A.email, password: 'password123' });
+    const agent = await loginAs(USER_A);
 
     const space = { id: 10, userId: USER_A.id, name: '내 일기', template: 'diary' };
     const entry = {
@@ -201,9 +183,11 @@ describe('POST /api/my-space/:spaceId/diary', () => {
       mood: 'happy',
       title: '오늘의 일기',
       body: '좋은 하루였다.',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     };
 
-    prisma.user.findUnique.mockResolvedValue({ ...USER_A, passwordHash: hash });
+    prisma.user.findUnique.mockResolvedValue({ ...USER_A, passwordHash: HASH });
     prisma.space.findFirst.mockResolvedValue(space);
     prisma.diaryEntry.create.mockResolvedValue(entry);
 
@@ -217,20 +201,16 @@ describe('POST /api/my-space/:spaceId/diary', () => {
   });
 });
 
+// ---------------------------------------------------------------------------
+// Tests 6 & 7: Diary validation — body too long, mood enum invalid
+// ---------------------------------------------------------------------------
 describe('Diary validation', () => {
-  let agent;
-  let hash;
-
-  beforeEach(async () => {
-    hash = await bcrypt.hash('password123', 10);
-    agent = request.agent(app);
-    prisma.user.findUnique.mockResolvedValue({ ...USER_A, passwordHash: hash });
-    await agent.post('/api/auth/login').send({ email: USER_A.email, password: 'password123' });
-    prisma.user.findUnique.mockResolvedValue({ ...USER_A, passwordHash: hash });
-    prisma.space.findFirst.mockResolvedValue({ id: 10, userId: USER_A.id });
-  });
-
   test('body over 50,000 chars — returns 400 with details.body', async () => {
+    const agent = await loginAs(USER_A);
+
+    prisma.user.findUnique.mockResolvedValue({ ...USER_A, passwordHash: HASH });
+    prisma.space.findFirst.mockResolvedValue({ id: 10, userId: USER_A.id });
+
     const longBody = 'x'.repeat(50001);
     const res = await agent
       .post('/api/my-space/10/diary')
@@ -241,6 +221,11 @@ describe('Diary validation', () => {
   });
 
   test('invalid mood enum — returns 400 with details.mood', async () => {
+    const agent = await loginAs(USER_A);
+
+    prisma.user.findUnique.mockResolvedValue({ ...USER_A, passwordHash: HASH });
+    prisma.space.findFirst.mockResolvedValue({ id: 10, userId: USER_A.id });
+
     const res = await agent
       .post('/api/my-space/10/diary')
       .send({ entryDate: '2026-05-03', mood: 'silly', title: '제목', body: '본문' });
@@ -250,6 +235,9 @@ describe('Diary validation', () => {
   });
 });
 
+// ---------------------------------------------------------------------------
+// Test 8: Auth guard
+// ---------------------------------------------------------------------------
 describe('Auth guard', () => {
   test('unauthenticated request to /api/my-space returns 401', async () => {
     const res = await request(app).get('/api/my-space');
