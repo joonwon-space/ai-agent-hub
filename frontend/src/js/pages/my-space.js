@@ -4,9 +4,15 @@
  * Behavior:
  *   - On load: call mySpace.list()
  *   - Empty → render onboarding (3 template cards)
- *   - Non-empty → render dashboard (inner sidebar + diary list for first space)
+ *   - Non-empty → render dashboard (inner sidebar + template-aware pane)
+ *
+ * Template branching (Phase 1.5):
+ *   diary    → diary list (existing Phase 1 behavior)
+ *   recipe   → top-3 recent recipe cards + "새로 작성" link
+ *   freeform → "Phase 2 에서 지원 예정" placeholder
  *
  * No innerHTML. All DOM built with createElement/textContent via components.js helpers.
+ * recipes.js is loaded via <script> tag, providing the recipes global.
  */
 
 'use strict';
@@ -212,7 +218,7 @@ async function renderDashboard() {
       attrs: { type: 'button', 'data-space-id': String(space.id) },
       onClick: () => {
         activeSpaceId = space.id;
-        renderDiaryList(pane, space.id);
+        renderPaneForSpace(pane, space);
         // Update active state
         sidebar.querySelectorAll('.ms-inner-sidebar__item').forEach((btn) => {
           btn.classList.toggle(
@@ -246,20 +252,109 @@ async function renderDashboard() {
   layout.appendChild(pane);
   main.appendChild(layout);
 
-  // Load diary list for active space
+  // Load content pane based on active space template
   const activeSpace = spaces.find((s) => s.id === activeSpaceId);
-  if (activeSpace && activeSpace.template !== 'diary') {
-    renderUnsupportedTemplate(pane, activeSpace.template);
-  } else {
+  await renderPaneForSpace(pane, activeSpace);
+}
+
+/**
+ * Dispatch pane rendering based on the space's template.
+ * @param {HTMLElement} pane
+ * @param {Object|undefined} space
+ */
+async function renderPaneForSpace(pane, space) {
+  if (!space) {
     await renderDiaryList(pane, activeSpaceId);
+    return;
+  }
+
+  switch (space.template) {
+    case 'diary':
+      await renderDiaryList(pane, space.id);
+      break;
+    case 'recipe':
+      await renderRecipePreview(pane, space.id);
+      break;
+    case 'freeform':
+      renderFreeformPlaceholder(pane);
+      break;
+    default:
+      await renderDiaryList(pane, space.id);
   }
 }
 
-function renderUnsupportedTemplate(pane, template) {
+/**
+ * Recipe preview pane: top-3 recent recipes + "새로 작성" link.
+ * @param {HTMLElement} pane
+ * @param {number} spaceId
+ */
+async function renderRecipePreview(pane, spaceId) {
+  pane.textContent = '';
+
+  // Header row
+  const header = el('div', { className: 'ms-pane__header' });
+  const title = el('h2', { className: 'ms-pane__title', textContent: '레시피' });
+  const newBtn = el('a', {
+    className: 'btn btn-primary btn-sm',
+    textContent: '+ 새로 작성',
+    attrs: { href: `/my-space/recipes/new?spaceId=${spaceId}` },
+  });
+  const listBtn = el('a', {
+    className: 'btn btn-secondary btn-sm',
+    textContent: '모두 보기',
+    attrs: { href: `/my-space/recipes?spaceId=${spaceId}`, style: 'margin-right:8px;' },
+  });
+  header.appendChild(title);
+  header.appendChild(listBtn);
+  header.appendChild(newBtn);
+  pane.appendChild(header);
+
+  // Load top-3 recent recipes
+  let recipeList = [];
+  try {
+    // recipes global comes from recipes.js loaded via script tag
+    recipeList = await recipes.list(spaceId);
+  } catch (err) {
+    const errEl = el('div', {
+      className: 'ms-error',
+      textContent: '레시피를 불러오지 못했습니다: ' + (err.error || err.message),
+    });
+    pane.appendChild(errEl);
+    return;
+  }
+
+  if (!recipeList || recipeList.length === 0) {
+    const empty = el('div', {
+      className: 'ms-empty',
+      textContent: '아직 레시피가 없습니다. 첫 번째 레시피를 추가해보세요!',
+    });
+    pane.appendChild(empty);
+    return;
+  }
+
+  // Show top-3
+  const preview = recipeList.slice(0, 3);
+  const grid = el('div', { className: 'recipe-grid' });
+
+  for (const recipe of preview) {
+    const card = renderRecipeCard(recipe, () => {
+      window.location.href = `/my-space/recipes/${recipe.id}?spaceId=${spaceId}`;
+    });
+    grid.appendChild(card);
+  }
+
+  pane.appendChild(grid);
+}
+
+/**
+ * Freeform placeholder — Phase 2 not yet supported.
+ * @param {HTMLElement} pane
+ */
+function renderFreeformPlaceholder(pane) {
   pane.textContent = '';
   const msg = el('div', {
     className: 'ms-placeholder',
-    textContent: `${template} 템플릿은 Phase 1.5에서 지원 예정입니다.`,
+    textContent: 'Phase 2 에서 지원 예정',
   });
   pane.appendChild(msg);
 }
