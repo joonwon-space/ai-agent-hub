@@ -1,0 +1,407 @@
+/**
+ * my-space-note.css — Styles for FreeformNote pages.
+ *
+ * Depends on:
+ *   - my-space-tokens.css  (--color-freeform-* added by Worker C)
+ *   - my-space.css         (base layout, buttons, utilities)
+ *   - main.css             (global variables, reset)
+ *
+ * Zero-innerHTML guarantee: all note JS uses createElement/textContent only.
+ */
+
+/* ---------------------------------------------------------------------------
+   Note list page layout
+--------------------------------------------------------------------------- */
+
+.note-list-main {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+.note-list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  gap: 12px;
+}
+
+.note-list-header__title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-freeform-text, #a78bfa);
+  margin: 0;
+}
+
+/* ---------------------------------------------------------------------------
+   Section labels (pinned / all notes)
+--------------------------------------------------------------------------- */
+
+.note-section {
+  margin-bottom: 32px;
+}
+
+.note-section__label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-dim, #6b7280);
+  margin-bottom: 12px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--color-freeform-border, rgba(124, 92, 255, 0.25));
+}
+
+/* ---------------------------------------------------------------------------
+   Note card
+--------------------------------------------------------------------------- */
+
+.note-card {
+  background: var(--card-bg, rgba(255, 255, 255, 0.04));
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.08));
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+}
+
+.note-card:hover {
+  border-color: var(--color-freeform-border, rgba(124, 92, 255, 0.25));
+  background: var(--color-freeform-dim, rgba(124, 92, 255, 0.06));
+  box-shadow: var(--color-freeform-glow, 0 0 12px rgba(124, 92, 255, 0.20));
+}
+
+.note-card--pinned {
+  border-color: var(--color-freeform-border, rgba(124, 92, 255, 0.25));
+}
+
+.note-card__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.note-card__title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary, #f9fafb);
+  line-height: 1.4;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.note-card__pin-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px 4px;
+  font-size: 16px;
+  opacity: 0.35;
+  transition: opacity 0.15s;
+  flex-shrink: 0;
+}
+
+.note-card:hover .note-card__pin-btn,
+.note-card__pin-btn--active {
+  opacity: 1;
+}
+
+.note-card__preview {
+  font-size: 13px;
+  color: var(--text-dim, #9ca3af);
+  line-height: 1.5;
+  margin-bottom: 8px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.note-card__footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.note-card__date {
+  font-size: 11px;
+  color: var(--text-dim, #6b7280);
+}
+
+/* ---------------------------------------------------------------------------
+   Note card empty state
+--------------------------------------------------------------------------- */
+
+.note-empty {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-dim, #6b7280);
+  font-size: 14px;
+}
+
+/* ---------------------------------------------------------------------------
+   Note edit page — top bar
+--------------------------------------------------------------------------- */
+
+.note-edit-topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 48px;
+  background: var(--topbar-bg, #111827);
+  border-bottom: 1px solid var(--border-color, rgba(255, 255, 255, 0.08));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  z-index: 100;
+  gap: 12px;
+}
+
+.note-edit-topbar__left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  flex: 1;
+}
+
+.note-edit-topbar__right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+/* Title input in top bar */
+.note-title-input {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary, #f9fafb);
+  padding: 4px 0;
+  caret-color: var(--color-freeform, #7c5cff);
+}
+
+.note-title-input::placeholder {
+  color: var(--text-dim, #6b7280);
+}
+
+/* Pin toggle in top bar */
+.note-pin-toggle {
+  background: none;
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.12));
+  border-radius: 6px;
+  cursor: pointer;
+  padding: 4px 8px;
+  font-size: 14px;
+  color: var(--text-dim, #9ca3af);
+  transition: border-color 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+
+.note-pin-toggle--active {
+  border-color: var(--color-freeform-border, rgba(124, 92, 255, 0.4));
+  color: var(--color-freeform-text, #a78bfa);
+}
+
+/* Save indicator */
+.save-indicator {
+  font-size: 12px;
+  color: var(--text-dim, #6b7280);
+  min-width: 80px;
+  text-align: right;
+}
+
+/* ---------------------------------------------------------------------------
+   Note edit page — 50/50 split layout
+--------------------------------------------------------------------------- */
+
+.note-edit-main {
+  display: flex;
+  height: calc(100vh - 48px);
+  margin-top: 48px;
+  overflow: hidden;
+}
+
+.note-edit-pane {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.note-edit-pane + .note-edit-pane {
+  border-left: 1px solid var(--border-color, rgba(255, 255, 255, 0.08));
+}
+
+.note-edit-pane__label {
+  padding: 8px 16px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-dim, #6b7280);
+  border-bottom: 1px solid var(--border-color, rgba(255, 255, 255, 0.06));
+  background: var(--topbar-bg, #111827);
+  flex-shrink: 0;
+}
+
+/* Editor textarea */
+.note-editor {
+  flex: 1;
+  padding: 16px;
+  background: transparent;
+  border: none;
+  outline: none;
+  resize: none;
+  font-family: 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--text-primary, #e5e7eb);
+  caret-color: var(--color-freeform, #7c5cff);
+  overflow-y: auto;
+}
+
+.note-editor::placeholder {
+  color: var(--text-dim, #4b5563);
+}
+
+/* Preview area */
+.note-preview {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  font-size: 14px;
+  line-height: 1.75;
+  color: var(--text-primary, #e5e7eb);
+}
+
+/* ---------------------------------------------------------------------------
+   Preview area typography (rendered markdown)
+--------------------------------------------------------------------------- */
+
+.note-preview h1 {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--color-freeform-text, #a78bfa);
+  margin: 0 0 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--color-freeform-border, rgba(124, 92, 255, 0.20));
+}
+
+.note-preview h2 {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-freeform-text, #a78bfa);
+  margin: 20px 0 10px;
+}
+
+.note-preview h3 {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-freeform-text, #a78bfa);
+  margin: 16px 0 8px;
+}
+
+.note-preview p {
+  margin: 0 0 12px;
+}
+
+.note-preview strong {
+  font-weight: 700;
+  color: var(--text-primary, #f9fafb);
+}
+
+.note-preview em {
+  font-style: italic;
+  color: var(--text-secondary, #d1d5db);
+}
+
+.note-preview code {
+  font-family: 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+  font-size: 13px;
+  background: rgba(124, 92, 255, 0.12);
+  color: var(--color-freeform-text, #a78bfa);
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+
+.note-preview pre {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.08));
+  border-radius: 8px;
+  padding: 14px 16px;
+  overflow-x: auto;
+  margin: 0 0 14px;
+}
+
+.note-preview pre code {
+  background: none;
+  padding: 0;
+  color: var(--text-primary, #e5e7eb);
+  font-size: 13px;
+}
+
+.note-preview ul,
+.note-preview ol {
+  padding-left: 22px;
+  margin: 0 0 12px;
+}
+
+.note-preview li {
+  margin-bottom: 4px;
+  line-height: 1.6;
+}
+
+.note-preview blockquote {
+  border-left: 3px solid var(--color-freeform, #7c5cff);
+  padding: 4px 14px;
+  margin: 0 0 12px;
+  color: var(--text-dim, #9ca3af);
+  font-style: italic;
+}
+
+.note-preview a {
+  color: var(--color-freeform-text, #a78bfa);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.note-preview a:hover {
+  color: var(--color-freeform-hover, #8b5cf6);
+}
+
+/* ---------------------------------------------------------------------------
+   Responsive: stack panes vertically on narrow screens
+--------------------------------------------------------------------------- */
+
+@media (max-width: 680px) {
+  .note-edit-main {
+    flex-direction: column;
+    height: auto;
+    overflow: visible;
+  }
+
+  .note-edit-pane {
+    height: 50vh;
+  }
+
+  .note-edit-pane + .note-edit-pane {
+    border-left: none;
+    border-top: 1px solid var(--border-color, rgba(255, 255, 255, 0.08));
+  }
+}
