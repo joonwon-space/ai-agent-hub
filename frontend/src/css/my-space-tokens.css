@@ -31,7 +31,22 @@
  *   light --color-recipe-glow:   0 0 16px rgba(5,150,105,0.25)
  *   light --color-recipe-text:   #065f46  (emerald-900, readable on light bg)
  *
- * Prefix rule: only --color-diary-* and --color-recipe-* introduced here.
+ * Freeform note accent: blue/purple violet
+ *   dark  --color-freeform:        #7c5cff  (violet-500)
+ *   dark  --color-freeform-hover:  #6d4de8  (violet-600)
+ *   dark  --color-freeform-dim:    rgba(124,92,255,0.12)
+ *   dark  --color-freeform-border: rgba(124,92,255,0.25)
+ *   dark  --color-freeform-glow:   0 0 16px rgba(124,92,255,0.40)
+ *   dark  --color-freeform-text:   #a78bfa  (violet-400, readable on dark bg)
+ *
+ *   light --color-freeform:        #5b3fe0  (violet-700, passes WCAG AA on light)
+ *   light --color-freeform-hover:  #4c35c7  (violet-800)
+ *   light --color-freeform-dim:    rgba(91,63,224,0.10)
+ *   light --color-freeform-border: rgba(91,63,224,0.30)
+ *   light --color-freeform-glow:   0 0 16px rgba(91,63,224,0.25)
+ *   light --color-freeform-text:   #3730a3  (indigo-900, readable on light bg)
+ *
+ * Prefix rule: --color-diary-*, --color-recipe-*, --color-freeform-* introduced here.
  * No collision with existing tokens (--accent-*, --success-*, --error-*, --badge-*).
  */
 
@@ -52,6 +67,14 @@
   --color-recipe-border: rgba(16, 185, 129, 0.25);
   --color-recipe-glow:   0 0 16px rgba(16, 185, 129, 0.40);
   --color-recipe-text:   #34d399;
+
+  /* Freeform note accent — blue/purple violet */
+  --color-freeform:        #7c5cff;
+  --color-freeform-hover:  #6d4de8;
+  --color-freeform-dim:    rgba(124, 92, 255, 0.12);
+  --color-freeform-border: rgba(124, 92, 255, 0.25);
+  --color-freeform-glow:   0 0 16px rgba(124, 92, 255, 0.40);
+  --color-freeform-text:   #a78bfa;
 }
 
 [data-theme="light"] {
@@ -70,4 +93,12 @@
   --color-recipe-border: rgba(5, 150, 105, 0.30);
   --color-recipe-glow:   0 0 16px rgba(5, 150, 105, 0.25);
   --color-recipe-text:   #065f46;
+
+  /* Freeform note accent — violet, darker for WCAG AA on light backgrounds */
+  --color-freeform:        #5b3fe0;
+  --color-freeform-hover:  #4c35c7;
+  --color-freeform-dim:    rgba(91, 63, 224, 0.10);
+  --color-freeform-border: rgba(91, 63, 224, 0.30);
+  --color-freeform-glow:   0 0 16px rgba(91, 63, 224, 0.25);
+  --color-freeform-text:   #3730a3;
 }
