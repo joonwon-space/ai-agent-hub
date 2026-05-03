@@ -10,6 +10,7 @@ const agentsRouter = require('./routes/agents');
 const uploadRouter = require('./routes/upload');
 const authRouter = require('./routes/auth');
 const settingsRouter = require('./routes/settings');
+const mySpaceRouter = require('./routes/mySpace');
 const { requireAuth } = require('./middleware/auth');
 
 /**
@@ -20,7 +21,7 @@ function createApp(opts = {}) {
 
   app.use(cors({
     origin: process.env.CORS_ORIGIN || 'http://localhost',
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
     credentials: true,
   }));
   app.use(express.json({ limit: '15mb' }));
@@ -43,6 +44,7 @@ function createApp(opts = {}) {
   app.use('/api/agents', requireAuth, agentsRouter);
   app.use('/api/upload', requireAuth, uploadRouter);
   app.use('/api/settings', requireAuth, settingsRouter);
+  app.use('/api/my-space', requireAuth, mySpaceRouter);
 
   // Global error handler
   // eslint-disable-next-line no-unused-vars
