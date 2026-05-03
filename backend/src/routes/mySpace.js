@@ -27,6 +27,9 @@ const {
   assertServings,
   assertIngredients,
   assertSteps,
+  assertNoteTitle,
+  assertNoteBody,
+  assertPinned,
 } = require('../services/mySpaceValidation');
 
 const router = express.Router();
@@ -447,6 +450,144 @@ router.delete('/:spaceId/recipes/:id', async (req, res, next) => {
     if (!existing) return res.status(404).json({ error: 'Recipe not found' });
 
     await prisma.recipe.delete({ where: { id: existing.id } });
+    res.json({ ok: true });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// ---------------------------------------------------------------------------
+// FreeformNote CRUD (Phase 2)
+// ---------------------------------------------------------------------------
+
+// GET /api/my-space/:spaceId/notes — list notes (pinned desc, updatedAt desc, cursor pagination)
+router.get('/:spaceId/notes', async (req, res, next) => {
+  try {
+    const space = await loadOwnedSpace(req.params.spaceId, req.user.id);
+    if (!space) return res.status(404).json({ error: 'Space not found' });
+
+    const limit = Math.min(parseInt(req.query.limit, 10) || 20, 100);
+    const cursor = req.query.cursor ? parseInt(req.query.cursor, 10) : undefined;
+
+    const notes = await prisma.freeformNote.findMany({
+      where: { spaceId: space.id },
+      orderBy: [{ pinned: 'desc' }, { updatedAt: 'desc' }],
+      take: limit,
+      ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
+    });
+    res.json(notes);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// POST /api/my-space/:spaceId/notes — create note
+router.post('/:spaceId/notes', async (req, res, next) => {
+  try {
+    const space = await loadOwnedSpace(req.params.spaceId, req.user.id);
+    if (!space) return res.status(404).json({ error: 'Space not found' });
+
+    const { title, body, pinned } = req.body || {};
+
+    assertNoteTitle(title);
+    assertNoteBody(body !== undefined ? body : '');
+    assertPinned(pinned);
+
+    const note = await prisma.freeformNote.create({
+      data: {
+        spaceId: space.id,
+        title: title.trim(),
+        body: body || '',
+        pinned: pinned === true,
+      },
+    });
+    res.status(201).json(note);
+  } catch (err) {
+    if (err.status === 400) {
+      return res.status(400).json({ error: err.message, details: err.details });
+    }
+    next(err);
+  }
+});
+
+// GET /api/my-space/:spaceId/notes/:id — single note
+router.get('/:spaceId/notes/:id', async (req, res, next) => {
+  try {
+    const space = await loadOwnedSpace(req.params.spaceId, req.user.id);
+    if (!space) return res.status(404).json({ error: 'Space not found' });
+
+    const noteId = parseInt(req.params.id, 10);
+    if (isNaN(noteId)) return res.status(404).json({ error: 'Note not found' });
+
+    const note = await prisma.freeformNote.findFirst({
+      where: { id: noteId, spaceId: space.id },
+    });
+    if (!note) return res.status(404).json({ error: 'Note not found' });
+
+    res.json(note);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// PATCH /api/my-space/:spaceId/notes/:id — update note (autosave caller)
+router.patch('/:spaceId/notes/:id', async (req, res, next) => {
+  try {
+    const space = await loadOwnedSpace(req.params.spaceId, req.user.id);
+    if (!space) return res.status(404).json({ error: 'Space not found' });
+
+    const noteId = parseInt(req.params.id, 10);
+    if (isNaN(noteId)) return res.status(404).json({ error: 'Note not found' });
+
+    const existing = await prisma.freeformNote.findFirst({
+      where: { id: noteId, spaceId: space.id },
+    });
+    if (!existing) return res.status(404).json({ error: 'Note not found' });
+
+    const { title, body, pinned } = req.body || {};
+    const updateData = {};
+
+    if (title !== undefined) {
+      assertNoteTitle(title);
+      updateData.title = title.trim();
+    }
+    if (body !== undefined) {
+      assertNoteBody(body);
+      updateData.body = body;
+    }
+    if (pinned !== undefined) {
+      assertPinned(pinned);
+      updateData.pinned = pinned === true;
+    }
+
+    const updated = await prisma.freeformNote.update({
+      where: { id: existing.id },
+      data: updateData,
+    });
+    res.json(updated);
+  } catch (err) {
+    if (err.status === 400) {
+      return res.status(400).json({ error: err.message, details: err.details });
+    }
+    next(err);
+  }
+});
+
+// DELETE /api/my-space/:spaceId/notes/:id — delete note
+router.delete('/:spaceId/notes/:id', async (req, res, next) => {
+  try {
+    const space = await loadOwnedSpace(req.params.spaceId, req.user.id);
+    if (!space) return res.status(404).json({ error: 'Space not found' });
+
+    const noteId = parseInt(req.params.id, 10);
+    if (isNaN(noteId)) return res.status(404).json({ error: 'Note not found' });
+
+    const existing = await prisma.freeformNote.findFirst({
+      where: { id: noteId, spaceId: space.id },
+    });
+    if (!existing) return res.status(404).json({ error: 'Note not found' });
+
+    await prisma.freeformNote.delete({ where: { id: existing.id } });
     res.json({ ok: true });
   } catch (err) {
     next(err);

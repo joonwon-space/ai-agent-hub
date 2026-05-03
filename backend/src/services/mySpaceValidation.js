@@ -192,6 +192,44 @@ function assertSteps(value) {
   }
 }
 
+// ---------------------------------------------------------------------------
+// FreeformNote validators (Phase 2)
+// ---------------------------------------------------------------------------
+
+/**
+ * Assert note title: 1–120 characters.
+ */
+function assertNoteTitle(value) {
+  if (typeof value !== 'string' || value.trim().length < 1) {
+    throw validationError('title', 'title is required');
+  }
+  if (value.trim().length > 120) {
+    throw validationError('title', 'title must be 120 characters or fewer');
+  }
+}
+
+/**
+ * Assert note body: 0–50,000 characters (markdown content).
+ */
+function assertNoteBody(value) {
+  if (typeof value !== 'string') {
+    throw validationError('body', 'body must be a string');
+  }
+  if (value.length > 50000) {
+    throw validationError('body', 'body must be 50,000 characters or fewer');
+  }
+}
+
+/**
+ * Assert pinned: boolean or undefined/null (optional field).
+ */
+function assertPinned(value) {
+  if (value === undefined || value === null) return;
+  if (typeof value !== 'boolean') {
+    throw validationError('pinned', 'pinned must be a boolean');
+  }
+}
+
 module.exports = {
   assertTemplate,
   assertSpaceName,
@@ -205,4 +243,7 @@ module.exports = {
   assertDifficulty,
   assertIngredients,
   assertSteps,
+  assertNoteTitle,
+  assertNoteBody,
+  assertPinned,
 };
