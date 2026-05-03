@@ -101,6 +101,26 @@ function assertDiaryBody(value) {
 }
 
 /**
+ * Assert recipe cookTimeMin: null or integer 0–6000.
+ */
+function assertCookTime(value) {
+  if (value === null || value === undefined) return;
+  if (!Number.isInteger(value) || value < 0 || value > 6000) {
+    throw validationError('cookTimeMin', 'cookTimeMin must be null or an integer between 0 and 6000');
+  }
+}
+
+/**
+ * Assert recipe servings: null or integer 1–99.
+ */
+function assertServings(value) {
+  if (value === null || value === undefined) return;
+  if (!Number.isInteger(value) || value < 1 || value > 99) {
+    throw validationError('servings', 'servings must be null or an integer between 1 and 99');
+  }
+}
+
+/**
  * Assert recipe category: 1–24 characters.
  */
 function assertCategory(value) {
@@ -179,6 +199,8 @@ module.exports = {
   assertMood,
   assertDiaryTitle,
   assertDiaryBody,
+  assertCookTime,
+  assertServings,
   assertCategory,
   assertDifficulty,
   assertIngredients,

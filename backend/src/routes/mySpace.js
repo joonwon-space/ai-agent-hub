@@ -21,6 +21,12 @@ const {
   assertMood,
   assertDiaryTitle,
   assertDiaryBody,
+  assertCategory,
+  assertDifficulty,
+  assertCookTime,
+  assertServings,
+  assertIngredients,
+  assertSteps,
 } = require('../services/mySpaceValidation');
 
 const router = express.Router();
@@ -250,6 +256,197 @@ router.delete('/:spaceId/diary/:id', async (req, res, next) => {
     if (!existing) return res.status(404).json({ error: 'Diary entry not found' });
 
     await prisma.diaryEntry.delete({ where: { id: existing.id } });
+    res.json({ ok: true });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// ---------------------------------------------------------------------------
+// Recipe CRUD
+// ---------------------------------------------------------------------------
+
+// GET /api/my-space/:spaceId/recipes — list recipes (optional ?category= filter)
+router.get('/:spaceId/recipes', async (req, res, next) => {
+  try {
+    const space = await loadOwnedSpace(req.params.spaceId, req.user.id);
+    if (!space) return res.status(404).json({ error: 'Space not found' });
+
+    const where = { spaceId: space.id };
+    if (req.query.category) {
+      where.category = req.query.category;
+    }
+
+    const recipes = await prisma.recipe.findMany({
+      where,
+      orderBy: { createdAt: 'desc' },
+    });
+    res.json(recipes);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// POST /api/my-space/:spaceId/recipes — create recipe
+router.post('/:spaceId/recipes', async (req, res, next) => {
+  try {
+    const space = await loadOwnedSpace(req.params.spaceId, req.user.id);
+    if (!space) return res.status(404).json({ error: 'Space not found' });
+
+    const {
+      name,
+      category,
+      difficulty,
+      cookTimeMin,
+      servings,
+      description,
+      ingredients,
+      steps,
+      coverImage,
+    } = req.body || {};
+
+    assertSpaceName(name);
+    assertCategory(category);
+    assertDifficulty(difficulty);
+    assertCookTime(cookTimeMin !== undefined ? cookTimeMin : null);
+    assertServings(servings !== undefined ? servings : null);
+    assertIngredients(ingredients || []);
+    assertSteps(steps || []);
+
+    const recipe = await prisma.recipe.create({
+      data: {
+        spaceId: space.id,
+        name: name.trim(),
+        category,
+        difficulty,
+        cookTimeMin: cookTimeMin !== undefined ? cookTimeMin : null,
+        servings: servings !== undefined ? servings : null,
+        description: description || null,
+        ingredients: ingredients || [],
+        steps: steps || [],
+        coverImage: coverImage || null,
+      },
+    });
+    res.status(201).json(recipe);
+  } catch (err) {
+    if (err.status === 400) {
+      return res.status(400).json({ error: err.message, details: err.details });
+    }
+    next(err);
+  }
+});
+
+// GET /api/my-space/:spaceId/recipes/:id — single recipe
+router.get('/:spaceId/recipes/:id', async (req, res, next) => {
+  try {
+    const space = await loadOwnedSpace(req.params.spaceId, req.user.id);
+    if (!space) return res.status(404).json({ error: 'Space not found' });
+
+    const recipeId = parseInt(req.params.id, 10);
+    if (isNaN(recipeId)) return res.status(404).json({ error: 'Recipe not found' });
+
+    const recipe = await prisma.recipe.findFirst({
+      where: { id: recipeId, spaceId: space.id },
+    });
+    if (!recipe) return res.status(404).json({ error: 'Recipe not found' });
+
+    res.json(recipe);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// PATCH /api/my-space/:spaceId/recipes/:id — update recipe (autosave caller)
+router.patch('/:spaceId/recipes/:id', async (req, res, next) => {
+  try {
+    const space = await loadOwnedSpace(req.params.spaceId, req.user.id);
+    if (!space) return res.status(404).json({ error: 'Space not found' });
+
+    const recipeId = parseInt(req.params.id, 10);
+    if (isNaN(recipeId)) return res.status(404).json({ error: 'Recipe not found' });
+
+    const existing = await prisma.recipe.findFirst({
+      where: { id: recipeId, spaceId: space.id },
+    });
+    if (!existing) return res.status(404).json({ error: 'Recipe not found' });
+
+    const {
+      name,
+      category,
+      difficulty,
+      cookTimeMin,
+      servings,
+      description,
+      ingredients,
+      steps,
+      coverImage,
+    } = req.body || {};
+
+    const updateData = {};
+
+    if (name !== undefined) {
+      assertSpaceName(name);
+      updateData.name = name.trim();
+    }
+    if (category !== undefined) {
+      assertCategory(category);
+      updateData.category = category;
+    }
+    if (difficulty !== undefined) {
+      assertDifficulty(difficulty);
+      updateData.difficulty = difficulty;
+    }
+    if (cookTimeMin !== undefined) {
+      assertCookTime(cookTimeMin);
+      updateData.cookTimeMin = cookTimeMin;
+    }
+    if (servings !== undefined) {
+      assertServings(servings);
+      updateData.servings = servings;
+    }
+    if (description !== undefined) {
+      updateData.description = description || null;
+    }
+    if (ingredients !== undefined) {
+      assertIngredients(ingredients);
+      updateData.ingredients = ingredients;
+    }
+    if (steps !== undefined) {
+      assertSteps(steps);
+      updateData.steps = steps;
+    }
+    if (coverImage !== undefined) {
+      updateData.coverImage = coverImage || null;
+    }
+
+    const updated = await prisma.recipe.update({
+      where: { id: existing.id },
+      data: updateData,
+    });
+    res.json(updated);
+  } catch (err) {
+    if (err.status === 400) {
+      return res.status(400).json({ error: err.message, details: err.details });
+    }
+    next(err);
+  }
+});
+
+// DELETE /api/my-space/:spaceId/recipes/:id — delete recipe
+router.delete('/:spaceId/recipes/:id', async (req, res, next) => {
+  try {
+    const space = await loadOwnedSpace(req.params.spaceId, req.user.id);
+    if (!space) return res.status(404).json({ error: 'Space not found' });
+
+    const recipeId = parseInt(req.params.id, 10);
+    if (isNaN(recipeId)) return res.status(404).json({ error: 'Recipe not found' });
+
+    const existing = await prisma.recipe.findFirst({
+      where: { id: recipeId, spaceId: space.id },
+    });
+    if (!existing) return res.status(404).json({ error: 'Recipe not found' });
+
+    await prisma.recipe.delete({ where: { id: existing.id } });
     res.json({ ok: true });
   } catch (err) {
     next(err);
