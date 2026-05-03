@@ -13,6 +13,7 @@ model User {
   passwordHash String
   createdAt    DateTime      @default(now())
   settings     UserSetting[]
+  spaces       Space[]
 }
 
 model UserSetting {
@@ -31,4 +32,67 @@ model Session {
   sid    String   @id
   sess   Json
   expire DateTime
+}
+
+// Space — 사용자별 워크스페이스. 1 user → N spaces (Phase 1은 사실상 1개).
+model Space {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  name      String                       // 사용자 입력 타이틀
+  template  String                       // 'diary' | 'recipe' | 'freeform'
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  diaryEntries DiaryEntry[]
+  recipes      Recipe[]
+  notes        FreeformNote[]
+
+  @@index([userId])
+}
+
+model DiaryEntry {
+  id        Int      @id @default(autoincrement())
+  spaceId   Int
+  entryDate DateTime @db.Date              // 사용자가 선택한 날짜 (yyyy-MM-dd)
+  mood      String?                        // 'happy' | 'sad' | 'angry' | 'tired' | null
+  title     String
+  body      String   @db.Text              // 일기 본문 (markdown 또는 plain)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  space     Space    @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+
+  @@index([spaceId, entryDate])
+}
+
+model Recipe {
+  id          Int      @id @default(autoincrement())
+  spaceId     Int
+  name        String
+  category    String                       // '한식' | '양식' | '디저트' | '기타'
+  cookTimeMin Int?                         // 예상 시간(분)
+  difficulty  String                       // 'easy' | 'medium' | 'hard'
+  servings    Int?
+  description String?  @db.Text
+  ingredients Json                         // [{ name: string, amount: string }]
+  steps       Json                         // [{ order: int, text: string }]
+  coverImage  String?                      // base64 또는 URL (Phase 1: nullable)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  space       Space    @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+
+  @@index([spaceId, category])
+}
+
+model FreeformNote {
+  id        Int      @id @default(autoincrement())
+  spaceId   Int
+  title     String
+  body      String   @db.Text              // markdown
+  pinned    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  space     Space    @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+
+  @@index([spaceId])
 }

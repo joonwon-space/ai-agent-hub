@@ -1,0 +1,73 @@
+/*
+ * My Space — Design Tokens
+ *
+ * Diary accent: warm amber/gold
+ *   dark  --color-diary:        #f59e0b  (amber-400)
+ *   dark  --color-diary-hover:  #d97706  (amber-600)
+ *   dark  --color-diary-dim:    rgba(245,158,11,0.12)
+ *   dark  --color-diary-border: rgba(245,158,11,0.25)
+ *   dark  --color-diary-glow:   0 0 16px rgba(245,158,11,0.40)
+ *   dark  --color-diary-text:   #fbbf24  (amber-300, readable on dark bg)
+ *
+ *   light --color-diary:        #d97706  (amber-600, passes WCAG AA on light)
+ *   light --color-diary-hover:  #b45309  (amber-700)
+ *   light --color-diary-dim:    rgba(217,119,6,0.10)
+ *   light --color-diary-border: rgba(217,119,6,0.30)
+ *   light --color-diary-glow:   0 0 16px rgba(217,119,6,0.25)
+ *   light --color-diary-text:   #92400e  (amber-800, readable on light bg)
+ *
+ * Recipe accent: fresh green
+ *   dark  --color-recipe:        #10b981  (emerald-500)
+ *   dark  --color-recipe-hover:  #059669  (emerald-600)
+ *   dark  --color-recipe-dim:    rgba(16,185,129,0.12)
+ *   dark  --color-recipe-border: rgba(16,185,129,0.25)
+ *   dark  --color-recipe-glow:   0 0 16px rgba(16,185,129,0.40)
+ *   dark  --color-recipe-text:   #34d399  (emerald-400, readable on dark bg)
+ *
+ *   light --color-recipe:        #059669  (emerald-600, passes WCAG AA on light)
+ *   light --color-recipe-hover:  #047857  (emerald-700)
+ *   light --color-recipe-dim:    rgba(5,150,105,0.10)
+ *   light --color-recipe-border: rgba(5,150,105,0.30)
+ *   light --color-recipe-glow:   0 0 16px rgba(5,150,105,0.25)
+ *   light --color-recipe-text:   #065f46  (emerald-900, readable on light bg)
+ *
+ * Prefix rule: only --color-diary-* and --color-recipe-* introduced here.
+ * No collision with existing tokens (--accent-*, --success-*, --error-*, --badge-*).
+ */
+
+:root,
+[data-theme="dark"] {
+  /* Diary accent — warm amber/gold */
+  --color-diary:        #f59e0b;
+  --color-diary-hover:  #d97706;
+  --color-diary-dim:    rgba(245, 158, 11, 0.12);
+  --color-diary-border: rgba(245, 158, 11, 0.25);
+  --color-diary-glow:   0 0 16px rgba(245, 158, 11, 0.40);
+  --color-diary-text:   #fbbf24;
+
+  /* Recipe accent — fresh green */
+  --color-recipe:        #10b981;
+  --color-recipe-hover:  #059669;
+  --color-recipe-dim:    rgba(16, 185, 129, 0.12);
+  --color-recipe-border: rgba(16, 185, 129, 0.25);
+  --color-recipe-glow:   0 0 16px rgba(16, 185, 129, 0.40);
+  --color-recipe-text:   #34d399;
+}
+
+[data-theme="light"] {
+  /* Diary accent — amber, darker for WCAG AA on light backgrounds */
+  --color-diary:        #d97706;
+  --color-diary-hover:  #b45309;
+  --color-diary-dim:    rgba(217, 119, 6, 0.10);
+  --color-diary-border: rgba(217, 119, 6, 0.30);
+  --color-diary-glow:   0 0 16px rgba(217, 119, 6, 0.25);
+  --color-diary-text:   #92400e;
+
+  /* Recipe accent — emerald, darker for WCAG AA on light backgrounds */
+  --color-recipe:        #059669;
+  --color-recipe-hover:  #047857;
+  --color-recipe-dim:    rgba(5, 150, 105, 0.10);
+  --color-recipe-border: rgba(5, 150, 105, 0.30);
+  --color-recipe-glow:   0 0 16px rgba(5, 150, 105, 0.25);
+  --color-recipe-text:   #065f46;
+}
