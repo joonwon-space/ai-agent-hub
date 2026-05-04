@@ -84,12 +84,17 @@ ai-agent-hub/
 │   ├── nginx.conf         # 정적 서빙 + /api/* → backend 프록시 + /my-space/* 라우팅
 │   └── Dockerfile
 ├── qa/                    # Playwright E2E 테스트
-│   ├── visual-qa.spec.js  # 로그인·설정·My Space 플로우 E2E
+│   ├── visual-qa.spec.js          # 로그인·설정 렌더링 E2E
+│   ├── my-space.spec.js           # Phase 1: My Space 온보딩·일기 플로우 E2E
+│   ├── my-space-recipes.spec.js   # Phase 1.5: Recipe 플로우 E2E
+│   ├── my-space-notes.spec.js     # Phase 2: FreeformNote 플로우 E2E
+│   ├── package.json
 │   └── playwright.config.js
 ├── docs/
 │   ├── architecture/
 │   │   ├── overview.md        # 아키텍처 개요 (데이터 모델, 서비스 구조)
-│   │   └── api-reference.md   # 전체 API 레퍼런스 (라우트 + 에이전트 스키마)
+│   │   ├── api-reference.md   # 전체 API 레퍼런스 (라우트 + 에이전트 스키마)
+│   │   └── analysis.md        # 기술 분석 문서
 │   └── prd/
 │       └── my-space.md        # My Space PRD
 ├── docker-compose.yml
@@ -236,7 +241,14 @@ npx playwright install
 npm test
 ```
 
-`qa/visual-qa.spec.js`는 로그인 플로우와 설정 페이지 렌더링을 브라우저 수준에서 검증합니다.
+`qa/` 아래 4개의 Playwright 스펙이 있습니다:
+
+| 파일 | 커버 범위 |
+|------|-----------|
+| `visual-qa.spec.js` | 로그인 플로우, 설정 페이지 렌더링 |
+| `my-space.spec.js` | Phase 1: My Space 온보딩, 일기 CRUD |
+| `my-space-recipes.spec.js` | Phase 1.5: Recipe 플로우 (생성·편집·삭제) |
+| `my-space-notes.spec.js` | Phase 2: FreeformNote 플로우, XSS·링크 sanitize |
 
 ## 보안 기능
 
