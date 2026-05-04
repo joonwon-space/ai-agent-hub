@@ -147,6 +147,239 @@ Upserts one or more settings for the authenticated user. Pass an empty string fo
 
 ---
 
+## My Space (`/api/my-space`)
+
+All My Space endpoints require authentication. Owner-check enforced on every sub-resource: if `spaceId` does not belong to `req.user.id`, the response is **404** (info-leak prevention; not 403).
+
+### GET /api/my-space
+
+List all spaces belonging to the authenticated user.
+
+- **Auth**: Required
+- **Response**: Array of Space objects (empty array if none)
+
+---
+
+### POST /api/my-space
+
+Create a new Space.
+
+- **Auth**: Required
+- **Request**: `{ name: string, template: 'diary' | 'recipe' | 'freeform' }`
+  - `name`: 1–80 characters
+  - `template`: must be one of the three enum values
+- **Response 201**: Space object
+- **Response 400**: `{ error: 'Validation failed', details: { field: reason } }`
+
+---
+
+### PATCH /api/my-space/:id
+
+Update a Space's name.
+
+- **Auth**: Required
+- **Path param**: `id` — Space ID (must be owned by the current user)
+- **Request**: `{ name?: string }`
+- **Response 200**: Updated Space object
+- **Response 404**: Space not found or not owned
+
+---
+
+### DELETE /api/my-space/:id
+
+Delete a Space and all its contents (cascade).
+
+- **Auth**: Required
+- **Response 200**: `{ ok: true }`
+- **Response 404**: Space not found or not owned
+
+---
+
+### GET /api/my-space/:spaceId/diary
+
+List diary entries for a Space. Sorted by `entryDate desc`. Supports cursor-based pagination.
+
+- **Auth**: Required
+- **Query params**: `limit` (default 20, max 100), `cursor` (last entry id for next page)
+- **Response**: Array of DiaryEntry objects
+
+---
+
+### POST /api/my-space/:spaceId/diary
+
+Create a new diary entry.
+
+- **Auth**: Required
+- **Request**: `{ entryDate: string (yyyy-MM-dd), mood?: 'happy'|'sad'|'angry'|'tired', title: string, body: string }`
+  - `entryDate`: ISO date, not more than 365 days in the future
+  - `title`: 1–120 characters
+  - `body`: 0–50,000 characters
+- **Response 201**: DiaryEntry object
+- **Response 404**: Space not found or not owned
+- **Response 400**: `{ error: 'Validation failed', details: { field: reason } }`
+
+---
+
+### GET /api/my-space/:spaceId/diary/:id
+
+Get a single diary entry.
+
+- **Auth**: Required
+- **Response 200**: DiaryEntry object
+- **Response 404**: Space or entry not found
+
+---
+
+### PATCH /api/my-space/:spaceId/diary/:id
+
+Partial update of a diary entry (called by the autosave mechanism).
+
+- **Auth**: Required
+- **Request**: Any subset of `{ entryDate, mood, title, body }` (same validation rules as POST)
+- **Response 200**: Updated DiaryEntry object
+- **Response 404**: Space or entry not found
+- **Response 400**: Validation failed
+
+---
+
+### DELETE /api/my-space/:spaceId/diary/:id
+
+Delete a diary entry.
+
+- **Auth**: Required
+- **Response 200**: `{ ok: true }`
+- **Response 404**: Space or entry not found
+
+---
+
+### GET /api/my-space/:spaceId/recipes
+
+List recipes for a Space. Sorted by `createdAt desc`. Supports optional category filter.
+
+- **Auth**: Required
+- **Query params**: `category` (optional, any string; filters to exact match)
+- **Response**: Array of Recipe objects
+
+---
+
+### POST /api/my-space/:spaceId/recipes
+
+Create a new recipe.
+
+- **Auth**: Required
+- **Request**:
+  ```json
+  {
+    "name": "string (1–80 chars, required)",
+    "category": "string (1–24 chars, required)",
+    "difficulty": "easy | medium | hard (required)",
+    "cookTimeMin": "integer 0–6000 (optional, nullable)",
+    "servings": "integer 1–99 (optional, nullable)",
+    "description": "string (optional, nullable)",
+    "ingredients": "[{ name: string 1–80, amount: string 0–40 }] max 50 items",
+    "steps": "[{ order: integer >= 1, text: string 1–1000 }] max 50 items",
+    "coverImage": "string base64 or URL (optional, nullable)"
+  }
+  ```
+- **Response 201**: Recipe object
+- **Response 404**: Space not found or not owned
+- **Response 400**: `{ error: 'Validation failed', details: { field: reason } }`
+
+---
+
+### GET /api/my-space/:spaceId/recipes/:id
+
+Get a single recipe.
+
+- **Auth**: Required
+- **Response 200**: Recipe object
+- **Response 404**: Space or recipe not found
+
+---
+
+### PATCH /api/my-space/:spaceId/recipes/:id
+
+Partial update of a recipe (called by the autosave mechanism). Any subset of POST fields accepted; same validation rules apply per field.
+
+- **Auth**: Required
+- **Request**: Any subset of `{ name, category, difficulty, cookTimeMin, servings, description, ingredients, steps, coverImage }`
+- **Response 200**: Updated Recipe object
+- **Response 404**: Space or recipe not found
+- **Response 400**: Validation failed
+
+---
+
+### DELETE /api/my-space/:spaceId/recipes/:id
+
+Delete a recipe.
+
+- **Auth**: Required
+- **Response 200**: `{ ok: true }`
+- **Response 404**: Space or recipe not found
+
+---
+
+### GET /api/my-space/:spaceId/notes
+
+List notes for a Space. Sorted by `pinned desc, updatedAt desc`. Supports cursor-based pagination.
+
+- **Auth**: Required
+- **Query params**: `limit` (default 20, max 100), `cursor` (last note id for next page)
+- **Response**: Array of FreeformNote objects
+
+---
+
+### POST /api/my-space/:spaceId/notes
+
+Create a new freeform note.
+
+- **Auth**: Required
+- **Request**:
+  ```json
+  {
+    "title": "string (1–120 chars, required)",
+    "body": "string (0–50,000 chars, markdown)",
+    "pinned": "boolean (optional, default false)"
+  }
+  ```
+- **Response 201**: FreeformNote object
+- **Response 404**: Space not found or not owned
+- **Response 400**: `{ error: 'Validation failed', details: { field: reason } }`
+
+---
+
+### GET /api/my-space/:spaceId/notes/:id
+
+Get a single freeform note.
+
+- **Auth**: Required
+- **Response 200**: FreeformNote object
+- **Response 404**: Space or note not found
+
+---
+
+### PATCH /api/my-space/:spaceId/notes/:id
+
+Partial update of a note (called by the autosave mechanism).
+
+- **Auth**: Required
+- **Request**: Any subset of `{ title, body, pinned }` (same validation rules as POST)
+- **Response 200**: Updated FreeformNote object
+- **Response 404**: Space or note not found
+- **Response 400**: Validation failed
+
+---
+
+### DELETE /api/my-space/:spaceId/notes/:id
+
+Delete a freeform note.
+
+- **Auth**: Required
+- **Response 200**: `{ ok: true }`
+- **Response 404**: Space or note not found
+
+---
+
 ## Per-Agent Input Schemas
 
 ### jira

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<script>(function(){var t=localStorage.getItem('aah-theme')||'dark';document.documentElement.setAttribute('data-theme',t);})();</script>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>노트 목록 — My Space</title>
+  <script src="/src/js/theme.js"></script>
+  <link rel="stylesheet" href="/src/css/main.css" />
+  <link rel="stylesheet" href="/src/css/my-space-tokens.css" />
+  <link rel="stylesheet" href="/src/css/my-space.css" />
+  <link rel="stylesheet" href="/src/css/my-space-note.css" />
+</head>
+<body style="visibility:hidden">
+
+<div class="diary-edit-topbar">
+  <div class="diary-edit-topbar__left">
+    <button id="btn-back" class="btn-text" type="button">← 목록으로</button>
+    <span class="topbar-logo-text" style="font-size:14px;font-weight:600;color:var(--color-freeform-text, #a78bfa);">
+      노트
+    </span>
+  </div>
+  <div class="diary-edit-topbar__right">
+    <button id="theme-toggle" onclick="toggleTheme()" class="btn-text" type="button">☀️ Light</button>
+    <button onclick="logout()" class="btn-text" type="button">로그아웃</button>
+  </div>
+</div>
+
+<main id="notes-main" style="margin-top:48px;min-height:calc(100vh - 48px);">
+  <!-- Populated by my-space-notes.js -->
+</main>
+
+<script src="/src/js/auth.js"></script>
+<script src="/src/js/my-space/api.js"></script>
+<script src="/src/js/my-space/notes.js"></script>
+<script src="/src/js/my-space/components.js"></script>
+<script src="/src/js/pages/my-space-notes.js"></script>
+</body>
+</html>
