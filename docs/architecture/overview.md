@@ -104,13 +104,25 @@ ai-agent-hub/
 │   ├── nginx.conf                # Static serving + /api/* proxy, no-cache headers
 │   └── Dockerfile                # nginx:alpine, copies static files
 ├── qa/
-│   ├── visual-qa.spec.js         # Playwright E2E tests (theme toggle, persist, login page)
+│   ├── my-space.spec.js          # Playwright E2E — My Space diary flow (Phase 1)
+│   ├── my-space-recipes.spec.js  # Playwright E2E — Recipe flow (Phase 1.5)
+│   ├── my-space-notes.spec.js    # Playwright E2E — Freeform note flow (Phase 2)
+│   ├── visual-qa.spec.js         # Playwright E2E — theme toggle, login page
 │   └── playwright.config.js
 ├── docs/
-│   └── architecture/
-│       ├── overview.md           # (this file)
-│       ├── analysis.md
-│       └── api-reference.md      # Full API reference (all routes + agent schemas)
+│   ├── architecture/
+│   │   ├── overview.md           # (this file)
+│   │   ├── analysis.md
+│   │   └── api-reference.md      # Full API reference (all routes + agent schemas)
+│   ├── plan/
+│   │   ├── tasks.md              # Current sprint tasks (all completed)
+│   │   ├── todo.md               # Future milestones backlog
+│   │   ├── my-space-phase-1.md   # Phase 1 diary PRD
+│   │   ├── my-space-phase-1.5.md # Phase 1.5 recipe PRD
+│   │   ├── my-space-phase-2-notes.md  # Phase 2 freeform note PRD
+│   │   └── my-space-phase-3-extras.md # Phase 3 extras backlog
+│   └── prd/
+│       └── my-space.md           # My Space master PRD
 ├── .github/
 │   └── workflows/
 │       ├── deploy.yml            # Push-to-main → self-hosted deploy, health checks

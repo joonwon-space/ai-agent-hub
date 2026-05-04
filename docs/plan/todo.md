@@ -30,8 +30,8 @@
 ## Milestone 5: Infrastructure
 
 - [ ] Add `NODE_ENV=production` to backend service in docker-compose.yml
-- [ ] Add `depends_on: condition: service_healthy` once healthchecks are added (Milestone Tasks)
-- [ ] Configure Dependabot for `backend/` and `qa/` npm packages with weekly cadence
+- [x] Add `depends_on: condition: service_healthy` once healthchecks are added (Milestone Tasks)
+- [x] Configure Dependabot for `backend/` and `qa/` npm packages with weekly cadence
 - [ ] Add `docker-compose.override.yml` for local development (expose backend port, disable tunnel)
 
 ## Milestone 6: Long-term / Nice-to-have
