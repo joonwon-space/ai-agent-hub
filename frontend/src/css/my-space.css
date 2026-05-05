@@ -691,3 +691,75 @@
   font-size: 12px;
   padding: 6px 14px;
 }
+
+/* ---------------------------------------------------------------------------
+ * Responsive — ≤768px (My Space layout)
+ * --------------------------------------------------------------------------- */
+
+@media (max-width: 768px) {
+  /* Onboarding title */
+  .ms-onboarding__title {
+    font-size: 20px;
+  }
+
+  .ms-onboarding {
+    margin: 32px auto;
+    padding: 0 16px;
+  }
+
+  /* Template grid → 1 column */
+  .ms-template-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Dashboard: stack sidebar above pane */
+  .ms-dashboard {
+    flex-direction: column;
+    overflow: visible;
+    height: auto;
+  }
+
+  /* Inner sidebar: horizontal scroll tabs */
+  .ms-inner-sidebar {
+    width: 100%;
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: visible;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    padding: 8px 0;
+    flex-shrink: 0;
+  }
+
+  .ms-inner-sidebar__label {
+    display: none;
+  }
+
+  .ms-inner-sidebar__item {
+    flex-shrink: 0;
+    white-space: nowrap;
+    border-radius: 6px;
+    margin: 0 4px;
+  }
+
+  .ms-inner-sidebar__new {
+    flex-shrink: 0;
+    border-top: none;
+    border-left: 1px solid var(--border);
+    margin-top: 0;
+    padding: 9px 12px;
+    white-space: nowrap;
+  }
+
+  /* Pane takes full width */
+  .ms-pane {
+    padding: 16px;
+    overflow-y: visible;
+  }
+
+  /* New space form */
+  .ms-new-space-form {
+    margin: 32px auto;
+    padding: 24px 16px;
+  }
+}

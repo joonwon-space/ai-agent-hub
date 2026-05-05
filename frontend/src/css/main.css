@@ -646,3 +646,25 @@ textarea { min-height: 140px; line-height: 1.65; }
   border-top: 1px solid var(--border);
   margin: 28px 0;
 }
+
+/* ---------------------------------------------------------------------------
+ * Responsive — ≤768px topbar
+ * --------------------------------------------------------------------------- */
+
+@media (max-width: 768px) {
+  .topbar-email {
+    display: none;
+  }
+
+  .topbar-right {
+    gap: 2px;
+  }
+
+  .topbar-logo-text {
+    font-size: 12px;
+  }
+
+  #topbar {
+    padding: 0 12px;
+  }
+}
