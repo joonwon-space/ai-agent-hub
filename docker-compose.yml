@@ -1,5 +1,6 @@
 volumes:
   postgres_data:
+  recipe_covers:
 
 services:
   db:
@@ -28,6 +29,7 @@ services:
       - CORS_ORIGIN=http://localhost
     volumes:
       - ./backend/src:/app/src
+      - recipe_covers:/app/uploads/recipes
     extra_hosts:
       - "host.docker.internal:host-gateway"
     depends_on:
@@ -46,6 +48,8 @@ services:
     build: ./frontend
     ports:
       - "80:80"
+    volumes:
+      - recipe_covers:/usr/share/nginx/html/uploads/recipes:ro
     depends_on:
       - backend
     restart: unless-stopped
