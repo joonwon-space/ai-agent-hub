@@ -122,6 +122,41 @@ const recipes = {
   remove(spaceId, id) {
     return apiFetch(`${RECIPE_BASE}/${spaceId}/recipes/${id}`, { method: 'DELETE' });
   },
+
+  /**
+   * Upload a cover image for a recipe.
+   * Uses raw fetch with FormData (no Content-Type header — browser sets multipart boundary).
+   * @param {number} spaceId
+   * @param {number} recipeId
+   * @param {File} file
+   * @returns {Promise<{ url: string }>}
+   */
+  async uploadCover(spaceId, recipeId, file) {
+    const formData = new FormData();
+    formData.append('cover', file);
+
+    const res = await fetch(`${RECIPE_BASE}/${spaceId}/recipes/${recipeId}/cover`, {
+      method: 'POST',
+      credentials: 'include',
+      body: formData,
+    });
+
+    if (!res) return null;
+    if (!res.ok) {
+      throw await parseError(res);
+    }
+    return res.json();
+  },
+
+  /**
+   * Delete the cover image of a recipe.
+   * @param {number} spaceId
+   * @param {number} recipeId
+   * @returns {Promise<{ ok: boolean }>}
+   */
+  deleteCover(spaceId, recipeId) {
+    return apiFetch(`${RECIPE_BASE}/${spaceId}/recipes/${recipeId}/cover`, { method: 'DELETE' });
+  },
 };
 
 // ---------------------------------------------------------------------------
@@ -141,6 +176,23 @@ function renderRecipeCard(recipe, onClick) {
   card.className = 'recipe-card';
   card.dataset.id = String(recipe.id);
   card.addEventListener('click', onClick);
+
+  // Cover image or placeholder (prepended before name)
+  if (recipe.coverImage) {
+    const coverImg = document.createElement('img');
+    coverImg.className = 'ms-recipe-card__cover';
+    coverImg.src = recipe.coverImage;
+    coverImg.alt = recipe.name || '';
+    coverImg.loading = 'lazy';
+    card.appendChild(coverImg);
+  } else {
+    const placeholder = document.createElement('div');
+    placeholder.className = 'ms-recipe-card__cover-placeholder';
+    const emoji = document.createElement('span');
+    emoji.textContent = '🍳'; // 🍳
+    placeholder.appendChild(emoji);
+    card.appendChild(placeholder);
+  }
 
   // Name
   const nameEl = document.createElement('div');
