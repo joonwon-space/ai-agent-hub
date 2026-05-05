@@ -1,0 +1,147 @@
+/**
+ * my-space-modal.css — Delete confirm modal styles for My Space.
+ *
+ * Depends on: my-space-tokens.css (color tokens), main.css (base tokens).
+ * Zero opacity/visibility tricks — uses DOM append/remove for modal lifecycle.
+ */
+
+/* ---------------------------------------------------------------------------
+ * Backdrop — full-screen overlay
+ * --------------------------------------------------------------------------- */
+
+.ms-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ---------------------------------------------------------------------------
+ * Modal card
+ * --------------------------------------------------------------------------- */
+
+.ms-modal-card {
+  background: var(--bg-elevated, var(--surface));
+  color: var(--text);
+  border-radius: 12px;
+  padding: 24px;
+  max-width: 480px;
+  width: 90%;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  position: relative;
+  /* Prevent click events on card from reaching backdrop */
+}
+
+.ms-modal-card__title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0 0 12px 0;
+}
+
+.ms-modal-card__body {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin: 0 0 12px 0;
+}
+
+.ms-modal-card__warning {
+  background: rgba(229, 72, 72, 0.12);
+  border: 1px solid rgba(229, 72, 72, 0.25);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+[data-theme="light"] .ms-modal-card__warning {
+  background: rgba(198, 40, 40, 0.08);
+  border-color: rgba(198, 40, 40, 0.2);
+}
+
+.ms-modal-card__label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.ms-modal-card__input {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 14px;
+  background: var(--input-bg, var(--surface));
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 14px;
+  font-family: inherit;
+  transition: border-color 0.15s;
+  margin-bottom: 20px;
+}
+
+.ms-modal-card__input:focus {
+  outline: none;
+  border-color: var(--color-recipe, var(--accent));
+  background: var(--input-bg-focus, var(--surface));
+}
+
+/* ---------------------------------------------------------------------------
+ * Actions row
+ * --------------------------------------------------------------------------- */
+
+.ms-modal-card__actions {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+/* ---------------------------------------------------------------------------
+ * Danger button
+ * --------------------------------------------------------------------------- */
+
+.btn-danger {
+  padding: 9px 18px;
+  background: #e54848;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, opacity 0.15s;
+}
+
+.btn-danger:hover:not(:disabled) {
+  background: #d03636;
+}
+
+.btn-danger:focus-visible {
+  outline: 2px solid #e54848;
+  outline-offset: 2px;
+}
+
+.btn-danger:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+[data-theme="light"] .btn-danger {
+  background: #c62828;
+}
+
+[data-theme="light"] .btn-danger:hover:not(:disabled) {
+  background: #b71c1c;
+}
