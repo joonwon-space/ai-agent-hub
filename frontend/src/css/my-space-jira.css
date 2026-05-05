@@ -281,3 +281,41 @@
   border-color: rgba(0, 0, 0, 0.2);
   border-top-color: #000;
 }
+
+/* ---------------------------------------------------------------------------
+ * Responsive — ≤768px (jira pane)
+ * --------------------------------------------------------------------------- */
+
+@media (max-width: 768px) {
+  .jira-pane {
+    padding: 14px;
+    gap: 14px;
+  }
+
+  .jira-form__textarea {
+    min-height: 100px;
+  }
+
+  .jira-btn-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .jira-btn-row .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .jira-preview-row {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .jira-preview-key {
+    flex: none;
+  }
+
+  .jira-settings-card {
+    max-width: none;
+  }
+}
