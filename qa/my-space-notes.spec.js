@@ -75,9 +75,7 @@ test.describe('My Space — Phase 2 FreeformNote', () => {
     await freeformCard.click();
 
     // Fill space name
-    const nameInput = page.locator('input[placeholder*="스페이스"]').or(
-      page.locator('input[placeholder*="이름"]')
-    );
+    const nameInput = page.locator('#space-name-input');
     await nameInput.fill('메모장');
 
     // Confirm creation
@@ -175,9 +173,7 @@ test.describe('My Space — Phase 2 FreeformNote', () => {
     if (!dashboardExists) {
       await expect(freeformCard).toBeVisible({ timeout: 5000 });
       await freeformCard.click();
-      const nameInput = page.locator('input[placeholder*="스페이스"]').or(
-        page.locator('input[placeholder*="이름"]')
-      );
+      const nameInput = page.locator('#space-name-input');
       await nameInput.fill('XSS 테스트');
       const createBtn = page.locator('button', { hasText: '만들기' }).or(
         page.locator('button[type="submit"]')
@@ -227,9 +223,7 @@ test.describe('My Space — Phase 2 FreeformNote', () => {
       const freeformCard = page.locator('.template-card', { hasText: '자유 형식' });
       await expect(freeformCard).toBeVisible({ timeout: 5000 });
       await freeformCard.click();
-      const nameInput = page.locator('input[placeholder*="스페이스"]').or(
-        page.locator('input[placeholder*="이름"]')
-      );
+      const nameInput = page.locator('#space-name-input');
       await nameInput.fill('링크 테스트');
       const createBtn = page.locator('button', { hasText: '만들기' }).or(
         page.locator('button[type="submit"]')

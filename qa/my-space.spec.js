@@ -79,34 +79,9 @@ test.describe('My Space — Phase 1 happy path', () => {
     test.setTimeout(60_000);
     const errors = attachErrorCollectors(page);
 
-    // 1. Login + land on home
+    // 1. Login → land directly on /my-space (Jira-as-template integration)
     await loginUI(page);
-
-    // 2. Sidebar regression: agent list (jira) still rendered + clickable
-    await page.waitForSelector('#agent-list-items', { state: 'visible' });
-    // Wait for non-loading state
-    await page.waitForFunction(() => {
-      const el = document.querySelector('#agent-list-items');
-      return el && !el.textContent.includes('Loading');
-    }, null, { timeout: 8000 });
-    const jiraLink = page.locator('#agent-list-items >> text=jira').first();
-    if (await jiraLink.count() > 0) {
-      await expect(jiraLink).toBeVisible();
-      // Click and ensure it doesn't blow up the page (panel toggles or stays on /)
-      await jiraLink.click().catch(() => { /* tolerate non-clickable shell */ });
-    }
-
-    // 3. Sidebar Personal section + My Space link present
-    const personal = page.locator('#personal-section');
-    await expect(personal).toBeVisible();
-    await expect(personal.locator('text=Personal')).toBeVisible();
-    const mySpaceLink = personal.locator('a.sidebar-link[href="/my-space"]');
-    await expect(mySpaceLink).toBeVisible();
-    await expect(mySpaceLink.locator('.badge-new')).toBeVisible();
-
-    // 4. Navigate to /my-space
-    await mySpaceLink.click();
-    await page.waitForURL('**/my-space');
+    await expect(page).toHaveURL(/\/my-space\/?$/);
     await page.waitForSelector('#ms-main', { state: 'visible' });
 
     // 5. Either onboarding (no spaces) or dashboard (already has space)
@@ -181,17 +156,18 @@ test.describe('My Space — Phase 1 happy path', () => {
     assertNoErrors(errors, 'My Space happy path');
   });
 
-  test('sidebar regression — jira agent link is rendered on home', async ({ page }) => {
+  test('home regression — / redirects to /my-space and outer agent sidebar is gone', async ({ page }) => {
     const errors = attachErrorCollectors(page);
     await loginUI(page);
-    await page.waitForSelector('#agent-list-items', { state: 'visible' });
-    await page.waitForFunction(() => {
-      const el = document.querySelector('#agent-list-items');
-      return el && !el.textContent.includes('Loading');
-    }, null, { timeout: 8000 });
-    const items = page.locator('#agent-list-items');
-    const text = await items.textContent();
-    expect(text || '', 'agent list should not be empty after Personal section was added').not.toMatch(/^\s*$/);
-    assertNoErrors(errors, 'Sidebar regression');
+    // After Jira-as-template integration: login lands on /my-space directly.
+    await expect(page).toHaveURL(/\/my-space\/?$/);
+    // Outer global sidebar (#sidebar with agent-list) was removed.
+    const outerSidebar = await page.locator('aside#sidebar').count();
+    expect(outerSidebar, 'outer #sidebar must be removed from /my-space').toBe(0);
+    // / should 302 to /my-space
+    const resp = await page.context().request.get('/', { maxRedirects: 0 });
+    expect(resp.status()).toBe(302);
+    expect(resp.headers()['location']).toMatch(/\/my-space/);
+    assertNoErrors(errors, 'Home redirect regression');
   });
 });
