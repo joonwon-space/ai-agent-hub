@@ -206,17 +206,17 @@ _연관 결정사항: [docs/decisions/my-space-phase-3-decisions.md](../decision
 
 ## Done 정의 (Phase 3.1)
 
-- [ ] sharp 의존성 추가 + Dockerfile uploads 디렉토리
-- [ ] docker-compose 에 `recipe_covers` named volume + 마운트
-- [ ] nginx `/uploads/` 정적 서빙
-- [ ] `POST/DELETE /api/my-space/:spaceId/recipes/:recipeId/cover` 라우트 + magic byte 검증
-- [ ] sharp 로 자동 리사이즈 (max 1200px) + webp 변환
-- [ ] 편집 화면 dropzone (드래그/클릭/✕)
-- [ ] 카드 그리드 cover 노출 + placeholder
-- [ ] 백엔드 통합 테스트 6+ 추가
-- [ ] Playwright happy path + 거부 케이스 회귀
-- [ ] innerHTML 0
-- [ ] **데이터 보존 검증**: 배포 후에도 기존 cover 파일이 named volume 에 유지됨
+- [x] sharp 의존성 추가 + Dockerfile uploads 디렉토리
+- [x] docker-compose 에 `recipe_covers` named volume + 마운트
+- [x] nginx `/uploads/` 정적 서빙
+- [x] `POST/DELETE /api/my-space/:spaceId/recipes/:recipeId/cover` 라우트 + magic byte 검증
+- [x] sharp 로 자동 리사이즈 (max 1200px) + webp 변환
+- [x] 편집 화면 dropzone (드래그/클릭/✕)
+- [x] 카드 그리드 cover 노출 + placeholder
+- [x] 백엔드 통합 테스트 6+ 추가 (8개 추가, 총 55개)
+- [x] Playwright happy path + 거부 케이스 회귀
+- [x] innerHTML 0
+- [ ] **데이터 보존 검증**: 배포 후에도 기존 cover 파일이 named volume 에 유지됨 (배포 후 확인 필요)
 
 ---
 
