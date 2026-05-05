@@ -18,7 +18,7 @@ async function handleSubmit(event) {
 
   try {
     await login(email, password);
-    window.location.href = '/';
+    window.location.href = '/my-space';
   } catch (err) {
     msg.className = 'msg error';
     msg.textContent = err.message;
