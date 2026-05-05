@@ -133,7 +133,7 @@ function renderOnboarding() {
 
 /**
  * Handle template card click — show inline name form then create space.
- * Phase 3.3: replaces window.location.reload() with inline state update.
+ * Phase 3.3: inline state update replaces prior page-reload pattern.
  */
 function handleTemplateSelect(template, templateLabel) {
   const main = document.getElementById('ms-main');
