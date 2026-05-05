@@ -295,3 +295,100 @@ describe('Auth guard', () => {
     expect(res.status).toBe(401);
   });
 });
+
+// ---------------------------------------------------------------------------
+// Phase 3.3: DELETE cascade + PATCH name validation tests
+// ---------------------------------------------------------------------------
+describe('DELETE /api/my-space/:id — cascade', () => {
+  test('deletes space and subsequent GET on child resource returns 404', async () => {
+    const agent = await loginAs(USER_A);
+
+    const space = {
+      id: 30,
+      userId: USER_A.id,
+      name: '삭제할 공간',
+      template: 'diary',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+
+    prisma.user.findUnique.mockResolvedValue({ ...USER_A, passwordHash: HASH });
+    // loadOwnedSpace returns the space for DELETE
+    prisma.space.findFirst.mockResolvedValue(space);
+    prisma.space.delete.mockResolvedValue(space);
+
+    const res = await agent.delete('/api/my-space/30');
+
+    expect(res.status).toBe(200);
+    expect(res.body.ok).toBe(true);
+    expect(prisma.space.delete).toHaveBeenCalledWith({ where: { id: 30 } });
+  });
+
+  test('after space delete, GET on that space diary returns 404', async () => {
+    const agent = await loginAs(USER_A);
+
+    prisma.user.findUnique.mockResolvedValue({ ...USER_A, passwordHash: HASH });
+    // Space no longer exists → loadOwnedSpace returns null
+    prisma.space.findFirst.mockResolvedValue(null);
+
+    const res = await agent.get('/api/my-space/30/diary');
+
+    expect(res.status).toBe(404);
+    expect(res.body.error).toMatch(/not found/i);
+  });
+});
+
+describe('PATCH /api/my-space/:id — name validation', () => {
+  test('empty name — returns 400 with details.name', async () => {
+    const agent = await loginAs(USER_A);
+
+    const space = { id: 10, userId: USER_A.id, name: '원래 이름', template: 'diary' };
+    prisma.user.findUnique.mockResolvedValue({ ...USER_A, passwordHash: HASH });
+    prisma.space.findFirst.mockResolvedValue(space);
+
+    const res = await agent
+      .patch('/api/my-space/10')
+      .send({ name: '' });
+
+    expect(res.status).toBe(400);
+    expect(res.body.details).toHaveProperty('name');
+  });
+
+  test('name over 80 chars — returns 400 with details.name', async () => {
+    const agent = await loginAs(USER_A);
+
+    const space = { id: 10, userId: USER_A.id, name: '원래 이름', template: 'diary' };
+    prisma.user.findUnique.mockResolvedValue({ ...USER_A, passwordHash: HASH });
+    prisma.space.findFirst.mockResolvedValue(space);
+
+    const longName = 'X'.repeat(81);
+    const res = await agent
+      .patch('/api/my-space/10')
+      .send({ name: longName });
+
+    expect(res.status).toBe(400);
+    expect(res.body.details).toHaveProperty('name');
+  });
+
+  test('valid name — returns 200 with updated name in response body', async () => {
+    const agent = await loginAs(USER_A);
+
+    const space = { id: 10, userId: USER_A.id, name: '원래 이름', template: 'diary' };
+    const updated = { ...space, name: '수정됨' };
+
+    prisma.user.findUnique.mockResolvedValue({ ...USER_A, passwordHash: HASH });
+    prisma.space.findFirst.mockResolvedValue(space);
+    prisma.space.update.mockResolvedValue(updated);
+
+    const res = await agent
+      .patch('/api/my-space/10')
+      .send({ name: '수정됨' });
+
+    expect(res.status).toBe(200);
+    expect(res.body.name).toBe('수정됨');
+    expect(prisma.space.update).toHaveBeenCalledWith({
+      where: { id: 10 },
+      data: expect.objectContaining({ name: '수정됨' }),
+    });
+  });
+});
