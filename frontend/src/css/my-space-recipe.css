@@ -423,6 +423,128 @@
   color: #f87171;
 }
 
+/* ---------------------------------------------------------------------------
+ * Recipe cover dropzone (Screen 05 — edit page)
+ * --------------------------------------------------------------------------- */
+
+.ms-recipe-cover-dropzone {
+  border: 2px dashed var(--border, #2a2f3e);
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  text-align: center;
+  color: var(--text-muted, #8892a0);
+  font-size: 13px;
+  min-height: 100px;
+  transition: border-color 0.15s, background 0.15s;
+  position: relative;
+  user-select: none;
+}
+
+.ms-recipe-cover-dropzone:hover {
+  border-color: var(--color-recipe, #fb923c);
+}
+
+.ms-recipe-cover-dropzone--dragover {
+  border: 2px solid var(--color-recipe, #fb923c);
+  background: rgba(251, 146, 60, 0.05);
+}
+
+.ms-recipe-cover-dropzone--has-image {
+  border: none;
+  padding: 0;
+  cursor: default;
+}
+
+.ms-recipe-cover-dropzone--uploading {
+  border-color: var(--color-recipe, #fb923c);
+  pointer-events: none;
+}
+
+.ms-recipe-cover-dropzone__icon {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.ms-recipe-cover-dropzone__text {
+  font-size: 12px;
+  color: var(--text-muted, #8892a0);
+}
+
+.ms-recipe-cover-dropzone__spinner {
+  font-size: 13px;
+  color: var(--color-recipe, #fb923c);
+}
+
+.ms-recipe-cover-preview {
+  width: 100%;
+  max-height: 320px;
+  object-fit: cover;
+  border-radius: 12px;
+  display: block;
+}
+
+.ms-recipe-cover-remove-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.65);
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  transition: background 0.15s;
+}
+
+.ms-recipe-cover-remove-btn:hover {
+  background: rgba(0, 0, 0, 0.85);
+}
+
+.ms-recipe-cover-notice {
+  font-size: 12px;
+  color: var(--text-muted, #8892a0);
+  margin-top: 6px;
+  text-align: center;
+}
+
+/* ---------------------------------------------------------------------------
+ * Recipe card cover (Screen 04 — list page)
+ * --------------------------------------------------------------------------- */
+
+.ms-recipe-card__cover {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 10px 10px 0 0;
+  display: block;
+  margin: -16px -16px 0;
+  width: calc(100% + 32px);
+}
+
+.ms-recipe-card__cover-placeholder {
+  height: 160px;
+  width: calc(100% + 32px);
+  margin: -16px -16px 0;
+  background: var(--color-recipe-dim, rgba(251, 146, 60, 0.1));
+  border-radius: 10px 10px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+}
+
 /* Light mode overrides */
 [data-theme="light"] .recipe-card {
   background: #ffffff;

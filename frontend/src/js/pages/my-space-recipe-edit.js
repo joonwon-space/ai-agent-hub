@@ -29,6 +29,11 @@ let currentRecipeId = recipeId;
 let selectedDifficulty = 'easy';
 let autosaver = null;
 
+// Cover state
+let currentCoverUrl = null;
+let coverDropzone = null;
+let coverFileInput = null;
+
 // DOM refs (populated in buildForm)
 let nameInput = null;
 let categorySelect = null;
@@ -82,6 +87,10 @@ function buildForm() {
   const main = document.getElementById('recipe-edit-main');
   if (!main) return;
   main.textContent = '';
+
+  // Cover image dropzone (at top of form)
+  const coverSection = buildCoverDropzone();
+  main.appendChild(coverSection);
 
   // Recipe name
   const nameField = makeField('레시피 이름 *');
@@ -234,6 +243,230 @@ function buildForm() {
 }
 
 // ---------------------------------------------------------------------------
+// Cover dropzone
+// ---------------------------------------------------------------------------
+
+/**
+ * Build the cover image dropzone section.
+ * Returns a container element; also sets module-level coverDropzone / coverFileInput refs.
+ * @returns {HTMLElement}
+ */
+function buildCoverDropzone() {
+  const wrapper = document.createElement('div');
+  wrapper.id = 'cover-section';
+
+  const label = document.createElement('label');
+  label.className = 'recipe-edit-field__label';
+  label.textContent = '커버 이미지';
+  wrapper.appendChild(label);
+
+  coverDropzone = document.createElement('div');
+  coverDropzone.id = 'cover-dropzone';
+  coverDropzone.className = 'ms-recipe-cover-dropzone';
+  coverDropzone.setAttribute('role', 'button');
+  coverDropzone.setAttribute('tabindex', '0');
+  coverDropzone.setAttribute('aria-label', '커버 이미지 업로드');
+
+  // Hidden file input
+  coverFileInput = document.createElement('input');
+  coverFileInput.type = 'file';
+  coverFileInput.accept = 'image/jpeg,image/png,image/webp';
+  coverFileInput.style.display = 'none';
+  coverFileInput.setAttribute('aria-hidden', 'true');
+  wrapper.appendChild(coverFileInput);
+
+  // Render initial idle state (no cover)
+  renderCoverIdle();
+
+  // Click to open file picker
+  coverDropzone.addEventListener('click', () => {
+    if (!currentRecipeId) {
+      showCoverNotice();
+      return;
+    }
+    coverFileInput.click();
+  });
+
+  // Keyboard support
+  coverDropzone.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      coverDropzone.click();
+    }
+  });
+
+  // Drag-and-drop
+  coverDropzone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    coverDropzone.classList.add('ms-recipe-cover-dropzone--dragover');
+  });
+  coverDropzone.addEventListener('dragleave', () => {
+    coverDropzone.classList.remove('ms-recipe-cover-dropzone--dragover');
+  });
+  coverDropzone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    coverDropzone.classList.remove('ms-recipe-cover-dropzone--dragover');
+    if (!currentRecipeId) {
+      showCoverNotice();
+      return;
+    }
+    const files = e.dataTransfer && e.dataTransfer.files;
+    if (files && files.length > 0) {
+      handleCoverFile(files[0]);
+    }
+  });
+
+  // File input change
+  coverFileInput.addEventListener('change', () => {
+    if (coverFileInput.files && coverFileInput.files.length > 0) {
+      handleCoverFile(coverFileInput.files[0]);
+      // Reset so same file can be re-selected
+      coverFileInput.value = '';
+    }
+  });
+
+  wrapper.appendChild(coverDropzone);
+  return wrapper;
+}
+
+/**
+ * Render the dropzone in idle (no cover) state.
+ */
+function renderCoverIdle() {
+  if (!coverDropzone) return;
+  coverDropzone.textContent = '';
+  coverDropzone.className = 'ms-recipe-cover-dropzone';
+
+  const icon = document.createElement('span');
+  icon.className = 'ms-recipe-cover-dropzone__icon';
+  icon.textContent = '📷';
+  coverDropzone.appendChild(icon);
+
+  const text = document.createElement('span');
+  text.className = 'ms-recipe-cover-dropzone__text';
+  text.textContent = '커버 이미지 업로드 / 클릭 또는 드래그 (JPEG/PNG/WebP, 5MB 이하)';
+  coverDropzone.appendChild(text);
+}
+
+/**
+ * Render the dropzone with an existing cover image preview.
+ * @param {string} url
+ */
+function renderCoverPreview(url) {
+  if (!coverDropzone) return;
+  coverDropzone.textContent = '';
+  coverDropzone.className = 'ms-recipe-cover-dropzone ms-recipe-cover-dropzone--has-image';
+
+  const img = document.createElement('img');
+  img.className = 'ms-recipe-cover-preview';
+  img.src = url;
+  img.alt = '레시피 커버 이미지';
+  coverDropzone.appendChild(img);
+
+  const removeBtn = document.createElement('button');
+  removeBtn.type = 'button';
+  removeBtn.className = 'ms-recipe-cover-remove-btn';
+  removeBtn.textContent = '✕';
+  removeBtn.setAttribute('aria-label', '커버 이미지 삭제');
+  removeBtn.addEventListener('click', (e) => {
+    e.stopPropagation(); // Don't trigger dropzone click
+    handleCoverDelete();
+  });
+  coverDropzone.appendChild(removeBtn);
+}
+
+/**
+ * Render spinner during upload.
+ */
+function renderCoverSpinner() {
+  if (!coverDropzone) return;
+  coverDropzone.textContent = '';
+  coverDropzone.className = 'ms-recipe-cover-dropzone ms-recipe-cover-dropzone--uploading';
+
+  const spinner = document.createElement('span');
+  spinner.className = 'ms-recipe-cover-dropzone__spinner';
+  spinner.textContent = '업로드 중…';
+  coverDropzone.appendChild(spinner);
+}
+
+/**
+ * Show notice that cover upload requires a saved recipe.
+ */
+function showCoverNotice() {
+  const notice = document.getElementById('cover-notice');
+  if (notice) return; // Already shown
+
+  const n = document.createElement('p');
+  n.id = 'cover-notice';
+  n.className = 'ms-recipe-cover-notice';
+  n.textContent = '레시피 저장 후 커버를 추가할 수 있습니다.';
+
+  const section = document.getElementById('cover-section');
+  if (section) section.appendChild(n);
+
+  // Auto-remove after 3s
+  setTimeout(() => {
+    const el = document.getElementById('cover-notice');
+    if (el) el.remove();
+  }, 3000);
+}
+
+/**
+ * Client-side validation then upload a cover file.
+ * @param {File} file
+ */
+async function handleCoverFile(file) {
+  const ALLOWED = ['image/jpeg', 'image/png', 'image/webp'];
+  const MAX_BYTES = 5 * 1024 * 1024;
+
+  if (!ALLOWED.includes(file.type)) {
+    alert('JPEG, PNG, WebP 파일만 업로드 가능합니다.');
+    return;
+  }
+  if (file.size > MAX_BYTES) {
+    alert('파일 크기는 5MB 이하여야 합니다.');
+    return;
+  }
+
+  renderCoverSpinner();
+
+  try {
+    const result = await recipes.uploadCover(spaceId, currentRecipeId, file);
+    if (result && result.url) {
+      currentCoverUrl = result.url;
+      renderCoverPreview(currentCoverUrl);
+    } else {
+      renderCoverIdle();
+    }
+  } catch (err) {
+    renderCoverIdle();
+    alert('커버 업로드 실패: ' + (err.error || err.message || '알 수 없는 오류'));
+  }
+}
+
+/**
+ * Confirm and delete the current cover image.
+ */
+async function handleCoverDelete() {
+  if (!currentRecipeId || !currentCoverUrl) {
+    renderCoverIdle();
+    currentCoverUrl = null;
+    return;
+  }
+
+  const confirmed = window.confirm('커버 이미지를 삭제하시겠습니까?');
+  if (!confirmed) return;
+
+  try {
+    await recipes.deleteCover(spaceId, currentRecipeId);
+    currentCoverUrl = null;
+    renderCoverIdle();
+  } catch (err) {
+    alert('커버 삭제 실패: ' + (err.error || err.message || '알 수 없는 오류'));
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Field factory helper
 // ---------------------------------------------------------------------------
 function makeField(labelText) {
@@ -326,6 +559,15 @@ async function loadRecipe() {
 }
 
 function populateForm(recipe) {
+  // Populate cover dropzone
+  if (recipe.coverImage) {
+    currentCoverUrl = recipe.coverImage;
+    renderCoverPreview(currentCoverUrl);
+  } else {
+    currentCoverUrl = null;
+    renderCoverIdle();
+  }
+
   if (nameInput) nameInput.value = recipe.name || '';
   if (categorySelect) categorySelect.value = recipe.category || '한식';
   if (cookTimeInput && recipe.cookTimeMin !== null && recipe.cookTimeMin !== undefined) {
