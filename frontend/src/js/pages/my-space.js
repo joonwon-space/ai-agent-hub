@@ -11,8 +11,16 @@
  *   recipe   → top-3 recent recipe cards + "새로 작성" link (Phase 1.5)
  *   freeform → top-3 pinned/recent notes + "새로 작성" link (Phase 2)
  *
+ * Phase 3.3 changes:
+ *   - Each sidebar space item has inline ✏️ rename + 🗑️ delete actions on hover
+ *   - ✏️ inline rename: Enter/blur save, Esc cancel, API update with optimistic update
+ *   - 🗑️ delete: window.deleteSpaceModal.show() → cascade delete
+ *   - "+ 새 공간" button: directly calls renderOnboarding() — no page reload
+ *   - handleTemplateSelect creates space and returns to dashboard inline
+ *
  * No innerHTML. All DOM built with createElement/textContent via components.js helpers.
  * recipes.js and notes.js are loaded via <script> tags, providing globals.
+ * deleteSpaceModal.js is loaded before this file, providing window.deleteSpaceModal.
  */
 
 'use strict';
@@ -125,6 +133,7 @@ function renderOnboarding() {
 
 /**
  * Handle template card click — show inline name form then create space.
+ * Phase 3.3: replaces window.location.reload() with inline state update.
  */
 function handleTemplateSelect(template, templateLabel) {
   const main = document.getElementById('ms-main');
@@ -175,9 +184,10 @@ function handleTemplateSelect(template, templateLabel) {
       errMsg.textContent = '';
 
       try {
-        await mySpace.create({ name, template });
-        // Reload page to show dashboard
-        window.location.reload();
+        const newSpace = await mySpace.create({ name, template });
+        spaces = await mySpace.list();
+        activeSpaceId = newSpace.id;
+        renderDashboard();
       } catch (err) {
         const details = err.details || {};
         const msg = details.name || details.template || err.error || '공간 생성에 실패했습니다.';
@@ -206,6 +216,198 @@ function handleTemplateSelect(template, templateLabel) {
 // ---------------------------------------------------------------------------
 // Dashboard (Screen 02)
 // ---------------------------------------------------------------------------
+
+/**
+ * Handle delete confirmation from modal.
+ * Removes space from state, switches active or falls back to onboarding.
+ *
+ * @param {Object} space — the space that was confirmed for deletion
+ * @param {HTMLElement} pane — the main content pane element
+ */
+async function handleDelete(space, pane) {
+  try {
+    await mySpace.remove(space.id);
+  } catch (err) {
+    alert('공간 삭제에 실패했습니다: ' + (err.error || err.message));
+    return;
+  }
+
+  spaces = spaces.filter((s) => s.id !== space.id);
+
+  if (activeSpaceId === space.id) {
+    activeSpaceId = spaces[0] ? spaces[0].id : null;
+  }
+
+  if (spaces.length === 0) {
+    renderOnboarding();
+  } else {
+    renderDashboard();
+  }
+}
+
+/**
+ * Build a single sidebar space item with name display + hover actions (✏️ 🗑️).
+ *
+ * @param {Object} space — the space object
+ * @param {HTMLElement} sidebar — the sidebar container (for active-state toggling)
+ * @param {HTMLElement} pane — the content pane
+ * @returns {HTMLElement}
+ */
+function buildSidebarItem(space, sidebar, pane) {
+  const isActive = space.id === activeSpaceId;
+
+  const wrapper = el('div', {
+    className: `ms-inner-sidebar__item${isActive ? ' ms-inner-sidebar__item--active' : ''}`,
+    attrs: { 'data-space-id': String(space.id) },
+  });
+
+  // Name display — click to activate space
+  const nameDisplay = el('button', {
+    className: 'ms-inner-sidebar__item-name',
+    textContent: space.name,
+    attrs: { type: 'button', title: space.name },
+    onClick: () => {
+      activeSpaceId = space.id;
+      renderPaneForSpace(pane, space);
+      // Update active state across all items
+      sidebar.querySelectorAll('.ms-inner-sidebar__item').forEach((item) => {
+        item.classList.toggle(
+          'ms-inner-sidebar__item--active',
+          item.dataset.spaceId === String(space.id),
+        );
+      });
+    },
+  });
+
+  // Actions wrapper (✏️ + 🗑️) — hidden until hover via CSS
+  const actions = el('div', { className: 'ms-inner-sidebar__item-actions' });
+
+  // Rename button
+  const renameBtn = el('button', {
+    className: 'ms-inner-sidebar__action-btn',
+    textContent: '✏️',
+    attrs: { type: 'button', 'aria-label': 'rename', title: '이름 변경' },
+    onClick: (e) => {
+      e.stopPropagation();
+      startInlineRename(space, wrapper, nameDisplay, pane);
+    },
+  });
+
+  // Delete button
+  const deleteBtn = el('button', {
+    className: 'ms-inner-sidebar__action-btn',
+    textContent: '🗑️',
+    attrs: { type: 'button', 'aria-label': 'delete', title: '공간 삭제' },
+    onClick: (e) => {
+      e.stopPropagation();
+      if (!window.deleteSpaceModal) {
+        alert('Modal module not loaded');
+        return;
+      }
+      window.deleteSpaceModal.show({
+        space,
+        onConfirm: (confirmedSpace) => handleDelete(confirmedSpace, pane),
+      });
+    },
+  });
+
+  actions.appendChild(renameBtn);
+  actions.appendChild(deleteBtn);
+
+  wrapper.appendChild(nameDisplay);
+  wrapper.appendChild(actions);
+
+  return wrapper;
+}
+
+/**
+ * Start inline rename flow for a sidebar item.
+ * Replaces nameDisplay with an input; confirms on Enter/blur, cancels on Esc.
+ *
+ * @param {Object} space — the space being renamed (mutated on success)
+ * @param {HTMLElement} wrapper — the sidebar item wrapper div
+ * @param {HTMLElement} nameDisplay — the current name button element
+ * @param {HTMLElement} pane — the content pane (for header update reference)
+ */
+function startInlineRename(space, wrapper, nameDisplay, pane) {
+  const originalName = space.name;
+
+  const input = el('input', {
+    className: 'ms-inner-sidebar__rename-input',
+    attrs: {
+      type: 'text',
+      maxlength: '80',
+      value: originalName,
+    },
+  });
+  input.value = originalName;
+
+  // Replace name display with input
+  wrapper.replaceChild(input, nameDisplay);
+  input.focus();
+  input.select();
+
+  let committed = false;
+
+  async function commit() {
+    if (committed) return;
+    const newName = input.value.trim();
+
+    // No change — revert
+    if (newName === originalName || !newName) {
+      committed = true;
+      wrapper.replaceChild(nameDisplay, input);
+      return;
+    }
+
+    committed = true;
+
+    try {
+      const updated = await mySpace.update(space.id, { name: newName });
+      // Update state immutably
+      spaces = spaces.map((s) => (s.id === space.id ? { ...s, name: updated.name } : s));
+      space.name = updated.name;
+      nameDisplay.textContent = updated.name;
+      nameDisplay.title = updated.name;
+    } catch (err) {
+      // Show error state then revert
+      input.classList.add('ms-inner-sidebar__rename-input--error');
+      alert('이름 변경에 실패했습니다: ' + (err.error || err.message));
+      setTimeout(() => {
+        input.value = originalName;
+        if (wrapper.contains(input)) {
+          wrapper.replaceChild(nameDisplay, input);
+        }
+      }, 1500);
+      return;
+    }
+
+    wrapper.replaceChild(nameDisplay, input);
+  }
+
+  function cancel() {
+    if (committed) return;
+    committed = true;
+    input.value = originalName;
+    wrapper.replaceChild(nameDisplay, input);
+  }
+
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      commit();
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      cancel();
+    }
+  });
+
+  input.addEventListener('blur', () => {
+    // Small delay to allow button clicks to register before blur fires
+    setTimeout(() => commit(), 150);
+  });
+}
+
 async function renderDashboard() {
   const main = document.getElementById('ms-main');
   main.textContent = '';
@@ -217,42 +419,24 @@ async function renderDashboard() {
   const sidebarLabel = el('div', { className: 'ms-inner-sidebar__label', textContent: '내 공간' });
   sidebar.appendChild(sidebarLabel);
 
+  // Main content pane — created before items so buildSidebarItem can reference it
+  const pane = el('div', { className: 'ms-pane' });
+
   for (const space of spaces) {
-    const item = el('button', {
-      className: `ms-inner-sidebar__item${space.id === activeSpaceId ? ' ms-inner-sidebar__item--active' : ''}`,
-      textContent: space.name,
-      attrs: { type: 'button', 'data-space-id': String(space.id) },
-      onClick: () => {
-        activeSpaceId = space.id;
-        renderPaneForSpace(pane, space);
-        // Update active state
-        sidebar.querySelectorAll('.ms-inner-sidebar__item').forEach((btn) => {
-          btn.classList.toggle(
-            'ms-inner-sidebar__item--active',
-            btn.dataset.spaceId === String(space.id),
-          );
-        });
-      },
-    });
+    const item = buildSidebarItem(space, sidebar, pane);
     sidebar.appendChild(item);
   }
 
-  // New diary button in sidebar
+  // "+ 새 공간" button — inline onboarding, no page reload
   const newSpaceBtn = el('button', {
     className: 'ms-inner-sidebar__new',
-    textContent: '+ 새 일기장',
+    textContent: '+ 새 공간',
     attrs: { type: 'button' },
     onClick: () => {
-      window.location.href = '/my-space';
-      // Clear spaces to trigger onboarding — simple reload
-      sessionStorage.setItem('ms-force-onboarding', '1');
-      window.location.reload();
+      renderOnboarding();
     },
   });
   sidebar.appendChild(newSpaceBtn);
-
-  // Main content pane
-  const pane = el('div', { className: 'ms-pane' });
 
   layout.appendChild(sidebar);
   layout.appendChild(pane);
