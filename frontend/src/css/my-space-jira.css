@@ -1,0 +1,283 @@
+/*
+ * my-space-jira.css — Styles for the Jira workspace pane.
+ *
+ * Depends on:
+ *   - main.css (base reset, .btn, .btn-primary, .btn-secondary, .btn-success)
+ *   - my-space-tokens.css (--color-diary-*, --color-freeform-*, etc.)
+ *   - my-space.css (--text, --text-muted, --bg-elevated, --border, .ms-pane__header, etc.)
+ *
+ * No --color-jira-* tokens introduced; reuses existing surface + freeform token family
+ * as a placeholder. Phase 3.1 will add dedicated Jira tokens.
+ */
+
+/* ---------------------------------------------------------------------------
+   Pane wrapper
+--------------------------------------------------------------------------- */
+.jira-pane {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 720px;
+}
+
+.jira-helper-text {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: var(--text-muted, #8b949e);
+}
+
+/* ---------------------------------------------------------------------------
+   Input form
+--------------------------------------------------------------------------- */
+.jira-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.jira-form__label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text, #e6edf3);
+  margin-bottom: 2px;
+}
+
+.jira-form__label--optional {
+  font-weight: 400;
+  color: var(--text-muted, #8b949e);
+}
+
+.jira-form__textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 10px 12px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text, #e6edf3);
+  background: var(--bg-elevated, #161b22);
+  border: 1px solid var(--border, #30363d);
+  border-radius: 6px;
+  resize: vertical;
+  box-sizing: border-box;
+  font-family: inherit;
+  transition: border-color 0.15s ease;
+}
+
+.jira-form__textarea:focus {
+  outline: none;
+  border-color: var(--color-freeform, #7c5cff);
+  box-shadow: 0 0 0 3px var(--color-freeform-dim, rgba(124, 92, 255, 0.12));
+}
+
+.jira-form__file {
+  font-size: 13px;
+  color: var(--text-muted, #8b949e);
+  cursor: pointer;
+}
+
+/* ---------------------------------------------------------------------------
+   Button row
+--------------------------------------------------------------------------- */
+.jira-btn-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+/* ---------------------------------------------------------------------------
+   Spinner (inline with button text)
+--------------------------------------------------------------------------- */
+.jira-spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: jira-spin 0.7s linear infinite;
+  vertical-align: middle;
+  margin-right: 6px;
+}
+
+@keyframes jira-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ---------------------------------------------------------------------------
+   Loading message
+--------------------------------------------------------------------------- */
+.jira-loading-msg {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--text-muted, #8b949e);
+  padding: 12px 0;
+}
+
+/* ---------------------------------------------------------------------------
+   Divider
+--------------------------------------------------------------------------- */
+.jira-divider {
+  border: none;
+  border-top: 1px solid var(--border, #30363d);
+  margin: 8px 0;
+}
+
+/* ---------------------------------------------------------------------------
+   Preview card
+--------------------------------------------------------------------------- */
+.jira-preview-card {
+  background: var(--bg-elevated, #161b22);
+  border: 1px solid var(--border, #30363d);
+  border-radius: 8px;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.jira-preview-card__heading {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted, #8b949e);
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.jira-preview-row {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.jira-preview-key {
+  flex: 0 0 100px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted, #8b949e);
+  padding-top: 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.jira-preview-val {
+  flex: 1;
+  font-size: 14px;
+  color: var(--text, #e6edf3);
+  word-break: break-word;
+}
+
+/* ---------------------------------------------------------------------------
+   Success card (green-tinted)
+--------------------------------------------------------------------------- */
+.jira-success-card {
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.30);
+  border-radius: 8px;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.jira-success-card__heading {
+  font-size: 15px;
+  font-weight: 600;
+  color: #34d399;
+  margin: 0;
+}
+
+/* ---------------------------------------------------------------------------
+   Settings-required card (warning-tinted)
+--------------------------------------------------------------------------- */
+.jira-settings-card {
+  background: rgba(245, 158, 11, 0.08);
+  border: 1px solid rgba(245, 158, 11, 0.30);
+  border-radius: 8px;
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 480px;
+}
+
+.jira-settings-card__icon {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.jira-settings-card__heading {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text, #e6edf3);
+  margin: 0;
+}
+
+.jira-settings-card__body {
+  font-size: 14px;
+  color: var(--text-muted, #8b949e);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ---------------------------------------------------------------------------
+   Inline error
+--------------------------------------------------------------------------- */
+.jira-inline-error {
+  font-size: 13px;
+  color: var(--error, #f85149);
+  padding: 8px 0;
+}
+
+/* ---------------------------------------------------------------------------
+   Results area spacing
+--------------------------------------------------------------------------- */
+.jira-results {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ---------------------------------------------------------------------------
+   Light theme overrides
+--------------------------------------------------------------------------- */
+[data-theme="light"] .jira-form__textarea {
+  color: var(--text, #1f2328);
+  background: var(--bg-elevated, #ffffff);
+  border-color: var(--border, #d1d9e0);
+}
+
+[data-theme="light"] .jira-form__textarea:focus {
+  border-color: var(--color-freeform, #5b3fe0);
+  box-shadow: 0 0 0 3px var(--color-freeform-dim, rgba(91, 63, 224, 0.10));
+}
+
+[data-theme="light"] .jira-preview-card {
+  background: var(--bg-elevated, #ffffff);
+  border-color: var(--border, #d1d9e0);
+}
+
+[data-theme="light"] .jira-success-card {
+  background: rgba(5, 150, 105, 0.06);
+  border-color: rgba(5, 150, 105, 0.30);
+}
+
+[data-theme="light"] .jira-success-card__heading {
+  color: #065f46;
+}
+
+[data-theme="light"] .jira-settings-card {
+  background: rgba(217, 119, 6, 0.06);
+  border-color: rgba(217, 119, 6, 0.30);
+}
+
+[data-theme="light"] .jira-spinner {
+  border-color: rgba(0, 0, 0, 0.2);
+  border-top-color: #000;
+}

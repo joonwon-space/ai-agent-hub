@@ -7,7 +7,7 @@
 
 'use strict';
 
-const VALID_TEMPLATES = new Set(['diary', 'recipe', 'freeform']);
+const VALID_TEMPLATES = new Set(['diary', 'recipe', 'freeform', 'jira']);
 const VALID_MOODS = new Set(['happy', 'sad', 'angry', 'tired']);
 const VALID_DIFFICULTIES = new Set(['easy', 'medium', 'hard']);
 
@@ -22,7 +22,7 @@ function validationError(field, reason) {
 }
 
 /**
- * Assert template is one of 'diary' | 'recipe' | 'freeform'.
+ * Assert template is one of 'diary' | 'recipe' | 'freeform' | 'jira'.
  */
 function assertTemplate(value) {
   if (!VALID_TEMPLATES.has(value)) {

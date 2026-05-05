@@ -103,6 +103,12 @@ function renderOnboarding() {
       description: '마크다운 노트로 무엇이든 기록하세요.',
       emoji: '📝',
     },
+    {
+      template: 'jira',
+      label: 'Jira 워크스페이스',
+      description: 'AI 가 작업 개요를 분석해 Jira 이슈를 자동 생성합니다.',
+      emoji: '🎫',
+    },
   ];
 
   for (const tpl of templates) {
@@ -277,6 +283,9 @@ async function renderPaneForSpace(pane, space) {
       break;
     case 'freeform':
       await renderFreeformNotePreview(pane, space.id);
+      break;
+    case 'jira':
+      await renderJiraPane(pane, space.id);
       break;
     default:
       await renderDiaryList(pane, space.id);

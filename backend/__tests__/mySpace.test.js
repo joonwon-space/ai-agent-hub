@@ -150,6 +150,57 @@ describe('GET /api/my-space', () => {
 });
 
 // ---------------------------------------------------------------------------
+// Tests: Jira template support
+// ---------------------------------------------------------------------------
+describe('Jira template', () => {
+  test('POST /api/my-space with template "jira" — creates and returns space with template jira', async () => {
+    const agent = await loginAs(USER_A);
+
+    const createdSpace = {
+      id: 20,
+      userId: USER_A.id,
+      name: 'My Jira',
+      template: 'jira',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+
+    prisma.user.findUnique.mockResolvedValue({ ...USER_A, passwordHash: HASH });
+    prisma.space.create.mockResolvedValue(createdSpace);
+
+    const res = await agent
+      .post('/api/my-space')
+      .send({ name: 'My Jira', template: 'jira' });
+
+    expect(res.status).toBe(201);
+    expect(res.body.template).toBe('jira');
+    expect(prisma.space.create).toHaveBeenCalledWith({
+      data: expect.objectContaining({ userId: USER_A.id, name: 'My Jira', template: 'jira' }),
+    });
+  });
+
+  test('GET /api/my-space — returns list containing both diary and jira spaces', async () => {
+    const agent = await loginAs(USER_A);
+
+    const mixedSpaces = [
+      { id: 1, userId: USER_A.id, name: '내 일기', template: 'diary' },
+      { id: 2, userId: USER_A.id, name: 'My Jira', template: 'jira' },
+    ];
+
+    prisma.user.findUnique.mockResolvedValue({ ...USER_A, passwordHash: HASH });
+    prisma.space.findMany.mockResolvedValue(mixedSpaces);
+
+    const res = await agent.get('/api/my-space');
+
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveLength(2);
+    const templates = res.body.map((s) => s.template);
+    expect(templates).toContain('diary');
+    expect(templates).toContain('jira');
+  });
+});
+
+// ---------------------------------------------------------------------------
 // Test 4: Cross-user access blocked
 // ---------------------------------------------------------------------------
 describe('Cross-user access', () => {
