@@ -1,0 +1,135 @@
+{
+  "w1": {
+    "textColor": "rgb(132, 145, 168)",
+    "cardBg": "rgba(14, 17, 28, 0.9)",
+    "ratio": "5.91"
+  },
+  "w1light": {
+    "textColor": "rgb(132, 145, 168)",
+    "cardBg": "rgba(14, 17, 28, 0.9)",
+    "ratio": "5.91"
+  },
+  "w2": {
+    "cardLeft": 16,
+    "cardRight": 359,
+    "cardWidth": 343,
+    "viewportWidth": 375,
+    "bodyPaddingLeft": "16px",
+    "bodyPaddingRight": "16px",
+    "cardMaxWidth": "343px",
+    "leftMargin": 16,
+    "rightMargin": 16
+  },
+  "w3mobile": {
+    "width": 76,
+    "height": 44,
+    "minWidth": "44px",
+    "minHeight": "44px",
+    "padding": "10px 14px"
+  },
+  "w3desktop": {
+    "width": 68,
+    "height": 28,
+    "minWidth": "0px",
+    "minHeight": "0px",
+    "padding": "5px 10px"
+  },
+  "w4mobile": [
+    {
+      "text": "계정 만들기",
+      "width": 71,
+      "height": 38,
+      "display": "inline-block",
+      "paddingTop": "12px",
+      "paddingBottom": "12px"
+    }
+  ],
+  "w4desktop": [
+    {
+      "text": "계정 만들기",
+      "width": 55,
+      "height": 14,
+      "display": "inline",
+      "paddingTop": "0px",
+      "paddingBottom": "0px"
+    }
+  ],
+  "w5dark": {
+    "border": "1px solid rgba(0, 0, 0, 0.15)",
+    "borderColor": "rgba(0, 0, 0, 0.15)",
+    "borderWidth": "1px",
+    "outline": "rgb(13, 17, 32) none 3px"
+  },
+  "w5light": {
+    "border": "1px solid rgba(0, 0, 0, 0.15)",
+    "borderColor": "rgba(0, 0, 0, 0.15)",
+    "borderWidth": "1px"
+  },
+  "themeDefault": {
+    "htmlClass": "",
+    "localStorage": "light",
+    "bodyBg": "rgb(240, 243, 250)"
+  },
+  "themeBtnText": {
+    "text": "☀️ Light",
+    "innerText": "☀️ Light"
+  },
+  "signupCard": {
+    "cardLeft": 16,
+    "cardRight": 359,
+    "cardWidth": 343,
+    "leftMargin": 16,
+    "rightMargin": 16,
+    "maxWidth": "343px"
+  },
+  "m1": {
+    "firstLabel": {
+      "text": "이메일",
+      "fontSize": "12px"
+    },
+    "subtitle": {
+      "text": "계정에 로그인하세요",
+      "fontSize": "14px"
+    },
+    "h1": null,
+    "allLabels": [
+      {
+        "text": "이메일",
+        "fontSize": "12px"
+      },
+      {
+        "text": "비밀번호",
+        "fontSize": "12px"
+      }
+    ]
+  },
+  "m2": [
+    {
+      "type": "email",
+      "id": "email",
+      "ariaLabel": "이메일",
+      "placeholder": "admin@example.com"
+    },
+    {
+      "type": "password",
+      "id": "password",
+      "ariaLabel": "비밀번호",
+      "placeholder": "••••••••"
+    }
+  ],
+  "m6": {
+    "width": 375,
+    "height": 375,
+    "right": 375,
+    "left": 0,
+    "viewportWidth": 375,
+    "maxWidth": "375px",
+    "overflow": "visible",
+    "exceedsViewport": false
+  },
+  "bodyOverflow": {
+    "overflow": "hidden",
+    "overflowX": "hidden",
+    "overflowY": "hidden"
+  }
+}

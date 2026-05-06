@@ -10,7 +10,7 @@ html { transition: background-color 0.25s, color 0.2s; }
 
 :root, [data-theme="dark"] {
   --bg: #080b13;
-  --border: rgba(255,255,255,0.16);  /* W-5: was 0.07 — raised for input field visibility */
+  --border: rgba(255,255,255,0.24);  /* W-5: 0.07 → 0.16 → 0.24 — closer to WCAG 1.4.11 3:1 on translucent bg */
   --accent: #1e90ff;
   --accent-hover: #1a7de0;
   --text: #dde3f0;
@@ -32,7 +32,7 @@ html { transition: background-color 0.25s, color 0.2s; }
 
 [data-theme="light"] {
   --bg: #f0f3fa;
-  --border: rgba(0,0,0,0.15);  /* W-5: was 0.08 — raised for input field visibility */
+  --border: rgba(0,0,0,0.20);  /* W-5: 0.08 → 0.15 → 0.20 — closer to WCAG 1.4.11 3:1 on translucent bg */
   --accent: #1e90ff;
   --accent-hover: #1a7de0;
   --text: #0d1120;
@@ -145,7 +145,17 @@ input.invalid { border-color: rgba(248,113,113,0.5); }
   color: var(--text-muted);  /* W-1: was --text-faint (decorative-only) — raised for AA contrast on card bg */
 }
 
-.footer a { color: var(--link-color); text-decoration: none; font-weight: 500; }
+/* W-4 base: footer link gets the 44px-friendly hit area at all viewports for
+   consistency (mobile @media bumps padding to a true 44px). Negative margin
+   keeps the visual line height matching surrounding copy. */
+.footer a {
+  color: var(--link-color);
+  text-decoration: none;
+  font-weight: 500;
+  display: inline-block;
+  padding: 8px 6px;
+  margin: -8px -4px;
+}
 .footer a:hover { text-decoration: underline; }
 
 .hint,
@@ -188,14 +198,14 @@ input.invalid { border-color: rgba(248,113,113,0.5); }
     padding: 10px 14px !important;
   }
 
-  /* W-4: footer link tap target — wrap inline link with 44px touch area */
+  /* W-4: footer link tap target — bump padding to a true 44px hitbox on
+     touch viewports (12 + 14 line-height + 12 + 6 buffer ≈ 44) */
   .footer {
     margin-top: 16px;  /* compensate negative margin below */
   }
   .footer a {
-    display: inline-block;
-    padding: 12px 8px;
-    margin: -12px -4px;  /* preserve visual alignment, expand hitbox */
+    padding: 15px 8px;
+    margin: -15px -4px;
   }
 
   /* M-6: glow blob — clamp size so it doesn't technically overflow viewport */

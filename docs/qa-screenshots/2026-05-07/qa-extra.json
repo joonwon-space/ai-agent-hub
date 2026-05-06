@@ -1,0 +1,62 @@
+{
+  "themeToggle": {
+    "before": {
+      "htmlClass": "",
+      "localStorageTheme": "dark",
+      "btnText": "☀️ Light",
+      "bodyBg": "rgb(8, 11, 19)"
+    },
+    "after": {
+      "htmlClass": "",
+      "localStorageTheme": "light",
+      "btnText": "🌙 Dark",
+      "bodyBg": "rgb(240, 243, 250)"
+    }
+  },
+  "themeToggle2": {
+    "htmlClass": "",
+    "localStorageTheme": "dark",
+    "btnText": "☀️ Light"
+  },
+  "darkInputBorder": {
+    "border": "1px solid rgba(0, 0, 0, 0.15)",
+    "borderColor": "rgba(0, 0, 0, 0.15)",
+    "htmlClass": ""
+  },
+  "desktopThemeBtn": {
+    "width": 67,
+    "height": 28,
+    "minWidth": "0px",
+    "minHeight": "0px",
+    "padding": "5px 10px",
+    "paddingTop": "5px",
+    "paddingBottom": "5px",
+    "display": "block",
+    "boxSizing": "border-box"
+  },
+  "signupFooterDesktop": [
+    {
+      "text": "로그인",
+      "width": 31,
+      "height": 14,
+      "display": "inline",
+      "paddingTop": "0px",
+      "paddingBottom": "0px"
+    }
+  ],
+  "redirectDetail": {
+    "redirects": [
+      {
+        "url": "https://ai.joonwon.dev/",
+        "status": 302,
+        "location": "http://ai.joonwon.dev/my-space"
+      },
+      {
+        "url": "http://ai.joonwon.dev/my-space",
+        "status": 307,
+        "location": "https://ai.joonwon.dev/my-space"
+      }
+    ],
+    "finalUrl": "https://ai.joonwon.dev/login"
+  }
+}

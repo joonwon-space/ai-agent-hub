@@ -1,0 +1,882 @@
+{
+  "redirectChain": {
+    "finalUrl": "https://ai.joonwon.dev/login",
+    "redirects": [
+      {
+        "from": "https://ai.joonwon.dev/",
+        "status": 302,
+        "location": "http://ai.joonwon.dev/my-space"
+      },
+      {
+        "from": "http://ai.joonwon.dev/my-space",
+        "status": 307,
+        "location": "https://ai.joonwon.dev/my-space"
+      }
+    ]
+  },
+  "/login": {
+    "mobile": {
+      "dark": {
+        "screenshot": "login-mobile-dark.png",
+        "overflow": [],
+        "themeBtn": {
+          "width": 76,
+          "height": 44,
+          "right": 342,
+          "top": 197,
+          "color": "rgb(132, 145, 168)",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "fontSize": "12px",
+          "borderColor": "rgba(255, 255, 255, 0.16)",
+          "border": "1px solid rgba(255, 255, 255, 0.16)"
+        },
+        "footerLinks": [
+          {
+            "text": "계정 만들기",
+            "width": 71,
+            "height": 38,
+            "paddingTop": "12px",
+            "paddingBottom": "12px",
+            "display": "inline-block"
+          }
+        ],
+        "emailInput": {
+          "width": 269,
+          "height": 43,
+          "right": 322,
+          "top": 374,
+          "color": "rgb(221, 227, 240)",
+          "backgroundColor": "rgba(255, 255, 255, 0.024)",
+          "fontSize": "16px",
+          "borderColor": "rgba(255, 255, 255, 0.16)",
+          "border": "1px solid rgba(255, 255, 255, 0.16)"
+        },
+        "footerText": {
+          "color": "rgb(132, 145, 168)",
+          "cardBg": "rgba(14, 17, 28, 0.9)"
+        },
+        "labelSize": "12px",
+        "emailAriaLabel": {
+          "ariaLabel": "이메일",
+          "id": "email",
+          "name": null,
+          "type": "email"
+        },
+        "pwAriaLabel": {
+          "ariaLabel": "비밀번호",
+          "id": "password",
+          "name": null,
+          "type": "password"
+        },
+        "glowEl": {
+          "width": 375,
+          "height": 375,
+          "right": 375,
+          "top": 181,
+          "color": "rgb(221, 227, 240)",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "fontSize": "14px",
+          "borderColor": "rgb(221, 227, 240)",
+          "border": "0px none rgb(221, 227, 240)"
+        },
+        "networkRequests": [
+          {
+            "url": "https://ai.joonwon.dev/api/auth/setup-required",
+            "status": 200,
+            "method": "GET"
+          }
+        ],
+        "consoleErrors": []
+      },
+      "light": {
+        "screenshot": "login-mobile-light.png",
+        "overflow": [],
+        "themeBtn": {
+          "width": 76,
+          "height": 44,
+          "right": 342,
+          "top": 197,
+          "color": "rgb(132, 145, 168)",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "fontSize": "12px",
+          "borderColor": "rgba(255, 255, 255, 0.16)",
+          "border": "1px solid rgba(255, 255, 255, 0.16)"
+        },
+        "footerLinks": [
+          {
+            "text": "계정 만들기",
+            "width": 71,
+            "height": 38,
+            "paddingTop": "12px",
+            "paddingBottom": "12px",
+            "display": "inline-block"
+          }
+        ],
+        "emailInput": {
+          "width": 269,
+          "height": 43,
+          "right": 322,
+          "top": 374,
+          "color": "rgb(221, 227, 240)",
+          "backgroundColor": "rgba(255, 255, 255, 0.024)",
+          "fontSize": "16px",
+          "borderColor": "rgba(255, 255, 255, 0.16)",
+          "border": "1px solid rgba(255, 255, 255, 0.16)"
+        },
+        "footerText": {
+          "color": "rgb(132, 145, 168)",
+          "cardBg": "rgba(14, 17, 28, 0.9)"
+        },
+        "labelSize": "12px",
+        "emailAriaLabel": {
+          "ariaLabel": "이메일",
+          "id": "email",
+          "name": null,
+          "type": "email"
+        },
+        "pwAriaLabel": {
+          "ariaLabel": "비밀번호",
+          "id": "password",
+          "name": null,
+          "type": "password"
+        },
+        "glowEl": {
+          "width": 375,
+          "height": 375,
+          "right": 375,
+          "top": 181,
+          "color": "rgb(221, 227, 240)",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "fontSize": "14px",
+          "borderColor": "rgb(221, 227, 240)",
+          "border": "0px none rgb(221, 227, 240)"
+        },
+        "networkRequests": [
+          {
+            "url": "https://ai.joonwon.dev/api/auth/setup-required",
+            "status": 200,
+            "method": "GET"
+          }
+        ],
+        "consoleErrors": []
+      }
+    },
+    "tablet": {
+      "dark": {
+        "screenshot": "login-tablet-dark.png",
+        "overflow": [],
+        "themeBtn": {
+          "width": 76,
+          "height": 44,
+          "right": 735,
+          "top": 303,
+          "color": "rgb(82, 96, 122)",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "fontSize": "12px",
+          "borderColor": "rgba(0, 0, 0, 0.15)",
+          "border": "1px solid rgba(0, 0, 0, 0.15)"
+        },
+        "footerLinks": [
+          {
+            "text": "계정 만들기",
+            "width": 71,
+            "height": 38,
+            "paddingTop": "12px",
+            "paddingBottom": "12px",
+            "display": "inline-block"
+          }
+        ],
+        "emailInput": {
+          "width": 662,
+          "height": 43,
+          "right": 715,
+          "top": 480,
+          "color": "rgb(13, 17, 32)",
+          "backgroundColor": "rgba(0, 0, 0, 0.02)",
+          "fontSize": "16px",
+          "borderColor": "rgba(0, 0, 0, 0.15)",
+          "border": "1px solid rgba(0, 0, 0, 0.15)"
+        },
+        "footerText": {
+          "color": "rgb(82, 96, 122)",
+          "cardBg": "rgba(255, 255, 255, 0.95)"
+        },
+        "labelSize": "12px",
+        "emailAriaLabel": {
+          "ariaLabel": "이메일",
+          "id": "email",
+          "name": null,
+          "type": "email"
+        },
+        "pwAriaLabel": {
+          "ariaLabel": "비밀번호",
+          "id": "password",
+          "name": null,
+          "type": "password"
+        },
+        "glowEl": {
+          "width": 480,
+          "height": 480,
+          "right": 624,
+          "top": 224,
+          "color": "rgb(13, 17, 32)",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "fontSize": "14px",
+          "borderColor": "rgb(13, 17, 32)",
+          "border": "0px none rgb(13, 17, 32)"
+        },
+        "networkRequests": [
+          {
+            "url": "https://ai.joonwon.dev/api/auth/setup-required",
+            "status": 200,
+            "method": "GET"
+          }
+        ],
+        "consoleErrors": []
+      },
+      "light": {
+        "screenshot": "login-tablet-light.png",
+        "overflow": [],
+        "themeBtn": {
+          "width": 76,
+          "height": 44,
+          "right": 735,
+          "top": 303,
+          "color": "rgb(132, 145, 168)",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "fontSize": "12px",
+          "borderColor": "rgba(255, 255, 255, 0.16)",
+          "border": "1px solid rgba(255, 255, 255, 0.16)"
+        },
+        "footerLinks": [
+          {
+            "text": "계정 만들기",
+            "width": 71,
+            "height": 38,
+            "paddingTop": "12px",
+            "paddingBottom": "12px",
+            "display": "inline-block"
+          }
+        ],
+        "emailInput": {
+          "width": 662,
+          "height": 43,
+          "right": 715,
+          "top": 480,
+          "color": "rgb(221, 227, 240)",
+          "backgroundColor": "rgba(255, 255, 255, 0.024)",
+          "fontSize": "16px",
+          "borderColor": "rgba(255, 255, 255, 0.16)",
+          "border": "1px solid rgba(255, 255, 255, 0.16)"
+        },
+        "footerText": {
+          "color": "rgb(132, 145, 168)",
+          "cardBg": "rgba(14, 17, 28, 0.9)"
+        },
+        "labelSize": "12px",
+        "emailAriaLabel": {
+          "ariaLabel": "이메일",
+          "id": "email",
+          "name": null,
+          "type": "email"
+        },
+        "pwAriaLabel": {
+          "ariaLabel": "비밀번호",
+          "id": "password",
+          "name": null,
+          "type": "password"
+        },
+        "glowEl": {
+          "width": 480,
+          "height": 480,
+          "right": 624,
+          "top": 224,
+          "color": "rgb(221, 227, 240)",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "fontSize": "14px",
+          "borderColor": "rgb(221, 227, 240)",
+          "border": "0px none rgb(221, 227, 240)"
+        },
+        "networkRequests": [
+          {
+            "url": "https://ai.joonwon.dev/api/auth/setup-required",
+            "status": 200,
+            "method": "GET"
+          }
+        ],
+        "consoleErrors": []
+      }
+    },
+    "desktop": {
+      "dark": {
+        "screenshot": "login-desktop-dark.png",
+        "overflow": [],
+        "themeBtn": {
+          "width": 68,
+          "height": 28,
+          "right": 813,
+          "top": 191,
+          "color": "rgb(82, 96, 122)",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "fontSize": "12px",
+          "borderColor": "rgba(0, 0, 0, 0.15)",
+          "border": "1px solid rgba(0, 0, 0, 0.15)"
+        },
+        "footerLinks": [
+          {
+            "text": "계정 만들기",
+            "width": 55,
+            "height": 14,
+            "paddingTop": "0px",
+            "paddingBottom": "0px",
+            "display": "inline"
+          }
+        ],
+        "emailInput": {
+          "width": 306,
+          "height": 40,
+          "right": 793,
+          "top": 368,
+          "color": "rgb(13, 17, 32)",
+          "backgroundColor": "rgba(0, 0, 0, 0.02)",
+          "fontSize": "14px",
+          "borderColor": "rgba(0, 0, 0, 0.15)",
+          "border": "1px solid rgba(0, 0, 0, 0.15)"
+        },
+        "footerText": {
+          "color": "rgb(82, 96, 122)",
+          "cardBg": "rgba(255, 255, 255, 0.95)"
+        },
+        "labelSize": "12px",
+        "emailAriaLabel": {
+          "ariaLabel": "이메일",
+          "id": "email",
+          "name": null,
+          "type": "email"
+        },
+        "pwAriaLabel": {
+          "ariaLabel": "비밀번호",
+          "id": "password",
+          "name": null,
+          "type": "password"
+        },
+        "glowEl": {
+          "width": 480,
+          "height": 480,
+          "right": 880,
+          "top": 112,
+          "color": "rgb(13, 17, 32)",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "fontSize": "14px",
+          "borderColor": "rgb(13, 17, 32)",
+          "border": "0px none rgb(13, 17, 32)"
+        },
+        "networkRequests": [
+          {
+            "url": "https://ai.joonwon.dev/api/auth/setup-required",
+            "status": 200,
+            "method": "GET"
+          }
+        ],
+        "consoleErrors": []
+      },
+      "light": {
+        "screenshot": "login-desktop-light.png",
+        "overflow": [],
+        "themeBtn": {
+          "width": 68,
+          "height": 28,
+          "right": 813,
+          "top": 191,
+          "color": "rgb(132, 145, 168)",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "fontSize": "12px",
+          "borderColor": "rgba(255, 255, 255, 0.16)",
+          "border": "1px solid rgba(255, 255, 255, 0.16)"
+        },
+        "footerLinks": [
+          {
+            "text": "계정 만들기",
+            "width": 55,
+            "height": 14,
+            "paddingTop": "0px",
+            "paddingBottom": "0px",
+            "display": "inline"
+          }
+        ],
+        "emailInput": {
+          "width": 306,
+          "height": 40,
+          "right": 793,
+          "top": 368,
+          "color": "rgb(221, 227, 240)",
+          "backgroundColor": "rgba(255, 255, 255, 0.024)",
+          "fontSize": "14px",
+          "borderColor": "rgba(255, 255, 255, 0.16)",
+          "border": "1px solid rgba(255, 255, 255, 0.16)"
+        },
+        "footerText": {
+          "color": "rgb(132, 145, 168)",
+          "cardBg": "rgba(14, 17, 28, 0.9)"
+        },
+        "labelSize": "12px",
+        "emailAriaLabel": {
+          "ariaLabel": "이메일",
+          "id": "email",
+          "name": null,
+          "type": "email"
+        },
+        "pwAriaLabel": {
+          "ariaLabel": "비밀번호",
+          "id": "password",
+          "name": null,
+          "type": "password"
+        },
+        "glowEl": {
+          "width": 480,
+          "height": 480,
+          "right": 880,
+          "top": 112,
+          "color": "rgb(221, 227, 240)",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "fontSize": "14px",
+          "borderColor": "rgb(221, 227, 240)",
+          "border": "0px none rgb(221, 227, 240)"
+        },
+        "networkRequests": [
+          {
+            "url": "https://ai.joonwon.dev/api/auth/setup-required",
+            "status": 200,
+            "method": "GET"
+          }
+        ],
+        "consoleErrors": []
+      }
+    }
+  },
+  "/signup": {
+    "mobile": {
+      "dark": {
+        "screenshot": "signup-mobile-dark.png",
+        "overflow": [],
+        "themeBtn": {
+          "width": 76,
+          "height": 44,
+          "right": 342,
+          "top": 149,
+          "color": "rgb(82, 96, 122)",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "fontSize": "12px",
+          "borderColor": "rgba(0, 0, 0, 0.15)",
+          "border": "1px solid rgba(0, 0, 0, 0.15)"
+        },
+        "footerLinks": [
+          {
+            "text": "로그인",
+            "width": 47,
+            "height": 38,
+            "paddingTop": "12px",
+            "paddingBottom": "12px",
+            "display": "inline-block"
+          }
+        ],
+        "emailInput": {
+          "width": 269,
+          "height": 43,
+          "right": 322,
+          "top": 326,
+          "color": "rgb(13, 17, 32)",
+          "backgroundColor": "rgba(0, 0, 0, 0.02)",
+          "fontSize": "16px",
+          "borderColor": "rgba(0, 0, 0, 0.15)",
+          "border": "1px solid rgba(0, 0, 0, 0.15)"
+        },
+        "footerText": {
+          "color": "rgb(82, 96, 122)",
+          "cardBg": "rgba(255, 255, 255, 0.95)"
+        },
+        "labelSize": "12px",
+        "emailAriaLabel": {
+          "ariaLabel": "이메일",
+          "id": "email",
+          "name": null,
+          "type": "email"
+        },
+        "pwAriaLabel": {
+          "ariaLabel": "비밀번호",
+          "id": "password",
+          "name": null,
+          "type": "password"
+        },
+        "glowEl": {
+          "width": 375,
+          "height": 375,
+          "right": 375,
+          "top": 181,
+          "color": "rgb(13, 17, 32)",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "fontSize": "14px",
+          "borderColor": "rgb(13, 17, 32)",
+          "border": "0px none rgb(13, 17, 32)"
+        },
+        "networkRequests": [],
+        "consoleErrors": []
+      },
+      "light": {
+        "screenshot": "signup-mobile-light.png",
+        "overflow": [],
+        "themeBtn": {
+          "width": 76,
+          "height": 44,
+          "right": 342,
+          "top": 149,
+          "color": "rgb(132, 145, 168)",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "fontSize": "12px",
+          "borderColor": "rgba(255, 255, 255, 0.16)",
+          "border": "1px solid rgba(255, 255, 255, 0.16)"
+        },
+        "footerLinks": [
+          {
+            "text": "로그인",
+            "width": 47,
+            "height": 38,
+            "paddingTop": "12px",
+            "paddingBottom": "12px",
+            "display": "inline-block"
+          }
+        ],
+        "emailInput": {
+          "width": 269,
+          "height": 43,
+          "right": 322,
+          "top": 326,
+          "color": "rgb(221, 227, 240)",
+          "backgroundColor": "rgba(255, 255, 255, 0.024)",
+          "fontSize": "16px",
+          "borderColor": "rgba(255, 255, 255, 0.16)",
+          "border": "1px solid rgba(255, 255, 255, 0.16)"
+        },
+        "footerText": {
+          "color": "rgb(132, 145, 168)",
+          "cardBg": "rgba(14, 17, 28, 0.9)"
+        },
+        "labelSize": "12px",
+        "emailAriaLabel": {
+          "ariaLabel": "이메일",
+          "id": "email",
+          "name": null,
+          "type": "email"
+        },
+        "pwAriaLabel": {
+          "ariaLabel": "비밀번호",
+          "id": "password",
+          "name": null,
+          "type": "password"
+        },
+        "glowEl": {
+          "width": 375,
+          "height": 375,
+          "right": 375,
+          "top": 181,
+          "color": "rgb(221, 227, 240)",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "fontSize": "14px",
+          "borderColor": "rgb(221, 227, 240)",
+          "border": "0px none rgb(221, 227, 240)"
+        },
+        "networkRequests": [],
+        "consoleErrors": []
+      }
+    },
+    "tablet": {
+      "dark": {
+        "screenshot": "signup-tablet-dark.png",
+        "overflow": [],
+        "themeBtn": {
+          "width": 76,
+          "height": 44,
+          "right": 735,
+          "top": 255,
+          "color": "rgb(82, 96, 122)",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "fontSize": "12px",
+          "borderColor": "rgba(0, 0, 0, 0.15)",
+          "border": "1px solid rgba(0, 0, 0, 0.15)"
+        },
+        "footerLinks": [
+          {
+            "text": "로그인",
+            "width": 47,
+            "height": 38,
+            "paddingTop": "12px",
+            "paddingBottom": "12px",
+            "display": "inline-block"
+          }
+        ],
+        "emailInput": {
+          "width": 662,
+          "height": 43,
+          "right": 715,
+          "top": 432,
+          "color": "rgb(13, 17, 32)",
+          "backgroundColor": "rgba(0, 0, 0, 0.02)",
+          "fontSize": "16px",
+          "borderColor": "rgba(0, 0, 0, 0.15)",
+          "border": "1px solid rgba(0, 0, 0, 0.15)"
+        },
+        "footerText": {
+          "color": "rgb(82, 96, 122)",
+          "cardBg": "rgba(255, 255, 255, 0.95)"
+        },
+        "labelSize": "12px",
+        "emailAriaLabel": {
+          "ariaLabel": "이메일",
+          "id": "email",
+          "name": null,
+          "type": "email"
+        },
+        "pwAriaLabel": {
+          "ariaLabel": "비밀번호",
+          "id": "password",
+          "name": null,
+          "type": "password"
+        },
+        "glowEl": {
+          "width": 480,
+          "height": 480,
+          "right": 624,
+          "top": 224,
+          "color": "rgb(13, 17, 32)",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "fontSize": "14px",
+          "borderColor": "rgb(13, 17, 32)",
+          "border": "0px none rgb(13, 17, 32)"
+        },
+        "networkRequests": [],
+        "consoleErrors": []
+      },
+      "light": {
+        "screenshot": "signup-tablet-light.png",
+        "overflow": [],
+        "themeBtn": {
+          "width": 76,
+          "height": 44,
+          "right": 735,
+          "top": 255,
+          "color": "rgb(132, 145, 168)",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "fontSize": "12px",
+          "borderColor": "rgba(255, 255, 255, 0.16)",
+          "border": "1px solid rgba(255, 255, 255, 0.16)"
+        },
+        "footerLinks": [
+          {
+            "text": "로그인",
+            "width": 47,
+            "height": 38,
+            "paddingTop": "12px",
+            "paddingBottom": "12px",
+            "display": "inline-block"
+          }
+        ],
+        "emailInput": {
+          "width": 662,
+          "height": 43,
+          "right": 715,
+          "top": 432,
+          "color": "rgb(221, 227, 240)",
+          "backgroundColor": "rgba(255, 255, 255, 0.024)",
+          "fontSize": "16px",
+          "borderColor": "rgba(255, 255, 255, 0.16)",
+          "border": "1px solid rgba(255, 255, 255, 0.16)"
+        },
+        "footerText": {
+          "color": "rgb(132, 145, 168)",
+          "cardBg": "rgba(14, 17, 28, 0.9)"
+        },
+        "labelSize": "12px",
+        "emailAriaLabel": {
+          "ariaLabel": "이메일",
+          "id": "email",
+          "name": null,
+          "type": "email"
+        },
+        "pwAriaLabel": {
+          "ariaLabel": "비밀번호",
+          "id": "password",
+          "name": null,
+          "type": "password"
+        },
+        "glowEl": {
+          "width": 480,
+          "height": 480,
+          "right": 624,
+          "top": 224,
+          "color": "rgb(221, 227, 240)",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "fontSize": "14px",
+          "borderColor": "rgb(221, 227, 240)",
+          "border": "0px none rgb(221, 227, 240)"
+        },
+        "networkRequests": [],
+        "consoleErrors": []
+      }
+    },
+    "desktop": {
+      "dark": {
+        "screenshot": "signup-desktop-dark.png",
+        "overflow": [],
+        "themeBtn": {
+          "width": 68,
+          "height": 28,
+          "right": 813,
+          "top": 144,
+          "color": "rgb(82, 96, 122)",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "fontSize": "12px",
+          "borderColor": "rgba(0, 0, 0, 0.15)",
+          "border": "1px solid rgba(0, 0, 0, 0.15)"
+        },
+        "footerLinks": [
+          {
+            "text": "로그인",
+            "width": 31,
+            "height": 14,
+            "paddingTop": "0px",
+            "paddingBottom": "0px",
+            "display": "inline"
+          }
+        ],
+        "emailInput": {
+          "width": 306,
+          "height": 40,
+          "right": 793,
+          "top": 321,
+          "color": "rgb(13, 17, 32)",
+          "backgroundColor": "rgba(0, 0, 0, 0.02)",
+          "fontSize": "14px",
+          "borderColor": "rgba(0, 0, 0, 0.15)",
+          "border": "1px solid rgba(0, 0, 0, 0.15)"
+        },
+        "footerText": {
+          "color": "rgb(82, 96, 122)",
+          "cardBg": "rgba(255, 255, 255, 0.95)"
+        },
+        "labelSize": "12px",
+        "emailAriaLabel": {
+          "ariaLabel": "이메일",
+          "id": "email",
+          "name": null,
+          "type": "email"
+        },
+        "pwAriaLabel": {
+          "ariaLabel": "비밀번호",
+          "id": "password",
+          "name": null,
+          "type": "password"
+        },
+        "glowEl": {
+          "width": 480,
+          "height": 480,
+          "right": 880,
+          "top": 112,
+          "color": "rgb(13, 17, 32)",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "fontSize": "14px",
+          "borderColor": "rgb(13, 17, 32)",
+          "border": "0px none rgb(13, 17, 32)"
+        },
+        "networkRequests": [],
+        "consoleErrors": []
+      },
+      "light": {
+        "screenshot": "signup-desktop-light.png",
+        "overflow": [],
+        "themeBtn": {
+          "width": 68,
+          "height": 28,
+          "right": 813,
+          "top": 144,
+          "color": "rgb(132, 145, 168)",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "fontSize": "12px",
+          "borderColor": "rgba(255, 255, 255, 0.16)",
+          "border": "1px solid rgba(255, 255, 255, 0.16)"
+        },
+        "footerLinks": [
+          {
+            "text": "로그인",
+            "width": 31,
+            "height": 14,
+            "paddingTop": "0px",
+            "paddingBottom": "0px",
+            "display": "inline"
+          }
+        ],
+        "emailInput": {
+          "width": 306,
+          "height": 40,
+          "right": 793,
+          "top": 321,
+          "color": "rgb(221, 227, 240)",
+          "backgroundColor": "rgba(255, 255, 255, 0.024)",
+          "fontSize": "14px",
+          "borderColor": "rgba(255, 255, 255, 0.16)",
+          "border": "1px solid rgba(255, 255, 255, 0.16)"
+        },
+        "footerText": {
+          "color": "rgb(132, 145, 168)",
+          "cardBg": "rgba(14, 17, 28, 0.9)"
+        },
+        "labelSize": "12px",
+        "emailAriaLabel": {
+          "ariaLabel": "이메일",
+          "id": "email",
+          "name": null,
+          "type": "email"
+        },
+        "pwAriaLabel": {
+          "ariaLabel": "비밀번호",
+          "id": "password",
+          "name": null,
+          "type": "password"
+        },
+        "glowEl": {
+          "width": 480,
+          "height": 480,
+          "right": 880,
+          "top": 112,
+          "color": "rgb(221, 227, 240)",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "fontSize": "14px",
+          "borderColor": "rgb(221, 227, 240)",
+          "border": "0px none rgb(221, 227, 240)"
+        },
+        "networkRequests": [],
+        "consoleErrors": []
+      }
+    }
+  },
+  "loginNetworkRequests": [
+    {
+      "url": "https://ai.joonwon.dev/api/auth/setup-required",
+      "status": 200,
+      "method": "GET"
+    }
+  ],
+  "undefinedRoutes": {
+    "/agents": {
+      "finalUrl": "https://ai.joonwon.dev/login",
+      "title": "AI Agent Hub — 로그인"
+    },
+    "/dashboard": {
+      "finalUrl": "https://ai.joonwon.dev/login",
+      "title": "AI Agent Hub — 로그인"
+    },
+    "/register": {
+      "finalUrl": "https://ai.joonwon.dev/login",
+      "title": "AI Agent Hub — 로그인"
+    }
+  }
+}
