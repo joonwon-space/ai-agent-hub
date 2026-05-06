@@ -68,6 +68,7 @@ async function init() {
 
   buildForm();
   setupBackButton();
+  setupViewModeLink();
 
   if (!isNew) {
     await loadRecipe();
@@ -708,6 +709,38 @@ function setupBackButton() {
   btn.addEventListener('click', () => {
     window.location.href = `/my-space/recipes?spaceId=${spaceId}`;
   });
+}
+
+// ---------------------------------------------------------------------------
+// View mode link (보기 모드) — shown in topbar right when editing existing recipe
+// ---------------------------------------------------------------------------
+function setupViewModeLink() {
+  const rightBar = document.querySelector('.recipe-edit-topbar__right');
+  if (!rightBar) return;
+
+  const link = document.createElement('a');
+  link.id = 'btn-view-mode';
+  link.className = 'ms-recipe-edit__view-link btn-text';
+
+  if (isNew || !recipeId) {
+    // New recipe — show disabled hint
+    link.setAttribute('aria-disabled', 'true');
+    link.setAttribute('tabindex', '-1');
+    link.title = '저장 후 사용 가능';
+    link.textContent = '보기 모드';
+    link.className += ' ms-recipe-edit__view-link--disabled';
+  } else {
+    link.href = `/my-space/recipes/${recipeId}/view?spaceId=${spaceId}`;
+    link.textContent = '보기 모드';
+  }
+
+  // Insert before the first child (theme toggle), after save indicator
+  const themeToggle = document.getElementById('theme-toggle');
+  if (themeToggle) {
+    rightBar.insertBefore(link, themeToggle);
+  } else {
+    rightBar.appendChild(link);
+  }
 }
 
 // ---------------------------------------------------------------------------

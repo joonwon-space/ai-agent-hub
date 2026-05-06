@@ -603,3 +603,34 @@
     padding: 12px;
   }
 }
+
+/* ---------------------------------------------------------------------------
+ * View mode link in recipe edit topbar
+ * --------------------------------------------------------------------------- */
+
+.ms-recipe-edit__view-link {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-recipe-text, #34d399);
+  text-decoration: none;
+  padding: 4px 10px;
+  border: 1px solid var(--color-recipe-border, rgba(16,185,129,0.25));
+  border-radius: 6px;
+  background: var(--color-recipe-dim, rgba(16,185,129,0.08));
+  transition: background 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+
+.ms-recipe-edit__view-link:hover {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.45);
+}
+
+.ms-recipe-edit__view-link--disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+  color: var(--text-muted, #8892a0);
+  border-color: var(--border, rgba(255,255,255,0.07));
+  background: transparent;
+}
