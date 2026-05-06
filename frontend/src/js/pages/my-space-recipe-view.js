@@ -105,7 +105,7 @@ function makeBadge(text, className) {
   return span;
 }
 
-const DIFFICULTY_LABELS = { easy: '쉬움', medium: '보통', hard: '어려움' };
+const _VIEW_DIFFICULTY_LABELS = { easy: '쉬움', medium: '보통', hard: '어려움' };
 
 /**
  * Build the checklist for ingredients or steps.
@@ -265,7 +265,7 @@ function renderView(recipe) {
   }
 
   if (recipe.difficulty) {
-    const diffLabel = DIFFICULTY_LABELS[recipe.difficulty] || recipe.difficulty;
+    const diffLabel = _VIEW_DIFFICULTY_LABELS[recipe.difficulty] || recipe.difficulty;
     metaEl.appendChild(makeBadge(diffLabel, `ms-recipe-view__difficulty ms-recipe-view__difficulty--${recipe.difficulty}`));
   }
 
