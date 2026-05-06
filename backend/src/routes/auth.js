@@ -79,12 +79,15 @@ router.post('/logout', (req, res) => {
 });
 
 router.get('/me', async (req, res, next) => {
+  // W-6: returns 200 + null when no session, instead of 401, so the login page
+  // (and any unauthenticated landing) doesn't generate noisy 401s in browser
+  // network/console. Frontend getMe() treats null as "not logged in".
   if (!req.session?.userId) {
-    return res.status(401).json({ error: '인증이 필요합니다.' });
+    return res.status(200).json(null);
   }
   try {
     const user = await prisma.user.findUnique({ where: { id: req.session.userId } });
-    if (!user) return res.status(401).json({ error: '사용자를 찾을 수 없습니다.' });
+    if (!user) return res.status(200).json(null);
     res.json({ id: user.id, email: user.email });
   } catch (err) {
     next(err);

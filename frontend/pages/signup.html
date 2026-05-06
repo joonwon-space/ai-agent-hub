@@ -88,7 +88,7 @@
       letter-spacing: -0.4px;
     }
     .subtitle {
-      font-size: 13px;
+      font-size: 14px;  /* M-1: was 13px — raised for low-vision a11y */
       color: var(--text-muted);
       margin-bottom: 28px;
     }
@@ -118,16 +118,16 @@
     <form id="signup-form" onsubmit="handleSubmit(event)" novalidate>
       <div class="form-group">
         <label for="email">이메일</label>
-        <input type="email" id="email" placeholder="admin@example.com" required autocomplete="email" />
+        <input type="email" id="email" placeholder="admin@example.com" required autocomplete="email" aria-label="이메일" />
       </div>
       <div class="form-group">
         <label for="password">비밀번호</label>
-        <input type="password" id="password" placeholder="••••••••" required autocomplete="new-password" minlength="8" />
+        <input type="password" id="password" placeholder="••••••••" required autocomplete="new-password" minlength="8" aria-label="비밀번호" />
         <div class="hint">8자 이상</div>
       </div>
       <div class="form-group">
         <label for="password-confirm">비밀번호 확인</label>
-        <input type="password" id="password-confirm" placeholder="••••••••" required autocomplete="new-password" />
+        <input type="password" id="password-confirm" placeholder="••••••••" required autocomplete="new-password" aria-label="비밀번호 확인" />
       </div>
       <button type="submit" class="btn" id="submit-btn">계정 생성</button>
     </form>
