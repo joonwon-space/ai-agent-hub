@@ -198,17 +198,17 @@ _연관 결정사항: [docs/decisions/my-space-phase-3-decisions.md](../decision
 
 ## Done 정의 (Phase 3.5)
 
-- [ ] `/my-space/recipes/:id/view` 페이지 노출
-- [ ] 재료 / 단계 체크박스 + localStorage 영속화 (페이지 reload 후 유지)
-- [ ] progress count (`X / N`) 표시
-- [ ] 체크된 항목 strikethrough + 흐림 처리
-- [ ] "체크 초기화" 버튼 동작
-- [ ] "편집" 버튼 → edit 페이지
-- [ ] "← 목록" 버튼 → 목록
-- [ ] 카드 클릭 시 view 로 이동 (모든 진입점: 그리드, dashboard top-3)
-- [ ] 편집 페이지 헤더에 "보기 모드" 링크
-- [ ] innerHTML 0
-- [ ] Playwright happy path + reload 영속성 + 초기화 + 진입점 회귀 통과
+- [x] `/my-space/recipes/:id/view` 페이지 노출
+- [x] 재료 / 단계 체크박스 + localStorage 영속화 (페이지 reload 후 유지)
+- [x] progress count (`X / N`) 표시
+- [x] 체크된 항목 strikethrough + 흐림 처리
+- [x] "체크 초기화" 버튼 동작
+- [x] "편집" 버튼 → edit 페이지
+- [x] "← 목록" 버튼 → 목록
+- [x] 카드 클릭 시 view 로 이동 (모든 진입점: 그리드, dashboard top-3)
+- [x] 편집 페이지 헤더에 "보기 모드" 링크
+- [x] innerHTML 0
+- [x] Playwright happy path + reload 영속성 + 초기화 + 진입점 회귀 통과
 
 ---
 
