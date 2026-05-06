@@ -192,7 +192,7 @@ async function loadRecipes(container) {
 
   for (const recipe of recipeList) {
     const card = renderRecipeCard(recipe, () => {
-      window.location.href = `/my-space/recipes/${recipe.id}?spaceId=${spaceId}`;
+      window.location.href = `/my-space/recipes/${recipe.id}/view?spaceId=${spaceId}`;
     });
     grid.appendChild(card);
   }
