@@ -56,6 +56,7 @@ jest.mock('../src/agentLoader', () => ({
 // Mock sharp to avoid native binary dependency in tests
 jest.mock('sharp', () => {
   const mockInstance = {
+    rotate: jest.fn().mockReturnThis(),
     resize: jest.fn().mockReturnThis(),
     webp: jest.fn().mockReturnThis(),
     toBuffer: jest.fn().mockResolvedValue(Buffer.from('fake-webp-content')),

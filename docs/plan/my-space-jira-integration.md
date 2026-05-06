@@ -170,3 +170,5 @@ Worker C 는 같은 파일에서 `<aside id="sidebar">…</aside>` 블록 제거
 - Per-space Jira config (다른 Jira 인스턴스를 다른 space 에서 쓰고 싶을 때) — 새 모델 또는 UserSetting 키 prefix 변경
 - Jira 외 다른 에이전트 추가 (`backend/src/agents/*.js` 늘어날 때) — 각 에이전트마다 별도 template 추가 또는 generic agent template 으로 통합
 - Jira 토큰 색상 (`--color-jira-*`) — 디자인 토큰 추가
+
+→ 잔여 후속 항목은 [`docs/plan/backlog.md`](./backlog.md) 에 통합 정리됨.

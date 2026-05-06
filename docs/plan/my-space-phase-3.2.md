@@ -238,3 +238,5 @@ _연관 결정사항: [docs/decisions/my-space-phase-3-decisions.md](../decision
 - 페이지네이션 (`?cursor=`)
 - 한국어 형태소 분석 (`tsvector` + pg_trgm 또는 pgroonga 도입 시 별 페이즈)
 - 검색 히스토리 / autocomplete
+
+→ 잔여 후속 항목은 [`docs/plan/backlog.md`](./backlog.md) 에 통합 정리됨.

@@ -205,3 +205,5 @@
 - 재료 체크박스 클라이언트 상태 (PRD §10 Phase 1.5 후순위) → Phase 3 백로그
 - 카테고리 enum 사용자 정의 → Phase 3 백로그
 - 레시피 커버 이미지 업로드 → [phase-3-extras.md](./my-space-phase-3-extras.md)
+
+→ 잔여 후속 항목은 [`docs/plan/backlog.md`](./backlog.md) 에 통합 정리됨.

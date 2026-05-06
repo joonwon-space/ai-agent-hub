@@ -235,3 +235,5 @@ _연관 결정사항: [docs/decisions/my-space-phase-3-decisions.md](../decision
 - 이미지 EXIF 메타데이터 제거 — 보안 강화 차원, 후속
 - 썸네일 생성 (카드 그리드 전용 작은 사이즈) — 성능 최적화 후순위
 - 이미지 lazy loading — 카드 30+ 일 때 의미
+
+→ 잔여 후속 항목은 [`docs/plan/backlog.md`](./backlog.md) 에 통합 정리됨.

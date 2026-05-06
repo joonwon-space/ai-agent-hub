@@ -219,9 +219,10 @@ test.describe('My Space — Phase 3.1 Recipe Cover Upload', () => {
     const cardSrc = await cardCover.getAttribute('src');
     expect(cardSrc).toMatch(/^\/uploads\/recipes\/.+\.webp$/);
 
-    // 9. Go back to edit page
-    await card.click();
-    await page.waitForURL(`**/my-space/recipes/${recipeId}**`);
+    // 9. Go back to edit page (Phase 3.5 changed card click → view; navigate
+    // directly to the edit URL since '편집' button on the view page is the
+    // intended entry but a direct goto keeps this spec focused on cover UX)
+    await page.goto(`/my-space/recipes/${recipeId}?spaceId=${spaceId}`);
     await page.waitForSelector('#cover-dropzone', { state: 'visible', timeout: 8000 });
 
     // 10. Delete cover — click ✕ button

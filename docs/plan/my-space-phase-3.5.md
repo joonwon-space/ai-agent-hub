@@ -218,3 +218,5 @@ _연관 결정사항: [docs/decisions/my-space-phase-3-decisions.md](../decision
 - 인덱스 기반 → ingredient/step id 기반 정합성 보장 (재료 추가/삭제 후에도 진행 상태 유지)
 - 검색 결과 카드도 view 로 라우팅 (search.js — 본 페이즈 owner 외)
 - 음성 안내 / 타이머 / 단위 변환 등 요리 보조 기능
+
+→ 잔여 후속 항목은 [`docs/plan/backlog.md`](./backlog.md) 에 통합 정리됨.

@@ -170,8 +170,15 @@ router.post(
         });
       }
 
-      // Process with sharp: resize to max 1200px wide, convert to webp
+      // Process with sharp:
+      //   - rotate(): apply EXIF orientation to pixels then strip the metadata
+      //     (prevents portrait photos appearing sideways AND removes any
+      //     residual EXIF such as GPS coordinates from the source file)
+      //   - resize to max 1200px wide
+      //   - re-encode as webp (sharp's default discards metadata; explicit
+      //     rotate() upstream guarantees no orientation/GPS/camera fields leak)
       const processed = await sharp(req.file.buffer)
+        .rotate()
         .resize({ width: 1200, withoutEnlargement: true })
         .webp({ quality: 82 })
         .toBuffer();

@@ -195,3 +195,5 @@ PRD §10 Phase 2 항목 중 본 페이즈에서 다루지 않는 것:
 - 통합 검색 (diary/recipe/note)
 
 → [my-space-phase-3-extras.md](./my-space-phase-3-extras.md) 참조
+
+→ 잔여 후속 항목은 [`docs/plan/backlog.md`](./backlog.md) 에 통합 정리됨.

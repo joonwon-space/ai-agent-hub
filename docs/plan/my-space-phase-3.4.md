@@ -222,3 +222,5 @@ _연관 결정사항: [docs/decisions/my-space-phase-3-decisions.md](../decision
 - 모바일 ≤ 480px (스마트폰 작은 화면) — 본 페이즈는 ≤ 768px 까지
 - 색맹 친화 색상 검토 (axe 가 critical 으로 안 잡으면 후속)
 - screen reader 풀 테스트 (NVDA/VoiceOver 수동)
+
+→ 잔여 후속 항목은 [`docs/plan/backlog.md`](./backlog.md) 에 통합 정리됨.
