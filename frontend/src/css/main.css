@@ -35,9 +35,9 @@ html { transition: background-color 0.25s, color 0.2s; }
   --warning-dim: rgba(251,191,36,0.12);
 
   --text: #dde3f0;
-  --text-muted: #4a5266;
-  --text-faint: #2e3347;
-  --text-subtle: #6b7585;
+  --text-muted: #8491a8;   /* was #4a5266 — raised for WCAG AA contrast on dark bg */
+  --text-faint: #4a566a;   /* was #2e3347 — decorative/non-interactive only */
+  --text-subtle: #8b96aa;  /* was #6b7585 — raised for WCAG AA contrast on dark bg */
 
   --input-bg: rgba(255,255,255,0.025);
   --input-bg-focus: rgba(30,144,255,0.06);
@@ -83,16 +83,16 @@ html { transition: background-color 0.25s, color 0.2s; }
   --success-glow: 0 4px 14px rgba(0,170,0,0.20);
   --success-text-on: #ffffff;
 
-  --error: #dc2626;
-  --error-dim: rgba(220,38,38,0.06);
-  --error-border: rgba(220,38,38,0.20);
-  --warning: #d97706;
-  --warning-dim: rgba(217,119,6,0.10);
+  --error: #b91c1c;          /* was #dc2626 — darkened for WCAG AA on light error-dim bg */
+  --error-dim: rgba(185,28,28,0.06);
+  --error-border: rgba(185,28,28,0.20);
+  --warning: #b45309;        /* was #d97706 — darkened for WCAG AA */
+  --warning-dim: rgba(180,83,9,0.10);
 
   --text: #0d1120;
-  --text-muted: #6b7587;
-  --text-faint: #9ca3af;
-  --text-subtle: #8892a4;
+  --text-muted: #52607a;   /* was #6b7587 — darkened for WCAG AA on light bg */
+  --text-faint: #7a8499;   /* was #9ca3af — decorative/non-interactive only */
+  --text-subtle: #454f62;  /* was #8892a4 — darkened for WCAG AA on light bg */
 
   --input-bg: rgba(0,0,0,0.02);
   --input-bg-focus: rgba(30,144,255,0.04);

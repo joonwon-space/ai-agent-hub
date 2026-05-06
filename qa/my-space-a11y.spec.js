@@ -237,57 +237,47 @@ test.describe('My Space — a11y audit (Phase 3.4)', () => {
   //      who creates a diary space once.
   // -------------------------------------------------------------------------
   test.describe('Pages: dashboard + diary/new + notes/new', () => {
-    let diarySpaceId = null;
-    let freeformSpaceId = null;
-
-    test.beforeAll(async ({ baseURL, page }) => {
-      await loginUI(page, baseURL);
-
-      // Navigate to my-space and create a diary space if needed
+    /**
+     * Helper: ensure the a11y user has at least one diary space.
+     * Returns the spaceId if found, or null.
+     */
+    async function ensureSpaceAndGetId(page) {
+      await loginUI(page);
       await page.goto('/my-space');
       await page.waitForSelector('#ms-main', { timeout: 15000 });
       await page.waitForTimeout(800);
 
       const pageContent = await page.content();
 
-      // Check if we're on onboarding (no spaces yet) or dashboard
       if (pageContent.includes('ms-template-grid') || pageContent.includes('ms-onboarding')) {
-        // Click diary template card
         const diaryCard = page.locator('.template-card--diary, [data-type="diary"]').first();
         if (await diaryCard.isVisible()) {
           await diaryCard.click();
           await page.waitForTimeout(500);
-          // Fill in space name
-          const nameInput = page.locator('.ms-new-space-form__input, input[placeholder*="이름"], input[type="text"]').first();
+          const nameInput = page.locator('.ms-new-space-form__input, input[type="text"]').first();
           if (await nameInput.isVisible()) {
-            await nameInput.fill('A11Y Test Space');
+            await nameInput.fill('A11Y Dashboard Space');
             await nameInput.press('Enter');
             await page.waitForTimeout(1000);
           }
         }
       }
 
-      // Get spaceId from URL or from sidebar
       const url = page.url();
       const match = url.match(/spaceId=([^&]+)/);
-      if (match) {
-        diarySpaceId = match[1];
-      } else {
-        // Try to get it from the sidebar item
-        const sidebarItem = page.locator('.ms-inner-sidebar__item').first();
-        if (await sidebarItem.isVisible()) {
-          await sidebarItem.click();
-          await page.waitForTimeout(500);
-          const newUrl = page.url();
-          const m = newUrl.match(/spaceId=([^&]+)/);
-          if (m) diarySpaceId = m[1];
-        }
+      if (match) return match[1];
+
+      const sidebarItem = page.locator('.ms-inner-sidebar__item').first();
+      if (await sidebarItem.isVisible()) {
+        await sidebarItem.click();
+        await page.waitForTimeout(500);
+        const newUrl = page.url();
+        const m = newUrl.match(/spaceId=([^&]+)/);
+        if (m) return m[1];
       }
 
-      // Try to also set up a freeform space for notes
-      // For simplicity, use the same spaceId or try the freeform template
-      freeformSpaceId = diarySpaceId;
-    });
+      return null;
+    }
 
     // -----------------------------------------------------------------------
     // 3. Dashboard page
@@ -314,9 +304,7 @@ test.describe('My Space — a11y audit (Phase 3.4)', () => {
     test('diary/new: audit across 3 viewports × 2 themes', async ({ page }) => {
       test.setTimeout(120_000);
 
-      await loginUI(page);
-
-      const spaceId = diarySpaceId;
+      const spaceId = await ensureSpaceAndGetId(page);
 
       await auditAcrossViewportsAndThemes(
         page,
@@ -341,18 +329,29 @@ test.describe('My Space — a11y audit (Phase 3.4)', () => {
     test('notes/new: audit across 3 viewports × 2 themes', async ({ page }) => {
       test.setTimeout(120_000);
 
-      await loginUI(page);
+      // Navigate directly — if session still valid, we go straight to the page.
+      // If not authenticated, the app redirects to /login and we do a fast login.
+      await page.goto('/my-space/notes/new');
+      await page.waitForTimeout(1500);
 
-      const spaceId = freeformSpaceId;
+      if (page.url().includes('/login')) {
+        // Need to authenticate — use the main a11y user (should have auth from prior tests
+        // or just attempt a quick login)
+        await page.fill('#email', A11Y_EMAIL);
+        await page.fill('#password', A11Y_PASSWORD);
+        await Promise.all([
+          page.waitForURL((url) => !url.pathname.startsWith('/login'), { timeout: 20000 }),
+          page.click('#submit-btn'),
+        ]);
+        // Navigate to target after login
+        await page.goto('/my-space/notes/new');
+        await page.waitForTimeout(500);
+      }
 
       await auditAcrossViewportsAndThemes(
         page,
         async (p) => {
-          if (spaceId) {
-            await p.goto(`/my-space/notes/new?spaceId=${spaceId}`);
-          } else {
-            await p.goto('/my-space/notes/new');
-          }
+          await p.goto('/my-space/notes/new');
           await p.waitForSelector('.note-edit-topbar, .note-edit-main, body', {
             timeout: 15000,
           });
