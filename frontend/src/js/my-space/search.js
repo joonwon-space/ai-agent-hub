@@ -111,7 +111,7 @@
         window.location.href = '/my-space/diary/' + result.id + '?spaceId=' + result.spaceId;
         break;
       case 'recipe':
-        window.location.href = '/my-space/recipes/' + result.id + '?spaceId=' + result.spaceId;
+        window.location.href = '/my-space/recipes/' + result.id + '/view?spaceId=' + result.spaceId;
         break;
       case 'note':
         window.location.href = '/my-space/notes/' + result.id + '?spaceId=' + result.spaceId;

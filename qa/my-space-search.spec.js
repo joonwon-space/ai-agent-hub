@@ -217,8 +217,8 @@ test.describe('My Space — Phase 3.2 Unified Search (USER_A)', () => {
     await expect(recipeCard).toBeVisible();
     await recipeCard.click();
 
-    await sharedPage.waitForURL((url) => url.pathname.includes('/my-space/recipes/'), { timeout: 10_000 });
-    expect(sharedPage.url()).toMatch(/\/my-space\/recipes\/\d+/);
+    await sharedPage.waitForURL((url) => /\/my-space\/recipes\/\d+\/view/.test(url.pathname), { timeout: 10_000 });
+    expect(sharedPage.url()).toMatch(/\/my-space\/recipes\/\d+\/view\?spaceId=/);
 
     assertNoErrors(errors, 'Korean keyword search');
   });
