@@ -134,6 +134,9 @@ function buildChecklist(kind, items, progressSection, onToggle) {
     checkbox.className = 'ms-recipe-view__checkbox';
     checkbox.checked = isChecked;
     checkbox.dataset.idx = String(i);
+    checkbox.setAttribute('aria-label', kind === 'ingredients'
+      ? `재료 ${i + 1} 체크`
+      : `단계 ${i + 1} 체크`);
 
     checkbox.addEventListener('change', () => {
       label.classList.toggle('ms-recipe-view__check-row--done', checkbox.checked);
