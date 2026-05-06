@@ -1,7 +1,8 @@
 # My Space Phase 3 — 사용자 결정 매트릭스
 
 _작성일: 2026-05-04_
-_연관 백로그: [docs/plan/my-space-phase-3-extras.md](../plan/my-space-phase-3-extras.md)_
+_연관 백로그: [docs/plan/backlog.md](../plan/backlog.md) (잔여 항목 통합 정리)_
+_초기 백로그 초안: [docs/plan/my-space-phase-3-extras.md](../plan/my-space-phase-3-extras.md) (historical)_
 
 Phase 3 백로그 6개 항목을 시작하기 전에 사용자가 결정해야 할 사항을 한 곳에 모았다. 각 항목은 **결정이 끝나야 sprint 분해 가능**하다 — 결정 없이 진행하면 중간에 막히거나 잘못된 방향으로 작업하게 된다.
 
