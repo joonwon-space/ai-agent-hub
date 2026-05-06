@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<script>(function(){var t=localStorage.getItem('aah-theme')||'dark';document.documentElement.setAttribute('data-theme',t);})();</script>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>레시피 보기 — My Space</title>
+  <script src="/src/js/theme.js"></script>
+  <link rel="stylesheet" href="/src/css/main.css" />
+  <link rel="stylesheet" href="/src/css/my-space-tokens.css" />
+  <link rel="stylesheet" href="/src/css/my-space.css" />
+  <link rel="stylesheet" href="/src/css/my-space-recipe.css" />
+  <link rel="stylesheet" href="/src/css/my-space-recipe-view.css" />
+</head>
+<body style="visibility:hidden">
+
+<div class="recipe-edit-topbar">
+  <div class="recipe-edit-topbar__left">
+    <span style="font-size:14px;font-weight:600;color:var(--color-recipe-text);">레시피 보기</span>
+  </div>
+  <div class="recipe-edit-topbar__right">
+    <button id="theme-toggle" onclick="toggleTheme()" class="btn-text" aria-label="테마 전환" aria-pressed="false" type="button">☀️ Light</button>
+  </div>
+</div>
+
+<main id="ms-main" class="recipe-view-main">
+  <!-- Populated by my-space-recipe-view.js -->
+</main>
+
+<script src="/src/js/auth.js"></script>
+<script src="/src/js/my-space/api.js"></script>
+<script src="/src/js/my-space/recipes.js"></script>
+<script src="/src/js/my-space/components.js"></script>
+<script src="/src/js/pages/my-space-recipe-view.js"></script>
+</body>
+</html>
