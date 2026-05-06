@@ -18,9 +18,15 @@
  *   - "+ 새 공간" button: directly calls renderOnboarding() — no page reload
  *   - handleTemplateSelect creates space and returns to dashboard inline
  *
+ * Phase 3.2 changes:
+ *   - Search bar inserted at top of #ms-main after auth check
+ *   - Debounced 300ms input → window.search.query → render group results
+ *   - Main content wrapped in #ms-main-content, toggled hidden while search active
+ *
  * No innerHTML. All DOM built with createElement/textContent via components.js helpers.
  * recipes.js and notes.js are loaded via <script> tags, providing globals.
  * deleteSpaceModal.js is loaded before this file, providing window.deleteSpaceModal.
+ * search.js is loaded before this file, providing window.search.
  */
 
 'use strict';
@@ -30,6 +36,69 @@
 // ---------------------------------------------------------------------------
 let spaces = [];
 let activeSpaceId = null;
+
+// ---------------------------------------------------------------------------
+// Search bar setup
+// ---------------------------------------------------------------------------
+
+/**
+ * Insert the search bar at the top of #ms-main and wire up debounced input.
+ * Returns the { searchBar, searchResults } elements for future reference.
+ *
+ * @param {HTMLElement} msMain — the #ms-main container
+ * @returns {{ searchBar: HTMLElement, searchResults: HTMLElement }}
+ */
+function insertSearchBar(msMain) {
+  const searchBarWrap = el('div', { className: 'ms-search-bar-wrap' });
+  const searchInput = el('input', {
+    className: 'ms-search-input',
+    attrs: {
+      type: 'search',
+      id: 'ms-search-input',
+      placeholder: '검색…',
+      maxlength: '100',
+      'aria-label': 'My Space 검색',
+    },
+  });
+
+  const searchResults = el('div', {
+    className: 'ms-search-results',
+    attrs: { id: 'ms-search-results', hidden: '' },
+  });
+
+  searchBarWrap.appendChild(searchInput);
+  msMain.appendChild(searchBarWrap);
+  msMain.appendChild(searchResults);
+
+  let debounceTimer;
+
+  searchInput.addEventListener('input', (e) => {
+    clearTimeout(debounceTimer);
+    const q = e.target.value.trim();
+
+    if (q.length < 1) {
+      searchResults.hidden = true;
+      const mainContent = document.getElementById('ms-main-content');
+      if (mainContent) mainContent.hidden = false;
+      return;
+    }
+
+    debounceTimer = setTimeout(async () => {
+      try {
+        const data = await window.search.query(q);
+        if (!data) return; // 401 redirect
+        searchResults.hidden = false;
+        const mainContent = document.getElementById('ms-main-content');
+        if (mainContent) mainContent.hidden = true;
+        window.search.render(searchResults, data, window.search.navigate);
+      } catch (err) {
+        console.error('Search failed', err);
+      }
+    }, 300);
+  });
+
+  return { searchBar: searchBarWrap, searchResults };
+}
 
 // ---------------------------------------------------------------------------
 // Init
@@ -49,6 +118,15 @@ async function init() {
 
   document.body.style.visibility = 'visible';
 
+  const msMain = document.getElementById('ms-main');
+
+  // Insert search bar at the top of #ms-main (Phase 3.2)
+  insertSearchBar(msMain);
+
+  // Wrap the main content (onboarding/dashboard) in a toggleable container
+  const mainContent = el('div', { attrs: { id: 'ms-main-content' } });
+  msMain.appendChild(mainContent);
+
   try {
     spaces = await mySpace.list();
   } catch (err) {
@@ -57,10 +135,10 @@ async function init() {
   }
 
   if (!spaces || spaces.length === 0) {
-    renderOnboarding();
+    renderOnboarding(mainContent);
   } else {
     activeSpaceId = spaces[0].id;
-    renderDashboard();
+    renderDashboard(mainContent);
   }
 }
 
@@ -68,7 +146,7 @@ async function init() {
 // Error display
 // ---------------------------------------------------------------------------
 function showError(msg) {
-  const main = document.getElementById('ms-main');
+  const main = document.getElementById('ms-main-content') || document.getElementById('ms-main');
   if (!main) return;
   main.textContent = '';
   const errEl = el('div', { className: 'ms-error', textContent: msg });
@@ -78,17 +156,17 @@ function showError(msg) {
 // ---------------------------------------------------------------------------
 // Onboarding (Screen 01)
 // ---------------------------------------------------------------------------
-function renderOnboarding() {
-  const main = document.getElementById('ms-main');
+function renderOnboarding(targetContainer) {
+  const main = targetContainer || document.getElementById('ms-main-content') || document.getElementById('ms-main');
   main.textContent = '';
 
-  const container = el('div', { className: 'ms-onboarding' });
+  const wrap = el('div', { className: 'ms-onboarding' });
 
   const heading = el('h1', { className: 'ms-onboarding__title', textContent: 'My Space에 오신 것을 환영합니다' });
   const sub = el('p', { className: 'ms-onboarding__sub', textContent: '어떤 공간을 시작할까요? 템플릿을 선택하세요.' });
 
-  container.appendChild(heading);
-  container.appendChild(sub);
+  wrap.appendChild(heading);
+  wrap.appendChild(sub);
 
   const grid = el('div', { className: 'ms-template-grid' });
 
@@ -127,8 +205,8 @@ function renderOnboarding() {
     grid.appendChild(card);
   }
 
-  container.appendChild(grid);
-  main.appendChild(container);
+  wrap.appendChild(grid);
+  main.appendChild(wrap);
 }
 
 /**
@@ -136,7 +214,7 @@ function renderOnboarding() {
  * Phase 3.3: inline state update replaces prior page-reload pattern.
  */
 function handleTemplateSelect(template, templateLabel) {
-  const main = document.getElementById('ms-main');
+  const main = document.getElementById('ms-main-content') || document.getElementById('ms-main');
   main.textContent = '';
 
   const form = el('div', { className: 'ms-new-space-form' });
@@ -408,8 +486,8 @@ function startInlineRename(space, wrapper, nameDisplay, pane) {
   });
 }
 
-async function renderDashboard() {
-  const main = document.getElementById('ms-main');
+async function renderDashboard(targetContainer) {
+  const main = targetContainer || document.getElementById('ms-main-content') || document.getElementById('ms-main');
   main.textContent = '';
 
   const layout = el('div', { className: 'ms-dashboard' });
