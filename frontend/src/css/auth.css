@@ -198,6 +198,11 @@ input.invalid { border-color: rgba(248,113,113,0.5); }
     padding: 10px 14px !important;
   }
 
+  /* Follow-up: submit button on auth forms — was 40px (4px short of 44px) */
+  .btn {
+    min-height: 44px;
+  }
+
   /* W-4: footer link tap target — bump padding to a true 44px hitbox on
      touch viewports (12 + 14 line-height + 12 + 6 buffer ≈ 44) */
   .footer {
