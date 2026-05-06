@@ -144,8 +144,20 @@ function assertDifficulty(value) {
   }
 }
 
+const { randomUUID } = require('crypto');
+
 /**
- * Assert ingredients: array of { name: 1-80 chars, amount: 0-40 chars }, max 50 items.
+ * Assert that an optional id field is a 1-64 char string if present.
+ */
+function assertOptionalEntryId(field, item, idx) {
+  if (item.id === undefined || item.id === null) return;
+  if (typeof item.id !== 'string' || item.id.length < 1 || item.id.length > 64) {
+    throw validationError(field, `item[${idx}].id must be a 1-64 character string when provided`);
+  }
+}
+
+/**
+ * Assert ingredients: array of { id?: string, name: 1-80 chars, amount: 0-40 chars }, max 50 items.
  */
 function assertIngredients(value) {
   if (!Array.isArray(value)) {
@@ -159,6 +171,7 @@ function assertIngredients(value) {
     if (typeof item !== 'object' || item === null) {
       throw validationError('ingredients', `item[${i}] must be an object`);
     }
+    assertOptionalEntryId('ingredients', item, i);
     if (typeof item.name !== 'string' || item.name.trim().length < 1 || item.name.trim().length > 80) {
       throw validationError('ingredients', `item[${i}].name must be 1-80 characters`);
     }
@@ -169,7 +182,7 @@ function assertIngredients(value) {
 }
 
 /**
- * Assert steps: array of { order: int>=1, text: 1-1000 chars }, max 50 items.
+ * Assert steps: array of { id?: string, order: int>=1, text: 1-1000 chars }, max 50 items.
  */
 function assertSteps(value) {
   if (!Array.isArray(value)) {
@@ -183,6 +196,7 @@ function assertSteps(value) {
     if (typeof item !== 'object' || item === null) {
       throw validationError('steps', `item[${i}] must be an object`);
     }
+    assertOptionalEntryId('steps', item, i);
     if (!Number.isInteger(item.order) || item.order < 1) {
       throw validationError('steps', `item[${i}].order must be an integer >= 1`);
     }
@@ -190,6 +204,17 @@ function assertSteps(value) {
       throw validationError('steps', `item[${i}].text must be 1-1000 characters`);
     }
   }
+}
+
+/**
+ * Ensure each entry has a stable id; auto-fill missing ids in place.
+ * Returns a new array with id-stamped entries (does not mutate input).
+ */
+function withStableIds(items) {
+  if (!Array.isArray(items)) return items;
+  return items.map((item) => (item && typeof item === 'object' && !item.id)
+    ? { ...item, id: randomUUID() }
+    : item);
 }
 
 // ---------------------------------------------------------------------------
@@ -243,6 +268,7 @@ module.exports = {
   assertDifficulty,
   assertIngredients,
   assertSteps,
+  withStableIds,
   assertNoteTitle,
   assertNoteBody,
   assertPinned,

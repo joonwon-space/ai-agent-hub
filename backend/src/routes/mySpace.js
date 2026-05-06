@@ -27,6 +27,7 @@ const {
   assertServings,
   assertIngredients,
   assertSteps,
+  withStableIds,
   assertNoteTitle,
   assertNoteBody,
   assertPinned,
@@ -284,7 +285,12 @@ router.get('/:spaceId/recipes', async (req, res, next) => {
       where,
       orderBy: { createdAt: 'desc' },
     });
-    res.json(recipes);
+    // Backfill stable ids for legacy entries without mutating DB
+    res.json(recipes.map((r) => ({
+      ...r,
+      ingredients: withStableIds(r.ingredients || []),
+      steps: withStableIds(r.steps || []),
+    })));
   } catch (err) {
     next(err);
   }
@@ -325,8 +331,8 @@ router.post('/:spaceId/recipes', async (req, res, next) => {
         cookTimeMin: cookTimeMin !== undefined ? cookTimeMin : null,
         servings: servings !== undefined ? servings : null,
         description: description || null,
-        ingredients: ingredients || [],
-        steps: steps || [],
+        ingredients: withStableIds(ingredients || []),
+        steps: withStableIds(steps || []),
         coverImage: coverImage || null,
       },
     });
@@ -353,7 +359,11 @@ router.get('/:spaceId/recipes/:id', async (req, res, next) => {
     });
     if (!recipe) return res.status(404).json({ error: 'Recipe not found' });
 
-    res.json(recipe);
+    res.json({
+      ...recipe,
+      ingredients: withStableIds(recipe.ingredients || []),
+      steps: withStableIds(recipe.steps || []),
+    });
   } catch (err) {
     next(err);
   }
@@ -412,11 +422,11 @@ router.patch('/:spaceId/recipes/:id', async (req, res, next) => {
     }
     if (ingredients !== undefined) {
       assertIngredients(ingredients);
-      updateData.ingredients = ingredients;
+      updateData.ingredients = withStableIds(ingredients);
     }
     if (steps !== undefined) {
       assertSteps(steps);
-      updateData.steps = steps;
+      updateData.steps = withStableIds(steps);
     }
     if (coverImage !== undefined) {
       updateData.coverImage = coverImage || null;

@@ -69,6 +69,55 @@ function clearProgress(spaceId, recipeId) {
   localStorage.removeItem(progressKey(spaceId, recipeId));
 }
 
+/**
+ * Detect legacy index-based progress (keys are number-like strings) and remap
+ * to id-based keys using the recipe's current ingredients/steps positions.
+ * One-shot: returns migrated progress and persists it back to localStorage.
+ *
+ * @param {{ ingredients: Object, steps: Object }} progress
+ * @param {Array} ingredients - recipe.ingredients with .id stamped by backend
+ * @param {Array} steps - recipe.steps with .id stamped by backend
+ * @param {number} spaceId
+ * @param {number} recipeId
+ * @returns {{ ingredients: Object, steps: Object }}
+ */
+function migrateProgress(progress, ingredients, steps, spaceId, recipeId) {
+  const isIndexBased = (obj) => {
+    const keys = Object.keys(obj || {});
+    return keys.length > 0 && keys.every((k) => /^\d+$/.test(k));
+  };
+  let changed = false;
+  let nextIng = progress.ingredients || {};
+  let nextSteps = progress.steps || {};
+
+  if (isIndexBased(nextIng)) {
+    const remapped = {};
+    for (const [k, v] of Object.entries(nextIng)) {
+      const idx = parseInt(k, 10);
+      const item = ingredients[idx];
+      if (item && item.id) remapped[item.id] = v;
+    }
+    nextIng = remapped;
+    changed = true;
+  }
+  if (isIndexBased(nextSteps)) {
+    const remapped = {};
+    for (const [k, v] of Object.entries(nextSteps)) {
+      const idx = parseInt(k, 10);
+      const item = steps[idx];
+      if (item && item.id) remapped[item.id] = v;
+    }
+    nextSteps = remapped;
+    changed = true;
+  }
+
+  const migrated = { ingredients: nextIng, steps: nextSteps };
+  if (changed) {
+    saveProgress(spaceId, recipeId, migrated);
+  }
+  return migrated;
+}
+
 // ---------------------------------------------------------------------------
 // Progress badge update
 // ---------------------------------------------------------------------------
@@ -124,7 +173,8 @@ function buildChecklist(kind, items, progressSection, onToggle) {
 
   for (let i = 0; i < items.length; i++) {
     const item = items[i];
-    const isChecked = Boolean(progressSection[String(i)]);
+    const itemId = item.id || String(i); // fallback when backend hasn't stamped yet
+    const isChecked = Boolean(progressSection[itemId]);
 
     const label = document.createElement('label');
     label.className = `ms-recipe-view__check-row${isChecked ? ' ms-recipe-view__check-row--done' : ''}`;
@@ -133,14 +183,14 @@ function buildChecklist(kind, items, progressSection, onToggle) {
     checkbox.type = 'checkbox';
     checkbox.className = 'ms-recipe-view__checkbox';
     checkbox.checked = isChecked;
-    checkbox.dataset.idx = String(i);
+    checkbox.dataset.entryId = itemId;
     checkbox.setAttribute('aria-label', kind === 'ingredients'
       ? `재료 ${i + 1} 체크`
       : `단계 ${i + 1} 체크`);
 
     checkbox.addEventListener('change', () => {
       label.classList.toggle('ms-recipe-view__check-row--done', checkbox.checked);
-      onToggle(i, checkbox.checked);
+      onToggle(itemId, checkbox.checked);
       updateProgressBadge(listEl, badge);
     });
 
@@ -176,7 +226,10 @@ function buildChecklist(kind, items, progressSection, onToggle) {
 
   // Compute initial badge
   const total = items.length;
-  const checked = items.filter((_, i) => Boolean(progressSection[String(i)])).length;
+  const checked = items.filter((item, i) => {
+    const itemId = item.id || String(i);
+    return Boolean(progressSection[itemId]);
+  }).length;
   badge.textContent = `${checked} / ${total}`;
 
   return { listEl, badge };
@@ -228,7 +281,15 @@ function renderView(recipe) {
   const recipeId = _viewRecipeId;
   const spaceId = _viewSpaceId;
 
-  const progress = loadProgress(spaceId, recipeId);
+  const ingredientsForMigration = Array.isArray(recipe.ingredients) ? recipe.ingredients : [];
+  const stepsForMigration = Array.isArray(recipe.steps) ? recipe.steps : [];
+  const progress = migrateProgress(
+    loadProgress(spaceId, recipeId),
+    ingredientsForMigration,
+    stepsForMigration,
+    spaceId,
+    recipeId,
+  );
 
   const wrapper = document.createElement('div');
   wrapper.className = 'ms-recipe-view';
@@ -312,11 +373,11 @@ function renderView(recipe) {
       'ingredients',
       ingredients,
       progress.ingredients || {},
-      (idx, checked) => {
+      (entryId, checked) => {
         const p = loadProgress(spaceId, recipeId);
         const updated = {
           ...p,
-          ingredients: { ...(p.ingredients || {}), [String(idx)]: checked },
+          ingredients: { ...(p.ingredients || {}), [entryId]: checked },
         };
         saveProgress(spaceId, recipeId, updated);
       },
@@ -335,11 +396,11 @@ function renderView(recipe) {
       'steps',
       steps,
       progress.steps || {},
-      (idx, checked) => {
+      (entryId, checked) => {
         const p = loadProgress(spaceId, recipeId);
         const updated = {
           ...p,
-          steps: { ...(p.steps || {}), [String(idx)]: checked },
+          steps: { ...(p.steps || {}), [entryId]: checked },
         };
         saveProgress(spaceId, recipeId, updated);
       },

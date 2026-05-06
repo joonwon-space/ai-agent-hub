@@ -245,6 +245,10 @@ function renderIngredientRow(item, index, onRemove) {
   const row = document.createElement('div');
   row.className = 'ingredient-row';
   row.dataset.index = String(index);
+  // Preserve stable id from the backend (or auto-generate for new rows so the
+  // checklist progress in /view stays in sync after add/delete reorders).
+  const entryId = (item && item.id) ? item.id : generateEntryId();
+  row.dataset.entryId = entryId;
 
   const nameInput = document.createElement('input');
   nameInput.type = 'text';
@@ -288,6 +292,8 @@ function renderStepRow(item, index, onRemove) {
   const row = document.createElement('div');
   row.className = 'step-row';
   row.dataset.index = String(index);
+  const entryId = (item && item.id) ? item.id : generateEntryId();
+  row.dataset.entryId = entryId;
 
   const orderBadge = document.createElement('span');
   orderBadge.className = 'step-row__order';
@@ -324,6 +330,7 @@ function renderStepRow(item, index, onRemove) {
 function collectIngredients(container) {
   const rows = container.querySelectorAll('.ingredient-row');
   return Array.from(rows).map((row) => ({
+    id: row.dataset.entryId || generateEntryId(),
     name: row.querySelector('.ingredient-row__name').value.trim(),
     amount: row.querySelector('.ingredient-row__amount').value.trim(),
   })).filter((item) => item.name.length > 0);
@@ -332,12 +339,24 @@ function collectIngredients(container) {
 /**
  * Collect step data from the DOM container.
  * @param {HTMLElement} container
- * @returns {Array<{ order: number, text: string }>}
+ * @returns {Array<{ id: string, order: number, text: string }>}
  */
 function collectSteps(container) {
   const rows = container.querySelectorAll('.step-row');
   return Array.from(rows).map((row, idx) => ({
+    id: row.dataset.entryId || generateEntryId(),
     order: idx + 1,
     text: row.querySelector('.step-row__text').value.trim(),
   })).filter((item) => item.text.length > 0);
+}
+
+/**
+ * Generate a short stable id for ingredient/step entries. Used when the
+ * backend hasn't stamped one yet (new rows or pre-Phase-3.5 records).
+ */
+function generateEntryId() {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID();
+  }
+  return 'e-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 9);
 }

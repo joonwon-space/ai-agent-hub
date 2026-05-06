@@ -144,6 +144,54 @@ describe('POST /api/my-space/:spaceId/recipes', () => {
       }),
     );
   });
+
+  test('auto-stamps stable ids on ingredients and steps when client omits them', async () => {
+    const agent = await loginAs(USER_A);
+
+    prisma.user.findUnique.mockResolvedValue({ ...USER_A, passwordHash: HASH });
+    prisma.space.findFirst.mockResolvedValue(SPACE_A);
+    prisma.recipe.create.mockImplementation(async (args) => ({ id: 200, ...args.data }));
+
+    await agent
+      .post('/api/my-space/10/recipes')
+      .send({
+        name: '카레',
+        category: '한식',
+        difficulty: 'easy',
+        ingredients: [{ name: '감자', amount: '2개' }],
+        steps: [{ order: 1, text: '감자를 썬다' }],
+      })
+      .expect(201);
+
+    const dataArg = prisma.recipe.create.mock.calls.at(-1)[0].data;
+    expect(dataArg.ingredients).toHaveLength(1);
+    expect(typeof dataArg.ingredients[0].id).toBe('string');
+    expect(dataArg.ingredients[0].id.length).toBeGreaterThan(0);
+    expect(dataArg.steps[0].id.length).toBeGreaterThan(0);
+  });
+
+  test('preserves client-provided ids on ingredients and steps', async () => {
+    const agent = await loginAs(USER_A);
+
+    prisma.user.findUnique.mockResolvedValue({ ...USER_A, passwordHash: HASH });
+    prisma.space.findFirst.mockResolvedValue(SPACE_A);
+    prisma.recipe.create.mockImplementation(async (args) => ({ id: 201, ...args.data }));
+
+    await agent
+      .post('/api/my-space/10/recipes')
+      .send({
+        name: '오므라이스',
+        category: '양식',
+        difficulty: 'medium',
+        ingredients: [{ id: 'ing-fixed-001', name: '계란', amount: '2개' }],
+        steps: [{ id: 'step-fixed-001', order: 1, text: '계란 풀기' }],
+      })
+      .expect(201);
+
+    const dataArg = prisma.recipe.create.mock.calls.at(-1)[0].data;
+    expect(dataArg.ingredients[0].id).toBe('ing-fixed-001');
+    expect(dataArg.steps[0].id).toBe('step-fixed-001');
+  });
 });
 
 // ---------------------------------------------------------------------------
