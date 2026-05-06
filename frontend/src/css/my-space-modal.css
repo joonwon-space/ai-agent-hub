@@ -145,3 +145,28 @@
 [data-theme="light"] .btn-danger:hover:not(:disabled) {
   background: #b71c1c;
 }
+
+/* ---------------------------------------------------------------------------
+ * Responsive — ≤768px (modal)
+ * --------------------------------------------------------------------------- */
+
+@media (max-width: 768px) {
+  .ms-modal-card {
+    max-width: none;
+    width: calc(100vw - 32px);
+    padding: 18px 16px;
+    border-radius: 10px;
+  }
+
+  .ms-modal-card__actions {
+    flex-direction: column-reverse;
+    gap: 8px;
+  }
+
+  .ms-modal-card__actions .btn,
+  .ms-modal-card__actions .btn-danger,
+  .ms-modal-card__actions .btn-secondary {
+    width: 100%;
+    justify-content: center;
+  }
+}

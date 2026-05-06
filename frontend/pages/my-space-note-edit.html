@@ -24,12 +24,13 @@
       maxlength="120"
       autocomplete="off"
       spellcheck="false"
+      aria-label="노트 제목"
     />
   </div>
   <div class="note-edit-topbar__right">
     <button id="btn-pin" class="note-pin-toggle" type="button" aria-pressed="false">📌 고정</button>
     <div id="save-indicator" class="save-indicator" aria-live="polite"></div>
-    <button id="theme-toggle" onclick="toggleTheme()" class="btn-text" type="button">☀️ Light</button>
+    <button id="theme-toggle" onclick="toggleTheme()" class="btn-text" aria-label="테마 전환" aria-pressed="false" type="button">☀️ Light</button>
   </div>
 </div>
 

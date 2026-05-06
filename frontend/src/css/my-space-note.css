@@ -405,3 +405,80 @@
     border-top: 1px solid var(--border-color, rgba(255, 255, 255, 0.08));
   }
 }
+
+/* ---------------------------------------------------------------------------
+   Responsive — ≤768px (note pages)
+--------------------------------------------------------------------------- */
+
+@media (max-width: 768px) {
+  /* Note list container */
+  .note-list-main {
+    padding: 16px 10px;
+  }
+
+  /* Note list header stack on mobile */
+  .note-list-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  /* Note cards — tighten padding */
+  .note-card {
+    padding: 12px 14px;
+  }
+
+  /* Edit topbar reduce padding */
+  .note-edit-topbar {
+    padding: 0 10px;
+  }
+
+  /* 50/50 split → stacked column on mobile (extends 680px rule to 768px) */
+  .note-edit-main {
+    flex-direction: column;
+    height: auto;
+    overflow: visible;
+  }
+
+  .note-edit-pane {
+    height: 45vh;
+    min-height: 200px;
+  }
+
+  .note-edit-pane + .note-edit-pane {
+    border-left: none;
+    border-top: 1px solid var(--border-color, rgba(255, 255, 255, 0.08));
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Light theme overrides — note pages
+--------------------------------------------------------------------------- */
+
+[data-theme="light"] .note-pin-toggle {
+  color: #454f62;  /* Meets WCAG AA on light bg (#f0f3fa, ratio >= 4.5) */
+  border-color: rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="light"] .note-pin-toggle--active {
+  border-color: var(--color-freeform-border);
+  color: var(--color-freeform-text);
+}
+
+[data-theme="light"] .note-title-input {
+  color: var(--text, #0d1120);
+}
+
+[data-theme="light"] .note-editor {
+  color: var(--text, #0d1120);
+}
+
+[data-theme="light"] .note-card {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.10);
+}
+
+[data-theme="light"] .note-edit-pane__label {
+  background: rgba(240, 243, 250, 0.95);
+  color: #52607a;
+}

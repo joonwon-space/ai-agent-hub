@@ -14,9 +14,9 @@ html { transition: background-color 0.25s, color 0.2s; }
   --accent: #1e90ff;
   --accent-hover: #1a7de0;
   --text: #dde3f0;
-  --text-muted: #4a5266;
-  --text-faint: #2e3347;
-  --text-subtle: #6b7585;
+  --text-muted: #8491a8;   /* was #4a5266 — raised for WCAG AA contrast on dark bg */
+  --text-faint: #4a566a;   /* was #2e3347 — decorative/non-interactive only */
+  --text-subtle: #8b96aa;  /* was #6b7585 — raised for WCAG AA contrast on dark bg */
   --input-bg: rgba(255,255,255,0.025);
   --input-bg-focus: rgba(30,144,255,0.06);
   --accent-dim: rgba(30,144,255,0.12);
@@ -36,14 +36,14 @@ html { transition: background-color 0.25s, color 0.2s; }
   --accent: #1e90ff;
   --accent-hover: #1a7de0;
   --text: #0d1120;
-  --text-muted: #6b7587;
-  --text-faint: #9ca3af;
-  --text-subtle: #8892a4;
+  --text-muted: #52607a;   /* was #6b7587 — darkened for WCAG AA on light bg */
+  --text-faint: #7a8499;   /* was #9ca3af — decorative/non-interactive only */
+  --text-subtle: #454f62;  /* was #8892a4 — darkened for WCAG AA on light bg */
   --input-bg: rgba(0,0,0,0.02);
   --input-bg-focus: rgba(30,144,255,0.04);
   --accent-dim: rgba(30,144,255,0.08);
   --accent-border: rgba(30,144,255,0.30);
-  --error: #dc2626;
+  --error: #b91c1c;    /* was #dc2626 — darkened for WCAG AA on light bg */
   --success: #00aa00;
   --card-bg: rgba(255,255,255,0.95);
   --glow-color: rgba(30,144,255,0.06);
@@ -153,4 +153,25 @@ input.invalid { border-color: rgba(248,113,113,0.5); }
   font-size: 11px;
   color: var(--text-faint);
   margin-top: 4px;
+}
+
+/* ---------------------------------------------------------------------------
+ * Responsive — ≤768px (auth pages)
+ * --------------------------------------------------------------------------- */
+
+@media (max-width: 768px) {
+  /* Login/signup card — reduce padding and border-radius on small screens */
+  .card {
+    padding: 28px 20px;
+    border-radius: 12px;
+    max-width: calc(100vw - 32px);
+  }
+
+  /* Ensure inputs don't overflow */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="url"] {
+    font-size: 16px; /* Prevent iOS zoom on focus */
+  }
 }

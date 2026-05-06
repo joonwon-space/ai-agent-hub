@@ -205,14 +205,14 @@ _연관 결정사항: [docs/decisions/my-space-phase-3-decisions.md](../decision
 
 ## Done 정의 (Phase 3.4)
 
-- [ ] `@axe-core/playwright` 의존성 추가 + a11y 헬퍼 + 전용 spec
-- [ ] 5 핵심 페이지 × 3 viewport × 2 theme = 30 audit 통과 (critical/serious 0)
-- [ ] `qa/a11y-report.md` 에 moderate/minor 정리
-- [ ] ≤ 768px 모바일 viewport 에서 모든 my-space 페이지 layout 정상
-- [ ] 모든 light-mode 토큰 누락 0
-- [ ] theme toggle aria-label + aria-pressed 동기화
-- [ ] 모든 topbar 버튼 type="button" + aria-label
-- [ ] 데스크톱 회귀 0 (기존 5 spec 통과 유지)
+- [x] `@axe-core/playwright` 의존성 추가 + a11y 헬퍼 + 전용 spec
+- [x] 5 핵심 페이지 × 3 viewport × 2 theme = 30 audit 통과 (critical/serious 0)
+- [x] `qa/a11y-report.md` 에 moderate/minor 정리
+- [x] ≤ 768px 모바일 viewport 에서 모든 my-space 페이지 layout 정상
+- [x] 모든 light-mode 토큰 누락 0
+- [x] theme toggle aria-label + aria-pressed 동기화
+- [x] 모든 topbar 버튼 type="button" + aria-label
+- [x] 데스크톱 회귀 0 (기존 5 spec 통과 유지)
 
 ---
 

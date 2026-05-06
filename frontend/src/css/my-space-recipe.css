@@ -560,3 +560,46 @@
   background: #f8fafc;
   color: #1e293b;
 }
+
+/* ---------------------------------------------------------------------------
+ * Responsive — ≤768px (recipe pages)
+ * --------------------------------------------------------------------------- */
+
+@media (max-width: 768px) {
+  /* Card grid → 1 column */
+  .recipe-grid {
+    grid-template-columns: 1fr;
+    padding: 8px;
+  }
+
+  /* Cover dropzone reduced padding */
+  .ms-recipe-cover-dropzone {
+    padding: 16px;
+  }
+
+  /* Edit form full-width */
+  .recipe-edit-main {
+    margin: 56px 0 24px;
+    padding: 0 12px;
+  }
+
+  /* Meta row (cookTime + servings) → stack */
+  .recipe-meta-row {
+    grid-template-columns: 1fr;
+  }
+
+  /* Difficulty buttons → wrap */
+  .difficulty-group {
+    flex-wrap: wrap;
+  }
+
+  /* Recipe edit topbar — reduce padding */
+  .recipe-edit-topbar {
+    padding: 0 10px;
+  }
+
+  /* Recipes page header padding */
+  .recipes-page-header {
+    padding: 12px;
+  }
+}
