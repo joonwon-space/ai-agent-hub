@@ -1,3 +1,16 @@
+// A-1: if user is already logged in, skip signup and go to the app.
+async function initSignupPage() {
+  try {
+    const me = await getMe();
+    if (me) {
+      window.location.replace('/my-space');
+    }
+  } catch (_) {
+    // ignore — show signup form
+  }
+}
+initSignupPage();
+
 async function handleSubmit(event) {
   event.preventDefault();
 

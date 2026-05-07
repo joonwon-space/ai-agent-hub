@@ -1,4 +1,17 @@
 async function initLoginPage() {
+  // A-1: if the user is already authenticated (e.g., hit browser back from
+  // /my-space), bounce straight to the app instead of showing a confusing
+  // login form. location.replace so /login doesn't re-pollute history.
+  try {
+    const me = await getMe();
+    if (me) {
+      window.location.replace('/my-space');
+      return;
+    }
+  } catch (_) {
+    // network/getMe error — fall through to login form
+  }
+
   const needsSetup = await setupRequired();
   if (needsSetup) {
     window.location.href = '/signup';
