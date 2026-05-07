@@ -25,4 +25,20 @@ function toggleTheme() {
   applyTheme(getTheme() === 'dark' ? 'light' : 'dark');
 }
 
+// theme.js loads in <head> for FOUC prevention — at that point the
+// #theme-toggle button doesn't exist yet, so the aria-label/title set by
+// applyTheme() above hits zero elements and the button keeps its static
+// HTML default ('테마 전환'). Re-run after the DOM is parsed so screen
+// readers see the correct target-mode label without first requiring a click.
+function setThemeButtonLabels() {
+  applyTheme(getTheme());
+}
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', setThemeButtonLabels);
+} else {
+  setThemeButtonLabels();
+}
+
+// First call still fires synchronously to set <html data-theme> early
+// (avoids a flash of wrong theme on initial paint).
 applyTheme(getTheme());
