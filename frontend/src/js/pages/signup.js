@@ -4,12 +4,53 @@ async function initSignupPage() {
     const me = await getMe();
     if (me) {
       window.location.replace('/my-space');
+      return;
     }
   } catch (_) {
     // ignore — show signup form
   }
+  setupPasswordMatchHint();
 }
 initSignupPage();
+
+// P-3: live feedback for password / password-confirm match. Avoids the
+// "submit, find out, retype" loop. Uses a small hint span instead of the
+// big error message so it's not jarring on every keystroke.
+function setupPasswordMatchHint() {
+  const pwd = document.getElementById('password');
+  const confirmInput = document.getElementById('password-confirm');
+  if (!pwd || !confirmInput) return;
+
+  let hint = document.getElementById('password-match-hint');
+  if (!hint) {
+    hint = document.createElement('div');
+    hint.id = 'password-match-hint';
+    hint.className = 'field-hint';
+    hint.style.minHeight = '14px';
+    confirmInput.parentNode.appendChild(hint);
+  }
+
+  function update() {
+    if (!confirmInput.value) {
+      hint.textContent = '';
+      hint.style.color = '';
+      confirmInput.classList.remove('invalid');
+      return;
+    }
+    if (pwd.value === confirmInput.value) {
+      hint.textContent = '비밀번호가 일치합니다 ✓';
+      hint.style.color = 'var(--success)';
+      confirmInput.classList.remove('invalid');
+    } else {
+      hint.textContent = '비밀번호가 일치하지 않습니다';
+      hint.style.color = 'var(--error)';
+      confirmInput.classList.add('invalid');
+    }
+  }
+
+  pwd.addEventListener('input', update);
+  confirmInput.addEventListener('input', update);
+}
 
 async function handleSubmit(event) {
   event.preventDefault();
