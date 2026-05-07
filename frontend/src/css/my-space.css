@@ -768,6 +768,17 @@
     white-space: nowrap;
     border-radius: 6px;
     margin: 0 4px;
+    min-height: 44px;  /* A-7 잔여: meet touch target */
+  }
+
+  /* A-7 잔여: name button and action icons need 44px on mobile */
+  .ms-inner-sidebar__item-name {
+    min-height: 44px;
+    padding: 10px 12px;
+  }
+  .ms-inner-sidebar__action-btn {
+    min-height: 44px;
+    min-width: 44px;
   }
 
   .ms-inner-sidebar__new {
@@ -777,12 +788,21 @@
     margin-top: 0;
     padding: 9px 12px;
     white-space: nowrap;
+    min-height: 44px;  /* A-7 잔여: '+ 새 공간' button */
   }
 
   /* Pane takes full width */
   .ms-pane {
     padding: 16px;
     overflow-y: visible;
+  }
+
+  /* A-7 잔여: pane header CTA buttons (e.g. '+ 새로 작성') */
+  .ms-pane__header a,
+  .ms-pane__header button {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
   }
 
   /* New space form */
