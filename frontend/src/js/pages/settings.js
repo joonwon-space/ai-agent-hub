@@ -1,6 +1,14 @@
 const SETTINGS_KEYS = ['jira_base_url', 'jira_email', 'jira_api_token', 'jira_project_key'];
 const MASKED_RE = /^●/;
 
+// A-6: mask an email for shared-screen display. "abcdef@example.com" → "ab***@example.com"
+function maskEmail(email) {
+  if (typeof email !== 'string' || !email.includes('@')) return email || '';
+  const [local, domain] = email.split('@');
+  const prefix = local.length <= 2 ? local : local.slice(0, 2);
+  return `${prefix}***@${domain}`;
+}
+
 async function initSettingsPage() {
   let me;
   try {
@@ -15,7 +23,9 @@ async function initSettingsPage() {
 
   document.body.style.visibility = 'visible';
   const emailEl = document.getElementById('user-email');
-  if (emailEl) emailEl.textContent = me.email;
+  // A-6: mask the email so a shared screen doesn't leak the full address.
+  // Format: keeps first 2 chars of local part + '***' + '@' + domain.
+  if (emailEl) emailEl.textContent = maskEmail(me.email);
 
   try {
     const res = await authFetch('/api/settings');
