@@ -667,4 +667,23 @@ textarea { min-height: 140px; line-height: 1.65; }
   #topbar {
     padding: 0 12px;
   }
+
+  /* A-7: meet 44×44 minimum touch target on the mobile topbar.
+     Logo link, theme toggle, "설정" link, "로그아웃" — all rendered as
+     small inline anchors/buttons (~22-28px tall) and missed touch targets
+     in the prior visual QA pass. */
+  .topbar-logo,
+  .topbar-logo a,
+  #theme-toggle,
+  .btn-text {
+    min-height: 44px;
+    min-width: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .btn-text {
+    padding: 10px 12px;
+  }
 }

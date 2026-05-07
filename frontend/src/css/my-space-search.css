@@ -185,8 +185,10 @@ mark.ms-search-mark {
   }
 
   .ms-search-input {
-    padding: 7px 10px;
-    font-size: 0.875rem;
+    /* A-7: meet 44px touch target on mobile (was rendering ~37px) */
+    padding: 11px 12px;
+    font-size: 16px;  /* prevents iOS zoom on focus */
+    min-height: 44px;
   }
 
   .ms-search-results {
