@@ -26,6 +26,19 @@ async function register(email, password) {
 
 async function logout() {
   await fetch(`${AUTH_BASE}/logout`, { method: 'POST', credentials: 'same-origin' });
+  // A-8: clear per-user localStorage state so a different account on the
+  // same browser doesn't inherit recipe progress, etc. Theme preference
+  // ('aah-theme') is intentionally kept — it's a device-level choice.
+  try {
+    const keysToClear = [];
+    for (let i = 0; i < localStorage.length; i += 1) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith('recipe-progress-')) keysToClear.push(key);
+    }
+    keysToClear.forEach((k) => localStorage.removeItem(k));
+  } catch (_) {
+    // localStorage unavailable (private mode etc.) — ignore
+  }
   window.location.href = '/login';
 }
 
