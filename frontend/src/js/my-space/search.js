@@ -233,6 +233,17 @@
       container.removeChild(container.firstChild);
     }
 
+    // A-10: defensive check — bail if the input has been cleared since
+    // the request started. Belt-and-suspenders alongside the page-level
+    // currentQuery race-cancellation.
+    const input = document.getElementById('ms-search-input');
+    if (input && (!input.value || input.value.trim() === '')) {
+      container.hidden = true;
+      const mainContent = document.getElementById('ms-main-content');
+      if (mainContent) mainContent.hidden = false;
+      return;
+    }
+
     if (!response || response.total === 0) {
       const empty = document.createElement('div');
       empty.className = 'ms-search-empty';
