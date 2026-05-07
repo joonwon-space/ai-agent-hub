@@ -71,12 +71,21 @@ function insertSearchBar(msMain) {
   msMain.appendChild(searchResults);
 
   let debounceTimer;
+  // A-3: track the current query string so that an in-flight search whose
+  // promise resolves AFTER the user has cleared (or changed) the input
+  // doesn't reveal a stale "검색 결과 없음" pane. clearTimeout alone can't
+  // cancel a request that already started its 300ms cycle.
+  let currentQuery = '';
 
   searchInput.addEventListener('input', (e) => {
     clearTimeout(debounceTimer);
     const q = e.target.value.trim();
+    currentQuery = q;
 
     if (q.length < 1) {
+      // Also empty the result DOM so a previous "검색 결과 없음" message
+      // doesn't peek through if hidden styling is ever overridden later.
+      while (searchResults.firstChild) searchResults.removeChild(searchResults.firstChild);
       searchResults.hidden = true;
       const mainContent = document.getElementById('ms-main-content');
       if (mainContent) mainContent.hidden = false;
@@ -84,9 +93,12 @@ function insertSearchBar(msMain) {
     }
 
     debounceTimer = setTimeout(async () => {
+      const queryAtFire = q;
       try {
         const data = await window.search.query(q);
         if (!data) return; // 401 redirect
+        // Discard stale response — user has typed/cleared since this fired
+        if (currentQuery !== queryAtFire) return;
         searchResults.hidden = false;
         const mainContent = document.getElementById('ms-main-content');
         if (mainContent) mainContent.hidden = true;
@@ -287,8 +299,16 @@ function handleTemplateSelect(template, templateLabel) {
 
   main.appendChild(form);
 
-  // Focus the input
-  setTimeout(() => input.focus(), 0);
+  // A-2: focus the modal input — `setTimeout(0)` lost the race to other focus
+  // claimants (notably the page-level search bar), so keystrokes were
+  // arriving at #ms-search-input instead. Triple safety net:
+  //   1) autofocus attribute (already on the input)
+  //   2) synchronous focus right after appendChild
+  //   3) rAF retry in case layout/render reordering steals focus
+  input.focus();
+  requestAnimationFrame(() => {
+    if (document.activeElement !== input) input.focus();
+  });
 }
 
 // ---------------------------------------------------------------------------
