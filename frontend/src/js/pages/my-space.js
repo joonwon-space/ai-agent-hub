@@ -259,6 +259,18 @@ function handleTemplateSelect(template, templateLabel) {
     attrs: { type: 'text', placeholder: '예: 내 일기장', maxlength: '80', autofocus: '' },
   });
 
+  // A-9: keyboard users couldn't cancel out of this form without reaching
+  // for the mouse — Esc is the conventional way out, Enter the way in.
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      renderOnboarding();
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      createBtn.click();
+    }
+  });
+
   const errMsg = el('div', { className: 'ms-new-space-form__error' });
 
   const btnRow = el('div', { className: 'ms-new-space-form__btn-row' });
