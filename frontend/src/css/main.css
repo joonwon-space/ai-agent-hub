@@ -325,6 +325,12 @@ body {
   max-width: 680px;
 }
 
+@media (min-width: 1280px) {
+  .main-inner {
+    max-width: 960px;
+  }
+}
+
 .placeholder {
   display: flex;
   flex-direction: column;

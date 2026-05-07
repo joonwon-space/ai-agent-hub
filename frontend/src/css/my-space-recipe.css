@@ -562,6 +562,22 @@
 }
 
 /* ---------------------------------------------------------------------------
+ * Responsive — ≥1280px (desktop — wider content)
+ * --------------------------------------------------------------------------- */
+
+@media (min-width: 1280px) {
+  .recipe-edit-main {
+    max-width: 960px;
+  }
+
+  #ingredients-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+}
+
+/* ---------------------------------------------------------------------------
  * Responsive — ≤768px (recipe pages)
  * --------------------------------------------------------------------------- */
 
@@ -633,4 +649,188 @@
   color: var(--text-muted, #8892a0);
   border-color: var(--border, rgba(255,255,255,0.07));
   background: transparent;
+}
+
+/* ---------------------------------------------------------------------------
+ * AI Assist Panel — shared styles (.ms-ai-assist)
+ * Used on recipe and diary edit pages.
+ * --------------------------------------------------------------------------- */
+
+.ms-ai-assist {
+  border: 1px solid var(--border, rgba(255,255,255,0.08));
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--bg-card, #131825);
+}
+
+.ms-ai-assist__header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 10px 14px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--text-secondary, #94a3b8);
+  font-size: 13px;
+  font-weight: 500;
+  text-align: left;
+  transition: background 0.15s;
+}
+
+.ms-ai-assist__header:hover {
+  background: var(--bg-hover, rgba(255,255,255,0.04));
+}
+
+.ms-ai-assist__chevron {
+  margin-left: auto;
+  font-size: 11px;
+  color: var(--text-muted, #8892a0);
+}
+
+.ms-ai-assist__body {
+  padding: 12px 14px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-top: 1px solid var(--border, rgba(255,255,255,0.08));
+}
+
+.ms-ai-assist__body--hidden {
+  display: none;
+}
+
+.ms-ai-assist__textarea {
+  width: 100%;
+  min-height: 80px;
+  padding: 10px 12px;
+  background: var(--bg-input, #1a1f2e);
+  border: 1px solid var(--border, #2a2f3e);
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--text, #e2e8f0);
+  resize: vertical;
+  font-family: inherit;
+  line-height: 1.5;
+  box-sizing: border-box;
+}
+
+.ms-ai-assist__textarea:focus {
+  outline: none;
+  border-color: var(--accent, #7c5cff);
+  box-shadow: 0 0 0 3px rgba(124,92,255,0.15);
+}
+
+.ms-ai-assist__spinner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-muted, #8892a0);
+}
+
+.ms-ai-assist__spinner--hidden {
+  display: none;
+}
+
+.ms-ai-assist__spinner-dot {
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--border, rgba(255,255,255,0.12));
+  border-top-color: var(--accent, #7c5cff);
+  border-radius: 50%;
+  animation: ms-ai-spin 0.7s linear infinite;
+  display: inline-block;
+}
+
+@keyframes ms-ai-spin {
+  to { transform: rotate(360deg); }
+}
+
+.ms-ai-assist__error {
+  font-size: 12px;
+  color: var(--error, #f87171);
+  margin: 0;
+}
+
+.ms-ai-assist__error--hidden {
+  display: none;
+}
+
+.ms-ai-assist__preview {
+  border: 1px solid var(--border, rgba(255,255,255,0.08));
+  border-radius: 8px;
+  padding: 12px;
+  background: var(--bg-hover, rgba(255,255,255,0.03));
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ms-ai-assist__preview--hidden {
+  display: none;
+}
+
+.ms-ai-assist__preview-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted, #8892a0);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0 0 4px;
+}
+
+.ms-ai-assist__preview-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ms-ai-assist__preview-row {
+  display: flex;
+  gap: 8px;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.ms-ai-assist__preview-label {
+  flex-shrink: 0;
+  min-width: 60px;
+  color: var(--text-muted, #8892a0);
+}
+
+.ms-ai-assist__preview-value {
+  color: var(--text, #e2e8f0);
+  word-break: break-word;
+}
+
+.ms-ai-assist__actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+[data-theme="light"] .ms-ai-assist {
+  background: #f8fafc;
+  border-color: rgba(0,0,0,0.08);
+}
+
+[data-theme="light"] .ms-ai-assist__header {
+  color: #475569;
+}
+
+[data-theme="light"] .ms-ai-assist__textarea {
+  background: #ffffff;
+  border-color: rgba(0,0,0,0.12);
+  color: #1e293b;
+}
+
+[data-theme="light"] .ms-ai-assist__preview {
+  background: #f1f5f9;
+  border-color: rgba(0,0,0,0.07);
+}
+
+[data-theme="light"] .ms-ai-assist__preview-value {
+  color: #1e293b;
 }

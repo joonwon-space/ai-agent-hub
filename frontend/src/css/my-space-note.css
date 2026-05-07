@@ -19,6 +19,12 @@
   padding: 24px 16px;
 }
 
+@media (min-width: 1280px) {
+  .note-list-main {
+    max-width: 960px;
+  }
+}
+
 .note-list-header {
   display: flex;
   align-items: center;

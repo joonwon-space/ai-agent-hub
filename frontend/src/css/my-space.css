@@ -46,6 +46,12 @@
   text-align: center;
 }
 
+@media (min-width: 1280px) {
+  .ms-onboarding {
+    max-width: 900px;
+  }
+}
+
 .ms-onboarding__title {
   font-size: 24px;
   font-weight: 700;
@@ -499,6 +505,12 @@
   margin: 0 auto;
   padding: 32px 24px 80px;
   width: 100%;
+}
+
+@media (min-width: 1280px) {
+  #diary-edit-main {
+    max-width: 960px;
+  }
 }
 
 /* Date input */
