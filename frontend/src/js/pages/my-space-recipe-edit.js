@@ -670,6 +670,9 @@ async function saveRecipe() {
     // Update URL without reload
     const newUrl = `/my-space/recipes/${currentRecipeId}?spaceId=${spaceId}`;
     window.history.replaceState({}, '', newUrl);
+    // B-5: now that an id exists, refresh the view-mode link so the user
+    // can immediately jump to /view without reloading the page.
+    updateViewModeLink();
   } else {
     // Subsequent saves → PATCH
     await recipes.update(spaceId, currentRecipeId, payload);
@@ -725,18 +728,7 @@ function setupViewModeLink() {
   const link = document.createElement('a');
   link.id = 'btn-view-mode';
   link.className = 'ms-recipe-edit__view-link btn-text';
-
-  if (isNew || !recipeId) {
-    // New recipe — show disabled hint
-    link.setAttribute('aria-disabled', 'true');
-    link.setAttribute('tabindex', '-1');
-    link.title = '저장 후 사용 가능';
-    link.textContent = '보기 모드';
-    link.className += ' ms-recipe-edit__view-link--disabled';
-  } else {
-    link.href = `/my-space/recipes/${recipeId}/view?spaceId=${spaceId}`;
-    link.textContent = '보기 모드';
-  }
+  link.textContent = '보기 모드';
 
   // Insert before the first child (theme toggle), after save indicator
   const themeToggle = document.getElementById('theme-toggle');
@@ -744,6 +736,33 @@ function setupViewModeLink() {
     rightBar.insertBefore(link, themeToggle);
   } else {
     rightBar.appendChild(link);
+  }
+
+  // B-5: apply enabled/disabled state via the same path used after first
+  // autosave — keeps the "before first save" and "after first save"
+  // codepaths in sync.
+  updateViewModeLink();
+}
+
+// B-5: recompute the view-mode link state. Called on initial setup and
+// again from saveRecipe() right after history.replaceState updates the URL
+// to /my-space/recipes/<id>. Without this, the link stays aria-disabled
+// for the lifetime of the page after first save.
+function updateViewModeLink() {
+  const link = document.getElementById('btn-view-mode');
+  if (!link) return;
+  if (currentRecipeId) {
+    link.href = `/my-space/recipes/${currentRecipeId}/view?spaceId=${spaceId}`;
+    link.removeAttribute('aria-disabled');
+    link.removeAttribute('tabindex');
+    link.title = '';
+    link.classList.remove('ms-recipe-edit__view-link--disabled');
+  } else {
+    link.removeAttribute('href');
+    link.setAttribute('aria-disabled', 'true');
+    link.setAttribute('tabindex', '-1');
+    link.title = '저장 후 사용 가능';
+    link.classList.add('ms-recipe-edit__view-link--disabled');
   }
 }
 
