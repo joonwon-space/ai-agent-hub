@@ -219,6 +219,27 @@ function renderSuccessCard(container, data) {
 async function renderJiraPane(container, spaceId) {
   clearEl(container);
 
+  // A-12: proactively check whether Jira is configured before rendering
+  // the form. The previous implementation only surfaced the settings-gate
+  // card AFTER a preview/run call failed, so users could fill in the form
+  // and only then learn they couldn't submit. This fetch is cheap and
+  // deterministic.
+  try {
+    const settingsRes = await authFetch('/api/settings');
+    if (settingsRes && settingsRes.ok) {
+      const settings = await settingsRes.json();
+      const required = ['jira_base_url', 'jira_email', 'jira_api_token', 'jira_project_key'];
+      const missing = required.filter((k) => !settings[k]);
+      if (missing.length > 0) {
+        renderSettingsRequired(container);
+        return;
+      }
+    }
+  } catch (_) {
+    // network/settings endpoint failure — fall through to form render
+    // and let the existing reactive gate take over on first preview call
+  }
+
   // Pane wrapper
   const pane = el('div', { className: 'jira-pane' });
 
