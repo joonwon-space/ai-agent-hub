@@ -40,6 +40,7 @@ let categorySelect = null;
 let cookTimeInput = null;
 let servingsInput = null;
 let descriptionTextarea = null;
+let videoUrlInput = null;
 let ingredientsContainer = null;
 let stepsContainer = null;
 
@@ -101,6 +102,7 @@ function applyAiFields(fields) {
   if (cookTimeInput && fields.cookTimeMin != null) cookTimeInput.value = String(fields.cookTimeMin);
   if (servingsInput && fields.servings != null) servingsInput.value = String(fields.servings);
   if (descriptionTextarea) descriptionTextarea.value = fields.description || '';
+  if (videoUrlInput && fields.videoUrl) videoUrlInput.value = fields.videoUrl;
 
   if (ingredientsContainer && Array.isArray(fields.ingredients)) {
     ingredientsContainer.textContent = '';
@@ -227,6 +229,15 @@ function buildForm() {
   descriptionTextarea.rows = 3;
   descField.appendChild(descriptionTextarea);
   main.appendChild(descField);
+
+  // YouTube URL
+  const videoField = makeField('유튜브 영상 URL (선택)');
+  videoUrlInput = document.createElement('input');
+  videoUrlInput.type = 'url';
+  videoUrlInput.id = 'recipe-video-url';
+  videoUrlInput.placeholder = 'https://youtu.be/... 또는 https://www.youtube.com/watch?v=...';
+  videoField.appendChild(videoUrlInput);
+  main.appendChild(videoField);
 
   // Ingredients section
   const ingSection = document.createElement('div');
@@ -624,6 +635,7 @@ function populateForm(recipe) {
     servingsInput.value = String(recipe.servings);
   }
   if (descriptionTextarea) descriptionTextarea.value = recipe.description || '';
+  if (videoUrlInput) videoUrlInput.value = recipe.videoUrl || '';
 
   // Set difficulty
   if (recipe.difficulty) {
@@ -680,6 +692,7 @@ function setupAutosave() {
   if (cookTimeInput) cookTimeInput.addEventListener('input', triggerSave);
   if (servingsInput) servingsInput.addEventListener('input', triggerSave);
   if (descriptionTextarea) descriptionTextarea.addEventListener('input', triggerSave);
+  if (videoUrlInput) videoUrlInput.addEventListener('input', triggerSave);
 
   // B-1 잔존: flush pending save on page unload so the last debounce
   // window doesn't drop typed content.
@@ -713,6 +726,7 @@ async function saveRecipe() {
     cookTimeMin: isNaN(cookTimeRaw) ? null : cookTimeRaw,
     servings: isNaN(servingsRaw) ? null : servingsRaw,
     description: descriptionTextarea ? (descriptionTextarea.value || null) : null,
+    videoUrl: videoUrlInput ? (videoUrlInput.value.trim() || null) : null,
     ingredients: collectIngredients(ingredientsContainer),
     steps: collectSteps(stepsContainer),
   };

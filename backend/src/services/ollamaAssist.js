@@ -9,6 +9,7 @@ const RECIPE_SCHEMA = `{
   "cookTimeMin": 조리시간_분_숫자_또는_null,
   "servings": 인분_숫자_또는_null,
   "description": "레시피 한 줄 설명 또는 null",
+  "videoUrl": "유튜브 URL (https://youtu.be/... 형식) 또는 null",
   "ingredients": [{ "name": "재료명", "amount": "양 (예: 400g)" }],
   "steps": [{ "order": 1, "text": "조리 단계 설명" }]
 }`;
@@ -57,6 +58,7 @@ ${text}`;
   if (!validDifficulties.includes(parsed.difficulty)) parsed.difficulty = 'medium';
   if (typeof parsed.cookTimeMin !== 'number') parsed.cookTimeMin = null;
   if (typeof parsed.servings !== 'number') parsed.servings = null;
+  if (typeof parsed.videoUrl !== 'string' || !parsed.videoUrl) parsed.videoUrl = null;
   if (!Array.isArray(parsed.ingredients)) parsed.ingredients = [];
   if (!Array.isArray(parsed.steps)) parsed.steps = [];
 

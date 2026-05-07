@@ -74,6 +74,7 @@ model Recipe {
   difficulty  String                       // 'easy' | 'medium' | 'hard'
   servings    Int?
   description String?  @db.Text
+  videoUrl    String?                      // YouTube URL (optional)
   ingredients Json                         // [{ name: string, amount: string }]
   steps       Json                         // [{ order: int, text: string }]
   coverImage  String?                      // base64 또는 URL (Phase 1: nullable)

@@ -138,6 +138,35 @@ function updateProgressBadge(container, badge) {
 }
 
 // ---------------------------------------------------------------------------
+// YouTube helpers
+// ---------------------------------------------------------------------------
+
+/**
+ * Extract YouTube video ID from various URL formats:
+ *   https://youtu.be/VIDEO_ID
+ *   https://www.youtube.com/watch?v=VIDEO_ID
+ *   https://www.youtube.com/embed/VIDEO_ID
+ * Returns null if not a valid YouTube URL.
+ * @param {string} url
+ * @returns {string|null}
+ */
+function extractYouTubeId(url) {
+  if (!url) return null;
+  try {
+    const u = new URL(url);
+    if (u.hostname === 'youtu.be') {
+      return u.pathname.slice(1).split('?')[0] || null;
+    }
+    if (u.hostname.endsWith('youtube.com')) {
+      return u.searchParams.get('v') || u.pathname.replace('/embed/', '').split('?')[0] || null;
+    }
+  } catch (_) {
+    return null;
+  }
+  return null;
+}
+
+// ---------------------------------------------------------------------------
 // Render helpers
 // ---------------------------------------------------------------------------
 
@@ -363,6 +392,22 @@ function renderView(recipe) {
     descEl.className = 'ms-recipe-view__description';
     descEl.textContent = recipe.description;
     wrapper.appendChild(descEl);
+  }
+
+  // --- YouTube embed ---
+  const videoId = extractYouTubeId(recipe.videoUrl);
+  if (videoId) {
+    const videoWrap = document.createElement('div');
+    videoWrap.className = 'ms-recipe-view__video';
+
+    const iframe = document.createElement('iframe');
+    iframe.src = `https://www.youtube.com/embed/${videoId}`;
+    iframe.title = `${recipe.name || '레시피'} 영상`;
+    iframe.setAttribute('allowfullscreen', '');
+    iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
+    iframe.setAttribute('loading', 'lazy');
+    videoWrap.appendChild(iframe);
+    wrapper.appendChild(videoWrap);
   }
 
   // --- Ingredients section ---

@@ -309,6 +309,7 @@ router.post('/:spaceId/recipes', async (req, res, next) => {
       cookTimeMin,
       servings,
       description,
+      videoUrl,
       ingredients,
       steps,
       coverImage,
@@ -331,6 +332,7 @@ router.post('/:spaceId/recipes', async (req, res, next) => {
         cookTimeMin: cookTimeMin !== undefined ? cookTimeMin : null,
         servings: servings !== undefined ? servings : null,
         description: description || null,
+        videoUrl: videoUrl || null,
         ingredients: withStableIds(ingredients || []),
         steps: withStableIds(steps || []),
         coverImage: coverImage || null,
@@ -390,6 +392,7 @@ router.patch('/:spaceId/recipes/:id', async (req, res, next) => {
       cookTimeMin,
       servings,
       description,
+      videoUrl,
       ingredients,
       steps,
       coverImage,
@@ -419,6 +422,9 @@ router.patch('/:spaceId/recipes/:id', async (req, res, next) => {
     }
     if (description !== undefined) {
       updateData.description = description || null;
+    }
+    if (videoUrl !== undefined) {
+      updateData.videoUrl = videoUrl || null;
     }
     if (ingredients !== undefined) {
       assertIngredients(ingredients);
