@@ -23,7 +23,15 @@ async function handleSubmit(event) {
 
   try {
     await register(email, password);
-    window.location.href = '/';
+    // B-2: auto-login on register success so the user actually lands inside
+    // the app rather than being silently kicked back to /login.
+    await login(email, password);
+    msg.className = 'msg success';
+    msg.textContent = '계정이 생성되었습니다. 이동 중…';
+    // B-4: location.replace (not href) so /signup leaves the history stack —
+    // hitting browser back after signup no longer dumps the user on
+    // about:blank.
+    window.location.replace('/my-space');
   } catch (err) {
     msg.className = 'msg error';
     msg.textContent = err.message;
