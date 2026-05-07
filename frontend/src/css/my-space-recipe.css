@@ -177,12 +177,14 @@
   left: 0;
   right: 0;
   height: 48px;
-  background: var(--bg-topbar, #161929);
-  border-bottom: 1px solid var(--border, #2a2f3e);
+  background: var(--topbar-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 16px;
+  padding: 0 20px;
   z-index: 100;
 }
 
