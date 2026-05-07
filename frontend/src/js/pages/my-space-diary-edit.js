@@ -186,17 +186,21 @@ async function saveEntry() {
     body: bodyTextarea ? bodyTextarea.value : '',
   };
 
+  // B-1: if user typed body but no title, fall back to entryDate so the record
+  // gets created and survives F5. Empty form (no title AND no body) stays idle.
   if (!payload.title) {
-    // Don't autosave without a title — show idle state
-    updateSaveIndicator('idle');
-    return;
+    if (!payload.body || !payload.body.trim()) {
+      updateSaveIndicator('idle');
+      return;
+    }
+    payload.title = payload.entryDate || new Date().toISOString().slice(0, 10);
   }
 
   if (isNew && !currentEntryId) {
     // First save → POST
     const created = await diary.create(spaceId, payload);
     currentEntryId = created.id;
-    // Update URL without reload
+    // Update URL without reload — F5 now reloads /diary/<id> with content
     const newUrl = `/my-space/diary/${currentEntryId}?spaceId=${spaceId}`;
     window.history.replaceState({}, '', newUrl);
   } else {

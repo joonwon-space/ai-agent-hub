@@ -642,8 +642,10 @@ function setupAutosave() {
 async function saveRecipe() {
   const name = nameInput ? nameInput.value.trim() : '';
   if (!name) {
-    // Don't autosave without a name
-    updateSaveIndicator('idle');
+    // B-1: recipes need a real name (date fallback would be useless), so
+    // surface a clearer warning instead of a silent idle that can be
+    // confused with "saved" status
+    updateSaveIndicator('needs-name');
     return;
   }
 
@@ -686,6 +688,7 @@ function updateSaveIndicator(state) {
     saving: '저장 중…',
     saved:  '저장됨 ✓',
     error:  '저장 실패 — 재시도 중',
+    'needs-name': '레시피 이름을 입력하면 저장됩니다',
   };
 
   const classes = {
@@ -693,6 +696,7 @@ function updateSaveIndicator(state) {
     saving: 'save-indicator--saving',
     saved:  'save-indicator--saved',
     error:  'save-indicator--error',
+    'needs-name': 'save-indicator--needs-name',
   };
 
   indicator.className = 'save-indicator';

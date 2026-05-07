@@ -217,11 +217,16 @@ function updatePreview(previewEl, text) {
 // ---------------------------------------------------------------------------
 
 async function saveNote(titleInput, textarea, pinBtn) {
-  const title = titleInput ? titleInput.value.trim() : '';
+  let title = titleInput ? titleInput.value.trim() : '';
   const body = textarea ? textarea.value : '';
   const pinned = pinBtn ? pinBtn.getAttribute('aria-pressed') === 'true' : false;
 
-  if (!title) return; // do not save without title
+  // B-1: if user typed body but no title, fall back to a date stamp so the
+  // record gets created and survives F5. Empty form stays unsaved (no-op).
+  if (!title) {
+    if (!body || !body.trim()) return;
+    title = '메모 — ' + new Date().toISOString().slice(0, 10);
+  }
 
   if (currentNote) {
     // Edit mode — PATCH
