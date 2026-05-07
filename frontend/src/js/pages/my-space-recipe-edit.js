@@ -695,18 +695,20 @@ function updateSaveIndicator(state) {
   if (!indicator) return;
 
   const messages = {
-    idle:   '',
-    saving: '저장 중…',
-    saved:  '저장됨 ✓',
-    error:  '저장 실패 — 재시도 중',
+    idle:    '',
+    pending: '입력 중…',  // P-1
+    saving:  '저장 중…',
+    saved:   '저장됨 ✓',
+    error:   '저장 실패 — 재시도 중',
     'needs-name': '레시피 이름을 입력하면 저장됩니다',
   };
 
   const classes = {
-    idle:   '',
-    saving: 'save-indicator--saving',
-    saved:  'save-indicator--saved',
-    error:  'save-indicator--error',
+    idle:    '',
+    pending: 'save-indicator--pending',
+    saving:  'save-indicator--saving',
+    saved:   'save-indicator--saved',
+    error:   'save-indicator--error',
     'needs-name': 'save-indicator--needs-name',
   };
 

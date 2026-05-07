@@ -233,17 +233,19 @@ function updateSaveIndicator(state) {
   indicator.textContent = '';
 
   const messages = {
-    idle:   '',
-    saving: '저장 중…',
-    saved:  '저장됨 ✓',
-    error:  '저장 실패 — 재시도 중',
+    idle:    '',
+    pending: '입력 중…',  // P-1
+    saving:  '저장 중…',
+    saved:   '저장됨 ✓',
+    error:   '저장 실패 — 재시도 중',
   };
 
   const classes = {
-    idle:   '',
-    saving: 'save-indicator--saving',
-    saved:  'save-indicator--saved',
-    error:  'save-indicator--error',
+    idle:    '',
+    pending: 'save-indicator--pending',
+    saving:  'save-indicator--saving',
+    saved:   'save-indicator--saved',
+    error:   'save-indicator--error',
   };
 
   indicator.className = 'save-indicator';

@@ -167,15 +167,17 @@ function buildLayout() {
     onState: (state) => {
       if (!saveIndicator) return;
       const messages = {
-        idle:   '',
-        saving: '저장 중…',
-        saved:  '저장됨 ✓',
-        error:  '저장 실패 — 재시도 중',
+        idle:    '',
+        pending: '입력 중…',  // P-1
+        saving:  '저장 중…',
+        saved:   '저장됨 ✓',
+        error:   '저장 실패 — 재시도 중',
       };
       const classes = {
-        saving: 'save-indicator--saving',
-        saved:  'save-indicator--saved',
-        error:  'save-indicator--error',
+        pending: 'save-indicator--pending',
+        saving:  'save-indicator--saving',
+        saved:   'save-indicator--saved',
+        error:   'save-indicator--error',
       };
       saveIndicator.className = 'save-indicator';
       if (classes[state]) saveIndicator.classList.add(classes[state]);

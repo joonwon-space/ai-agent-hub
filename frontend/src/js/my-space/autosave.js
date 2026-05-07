@@ -61,7 +61,11 @@ function createAutosaver({ saveFn, onState }) {
     if (timerId !== null) {
       clearTimeout(timerId);
     }
-    setState('idle');
+    // P-1: surface a 'pending' state immediately on every keystroke so
+    // users get instant feedback that their input is being tracked. The
+    // 'saving' state then takes over once the debounce fires and the
+    // network request actually starts.
+    setState('pending');
     timerId = setTimeout(async () => {
       timerId = null;
       if (saving) return;

@@ -624,6 +624,13 @@
   display: none;  /* don't reserve space when there's no status */
 }
 
+.save-indicator--pending {
+  color: var(--text-muted);
+  background: var(--bg-elevated);
+  border-color: var(--border);
+  font-style: italic;
+}
+
 .save-indicator--saving {
   color: var(--warning);
   background: var(--accent-dim);
