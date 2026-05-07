@@ -13,6 +13,7 @@ const settingsRouter = require('./routes/settings');
 const mySpaceRouter = require('./routes/mySpace');
 const recipeUploadRouter = require('./routes/recipeUpload');
 const mySpaceSearchRouter = require('./routes/mySpaceSearch');
+const aiAssistRouter = require('./routes/aiAssist');
 const { requireAuth } = require('./middleware/auth');
 
 /**
@@ -49,6 +50,7 @@ function createApp(opts = {}) {
   app.use('/api/my-space', requireAuth, mySpaceRouter);
   app.use('/api/my-space', requireAuth, recipeUploadRouter);
   app.use('/api/my-space', requireAuth, mySpaceSearchRouter);
+  app.use('/api/ai', aiAssistRouter);
 
   // Global error handler
   // eslint-disable-next-line no-unused-vars

@@ -63,6 +63,7 @@ async function init() {
   }
 
   setupMoodButtons();
+  setupAiPanel();
   setupAutosave();
   setupBackButton();
 }
@@ -95,6 +96,32 @@ function populateForm(entry) {
     selectedMood = entry.mood;
     updateMoodButtons();
   }
+}
+
+// ---------------------------------------------------------------------------
+// AI assist panel
+// ---------------------------------------------------------------------------
+function setupAiPanel() {
+  const main = document.getElementById('diary-edit-main');
+  if (!main) return;
+
+  const { el } = createDiaryAiPanel((fields) => {
+    const titleInput = document.getElementById('entry-title');
+    const bodyTextarea = document.getElementById('entry-body');
+
+    if (titleInput && fields.title) titleInput.value = fields.title;
+
+    if (fields.mood) {
+      selectedMood = fields.mood;
+      updateMoodButtons();
+    }
+
+    if (bodyTextarea && fields.body) bodyTextarea.value = fields.body;
+
+    if (autosaver) autosaver.schedule();
+  });
+
+  main.insertBefore(el, main.firstChild);
 }
 
 // ---------------------------------------------------------------------------

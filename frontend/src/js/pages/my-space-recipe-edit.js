@@ -82,12 +82,58 @@ async function init() {
 }
 
 // ---------------------------------------------------------------------------
+// AI assist callback — populate form fields from extracted data
+// ---------------------------------------------------------------------------
+function applyAiFields(fields) {
+  if (nameInput && fields.name) nameInput.value = fields.name;
+  if (categorySelect && fields.category) categorySelect.value = fields.category;
+
+  if (fields.difficulty) {
+    selectedDifficulty = fields.difficulty;
+    const diffGroup = document.getElementById('difficulty-group');
+    if (diffGroup) {
+      diffGroup.querySelectorAll('.difficulty-btn').forEach((btn) => {
+        btn.classList.toggle('difficulty-btn--active', btn.dataset.value === fields.difficulty);
+      });
+    }
+  }
+
+  if (cookTimeInput && fields.cookTimeMin != null) cookTimeInput.value = String(fields.cookTimeMin);
+  if (servingsInput && fields.servings != null) servingsInput.value = String(fields.servings);
+  if (descriptionTextarea) descriptionTextarea.value = fields.description || '';
+
+  if (ingredientsContainer && Array.isArray(fields.ingredients)) {
+    ingredientsContainer.textContent = '';
+    if (fields.ingredients.length === 0) {
+      addIngredientRow(null);
+    } else {
+      for (const item of fields.ingredients) addIngredientRow(item);
+    }
+  }
+
+  if (stepsContainer && Array.isArray(fields.steps)) {
+    stepsContainer.textContent = '';
+    if (fields.steps.length === 0) {
+      addStepRow(null);
+    } else {
+      for (const item of fields.steps) addStepRow(item);
+    }
+  }
+
+  if (autosaver) autosaver.schedule();
+}
+
+// ---------------------------------------------------------------------------
 // Build the form DOM
 // ---------------------------------------------------------------------------
 function buildForm() {
   const main = document.getElementById('recipe-edit-main');
   if (!main) return;
   main.textContent = '';
+
+  // AI assist panel
+  const { el: aiPanelEl } = createRecipeAiPanel(applyAiFields);
+  main.appendChild(aiPanelEl);
 
   // Cover image dropzone (at top of form)
   const coverSection = buildCoverDropzone();
