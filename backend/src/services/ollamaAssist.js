@@ -26,7 +26,7 @@ async function callOllama(prompt) {
   const response = await axios.post(
     `${ollamaHost}/api/generate`,
     { model, prompt, stream: false },
-    { timeout: 30000 },
+    { timeout: 120000 },
   );
 
   const raw = response.data.response.trim();

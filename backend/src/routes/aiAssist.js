@@ -4,16 +4,15 @@ const express = require('express');
 const { requireAuth } = require('../middleware/auth');
 const { extractRecipeFields, extractDiaryFields } = require('../services/ollamaAssist');
 
-const OLLAMA_ERROR_CODES = new Set([
-  'ECONNREFUSED', 'ENOTFOUND', 'ETIMEDOUT', 'ECONNABORTED',
-  'ECONNRESET', 'ERR_NETWORK', 'ERR_CANCELED',
-]);
+const OLLAMA_TIMEOUT_CODES = new Set(['ECONNABORTED', 'ETIMEDOUT', 'ERR_CANCELED']);
+const OLLAMA_CONN_CODES = new Set(['ECONNREFUSED', 'ENOTFOUND', 'ECONNRESET', 'ERR_NETWORK']);
 
-function isOllamaUnreachable(err) {
-  if (OLLAMA_ERROR_CODES.has(err.code)) return true;
+function classifyOllamaError(err) {
+  if (OLLAMA_TIMEOUT_CODES.has(err.code)) return 'timeout';
+  if (OLLAMA_CONN_CODES.has(err.code)) return 'unreachable';
   // axios network error: request sent but no response received
-  if (err.request && !err.response) return true;
-  return false;
+  if (err.request && !err.response) return 'unreachable';
+  return null;
 }
 
 const router = express.Router();
@@ -31,9 +30,9 @@ router.post('/assist/recipe', requireAuth, async (req, res, next) => {
     const fields = await extractRecipeFields(text.trim());
     res.json({ data: fields });
   } catch (err) {
-    if (isOllamaUnreachable(err)) {
-      return res.status(503).json({ error: 'AI 서버에 연결할 수 없습니다.' });
-    }
+    const kind = classifyOllamaError(err);
+    if (kind === 'timeout') return res.status(503).json({ error: 'AI 응답 시간이 초과됐습니다. 다시 시도해주세요.' });
+    if (kind === 'unreachable') return res.status(503).json({ error: 'AI 서버에 연결할 수 없습니다.' });
     next(err);
   }
 });
@@ -51,9 +50,9 @@ router.post('/assist/diary', requireAuth, async (req, res, next) => {
     const fields = await extractDiaryFields(text.trim());
     res.json({ data: fields });
   } catch (err) {
-    if (isOllamaUnreachable(err)) {
-      return res.status(503).json({ error: 'AI 서버에 연결할 수 없습니다.' });
-    }
+    const kind = classifyOllamaError(err);
+    if (kind === 'timeout') return res.status(503).json({ error: 'AI 응답 시간이 초과됐습니다. 다시 시도해주세요.' });
+    if (kind === 'unreachable') return res.status(503).json({ error: 'AI 서버에 연결할 수 없습니다.' });
     next(err);
   }
 });

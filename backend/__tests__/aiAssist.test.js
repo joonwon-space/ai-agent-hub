@@ -155,9 +155,23 @@ describe('POST /api/ai/assist/diary', () => {
     expect(ollamaAssist.extractDiaryFields).toHaveBeenCalledWith('오늘 친구들이랑 놀아서 기분이 너무 좋았다.');
   });
 
-  it('returns 503 when Ollama is unreachable', async () => {
-    const connErr = new Error('connect ETIMEDOUT');
-    connErr.code = 'ETIMEDOUT';
+  it('returns 503 with timeout message when Ollama times out', async () => {
+    const timeoutErr = new Error('timeout of 120000ms exceeded');
+    timeoutErr.code = 'ECONNABORTED';
+    ollamaAssist.extractDiaryFields.mockRejectedValue(timeoutErr);
+
+    const agent = await loginAs(USER);
+    const res = await agent
+      .post('/api/ai/assist/diary')
+      .send({ text: '오늘 일기' });
+
+    expect(res.status).toBe(503);
+    expect(res.body.error).toMatch(/초과/);
+  });
+
+  it('returns 503 with unreachable message when Ollama is down', async () => {
+    const connErr = new Error('connect ECONNREFUSED');
+    connErr.code = 'ECONNREFUSED';
     ollamaAssist.extractDiaryFields.mockRejectedValue(connErr);
 
     const agent = await loginAs(USER);
