@@ -473,18 +473,20 @@
 }
 
 .diary-edit-topbar {
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
+  height: 48px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 24px;
-  height: 52px;
-  background: var(--topbar-bg);
+  padding: 0 16px;
+  background: var(--bg-topbar, #161929);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border);
-  z-index: 50;
+  border-bottom: 1px solid var(--border, #2a2f3e);
+  z-index: 100;
 }
 
 .diary-edit-topbar__left {
@@ -500,10 +502,9 @@
 }
 
 #diary-edit-main {
-  flex: 1;
   max-width: 720px;
-  margin: 0 auto;
-  padding: 32px 24px 80px;
+  margin: 64px auto 40px;
+  padding: 0 20px 40px;
   width: 100%;
 }
 
