@@ -45,7 +45,10 @@ async function logout() {
 async function getMe() {
   const res = await fetch(`${AUTH_BASE}/me`, { credentials: 'same-origin' });
   if (!res.ok) return null;
-  return res.json();
+  // B-3: response shape is { user: <obj|null> }. Unwrap so existing
+  // callers (`if (!me) ...`, `me.email`) keep working unchanged.
+  const data = await res.json();
+  return data && data.user ? data.user : null;
 }
 
 async function setupRequired() {

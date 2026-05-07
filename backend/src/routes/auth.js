@@ -79,16 +79,25 @@ router.post('/logout', (req, res) => {
 });
 
 router.get('/me', async (req, res, next) => {
-  // W-6: returns 200 + null when no session, instead of 401, so the login page
-  // (and any unauthenticated landing) doesn't generate noisy 401s in browser
-  // network/console. Frontend getMe() treats null as "not logged in".
+  // W-6 / B-3: always 200, response is { user: <obj|null> }.
+  //
+  // Why 200 + structured null instead of 401:
+  //   - 401 produced noisy network panel logs on every anonymous page load
+  //     (login screen, deep links). Some monitoring agents surfaced them
+  //     as "errors" even though they were expected.
+  //   - Auth state for the frontend is inherently a 2-value enum (yes/no),
+  //     not an exceptional condition for /me. Returning 200 + { user: null }
+  //     is consistent with how SPAs commonly model session lookups.
+  //
+  // Wrapping the payload in `{ user }` (B-3 hardening) makes the contract
+  // self-documenting and avoids ambiguity with bare `null` bodies.
   if (!req.session?.userId) {
-    return res.status(200).json(null);
+    return res.status(200).json({ user: null });
   }
   try {
     const user = await prisma.user.findUnique({ where: { id: req.session.userId } });
-    if (!user) return res.status(200).json(null);
-    res.json({ id: user.id, email: user.email });
+    if (!user) return res.status(200).json({ user: null });
+    res.json({ user: { id: user.id, email: user.email } });
   } catch (err) {
     next(err);
   }
