@@ -13,7 +13,10 @@
 
 'use strict';
 
-const DEBOUNCE_MS = 500;
+// B-1 잔존: shrunk from 500 → 250 to narrow the window where typed content
+// can be lost on F5/tab-close before the debounce fires. Pages also wire
+// a beforeunload+pagehide flush as a backup.
+const DEBOUNCE_MS = 250;
 const MAX_RETRIES = 3;
 const BASE_BACKOFF_MS = 1000;
 

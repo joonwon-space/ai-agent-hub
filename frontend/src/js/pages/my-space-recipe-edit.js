@@ -634,6 +634,14 @@ function setupAutosave() {
   if (cookTimeInput) cookTimeInput.addEventListener('input', triggerSave);
   if (servingsInput) servingsInput.addEventListener('input', triggerSave);
   if (descriptionTextarea) descriptionTextarea.addEventListener('input', triggerSave);
+
+  // B-1 잔존: flush pending save on page unload so the last debounce
+  // window doesn't drop typed content.
+  const flushOnLeave = () => {
+    if (autosaver && typeof autosaver.flush === 'function') autosaver.flush();
+  };
+  window.addEventListener('beforeunload', flushOnLeave);
+  window.addEventListener('pagehide', flushOnLeave);
 }
 
 // ---------------------------------------------------------------------------

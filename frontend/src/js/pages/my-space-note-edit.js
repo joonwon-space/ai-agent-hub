@@ -201,10 +201,11 @@ function buildLayout() {
     });
   }
 
-  // Flush on page unload
-  window.addEventListener('beforeunload', () => {
-    if (saver) saver.flush();
-  });
+  // B-1 잔존: flush on page unload so last debounce window survives.
+  // pagehide is more reliable than beforeunload on Safari/iOS.
+  const flushOnLeave = () => { if (saver) saver.flush(); };
+  window.addEventListener('beforeunload', flushOnLeave);
+  window.addEventListener('pagehide', flushOnLeave);
 }
 
 // ---------------------------------------------------------------------------

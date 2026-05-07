@@ -169,6 +169,15 @@ function setupAutosave() {
   if (bodyTextarea) bodyTextarea.addEventListener('input', triggerSave);
   if (titleInput) titleInput.addEventListener('input', triggerSave);
   if (dateInput) dateInput.addEventListener('change', triggerSave);
+
+  // B-1 잔존: flush any pending debounced save on page unload so the
+  // last 250ms of typing isn't lost on F5/tab-close. pagehide is more
+  // reliable than beforeunload on mobile (Safari/iOS).
+  const flushOnLeave = () => {
+    if (autosaver && typeof autosaver.flush === 'function') autosaver.flush();
+  };
+  window.addEventListener('beforeunload', flushOnLeave);
+  window.addEventListener('pagehide', flushOnLeave);
 }
 
 // ---------------------------------------------------------------------------
