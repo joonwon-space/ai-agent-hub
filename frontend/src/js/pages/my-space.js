@@ -116,6 +116,17 @@ function insertSearchBar(msMain) {
 // Init
 // ---------------------------------------------------------------------------
 async function init() {
+  // A-5: this page is the nginx fallback for unmatched paths (M-4). If we
+  // got here from e.g. /agents or /random-path, snap the URL bar to the
+  // canonical /my-space so the address matches the rendered content and
+  // user navigation history makes sense. location.replace keeps the
+  // history clean.
+  const path = window.location.pathname;
+  if (path !== '/my-space' && path !== '/my-space/') {
+    window.location.replace('/my-space');
+    return;
+  }
+
   // Auth guard: redirect to login if not authenticated
   let me;
   try {
