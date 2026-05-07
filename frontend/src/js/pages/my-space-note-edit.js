@@ -160,17 +160,26 @@ function buildLayout() {
   // Autosaver
   saver = createAutosaver({
     saveFn: () => saveNote(titleInput, textarea, pinBtn),
+    // B-6 / P-4: keep the className in sync with the state so the
+    // save-indicator pill (P-2) actually changes color. Previously only
+    // textContent was updated, so '저장 실패' rendered in the same muted
+    // grey as idle — users could miss errors entirely.
     onState: (state) => {
       if (!saveIndicator) return;
-      if (state === 'saving') {
-        saveIndicator.textContent = '저장 중…';
-      } else if (state === 'saved') {
-        saveIndicator.textContent = '저장됨 ✓';
-      } else if (state === 'error') {
-        saveIndicator.textContent = '저장 실패 ✗';
-      } else {
-        saveIndicator.textContent = '';
-      }
+      const messages = {
+        idle:   '',
+        saving: '저장 중…',
+        saved:  '저장됨 ✓',
+        error:  '저장 실패 — 재시도 중',
+      };
+      const classes = {
+        saving: 'save-indicator--saving',
+        saved:  'save-indicator--saved',
+        error:  'save-indicator--error',
+      };
+      saveIndicator.className = 'save-indicator';
+      if (classes[state]) saveIndicator.classList.add(classes[state]);
+      saveIndicator.textContent = messages[state] || '';
     },
   });
 
