@@ -40,7 +40,7 @@
  * --------------------------------------------------------------------------- */
 
 .ms-onboarding {
-  max-width: 780px;
+  max-width: 900px;
   margin: 60px auto;
   padding: 0 24px;
   text-align: center;
@@ -496,7 +496,7 @@
 }
 
 #diary-edit-main {
-  max-width: 780px;
+  max-width: 900px;
   margin: 64px auto 40px;
   padding: 0 20px 40px;
   width: 100%;
