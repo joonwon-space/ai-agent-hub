@@ -131,6 +131,7 @@
 
 #recipes-main {
   max-width: 900px;
+  width: 100%;
   margin-left: auto;
   margin-right: auto;
   padding: 0 20px;
@@ -213,6 +214,7 @@
 
 .recipe-edit-main {
   max-width: 900px;
+  width: 100%;
   margin: 64px auto 40px;
   padding: 0 20px;
   display: flex;
