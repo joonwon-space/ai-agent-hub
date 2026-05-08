@@ -40,16 +40,10 @@
  * --------------------------------------------------------------------------- */
 
 .ms-onboarding {
-  max-width: 700px;
+  max-width: 780px;
   margin: 60px auto;
   padding: 0 24px;
   text-align: center;
-}
-
-@media (min-width: 1280px) {
-  .ms-onboarding {
-    max-width: 900px;
-  }
 }
 
 .ms-onboarding__title {
@@ -502,16 +496,10 @@
 }
 
 #diary-edit-main {
-  max-width: 720px;
+  max-width: 780px;
   margin: 64px auto 40px;
   padding: 0 20px 40px;
   width: 100%;
-}
-
-@media (min-width: 1280px) {
-  #diary-edit-main {
-    max-width: 960px;
-  }
 }
 
 /* Date input */

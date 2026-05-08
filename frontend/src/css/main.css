@@ -322,13 +322,7 @@ body {
 
 .main-inner {
   width: 100%;
-  max-width: 680px;
-}
-
-@media (min-width: 1280px) {
-  .main-inner {
-    max-width: 960px;
-  }
+  max-width: 780px;
 }
 
 .placeholder {

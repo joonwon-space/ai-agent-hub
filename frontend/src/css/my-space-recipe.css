@@ -201,7 +201,7 @@
 }
 
 .recipe-edit-main {
-  max-width: 680px;
+  max-width: 780px;
   margin: 64px auto 40px;
   padding: 0 20px;
   display: flex;
@@ -561,22 +561,6 @@
 [data-theme="light"] .difficulty-btn {
   background: #f8fafc;
   color: #1e293b;
-}
-
-/* ---------------------------------------------------------------------------
- * Responsive — ≥1280px (desktop — wider content)
- * --------------------------------------------------------------------------- */
-
-@media (min-width: 1280px) {
-  .recipe-edit-main {
-    max-width: 960px;
-  }
-
-  #ingredients-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-  }
 }
 
 /* ---------------------------------------------------------------------------
