@@ -205,6 +205,14 @@
  * 3. Dashboard (Screen 02) — inner sidebar + pane
  * --------------------------------------------------------------------------- */
 
+/* Constrain the entire my-space main area (search bar + dashboard) to match
+   the tablet-portrait cap used by standalone pages: sidebar(180px)+pane(780px) */
+#ms-main {
+  max-width: 960px;
+  width: 100%;
+  margin: 0 auto;
+}
+
 .ms-dashboard {
   display: flex;
   height: 100%;
